@@ -216,4 +216,7 @@ export default {
   "Unzipping {name}": "Đang giải nén {name}",
   "The zip file is empty.": "File zip trống.",
   "Load {n} more": "Tải thêm {n}",
+  "Drag to resize · double-click to reset": "Kéo để đổi độ rộng · nhấp đúp để về mặc định",
+  "Opens {url} in your browser. Works while Frnt is running.": "Mở {url} trong trình duyệt. Hoạt động khi Frnt đang chạy.",
+  "Open in browser": "Mở trong trình duyệt",
 };

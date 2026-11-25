@@ -2,7 +2,7 @@ import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { api } from "./api.js";
 import { store, usePages, navigate, pageTitle, breadcrumbs, timeAgo } from "./store.js";
 import Editor from "./Editor.jsx";
-import { Menu } from "./Sidebar.jsx";
+import { Menu, desktop, openInBrowser } from "./Sidebar.jsx";
 import DatabaseView, { RowProperties } from "./db/DatabaseView.jsx";
 import History from "./History.jsx";
 import { t } from "./i18n.js";
@@ -182,6 +182,7 @@ export default function PageView({ id, theme, sidebarOpen, openSidebar }) {
                   },
                 },
                 { icon: "🖨", label: t("Print / Save as PDF"), onClick: () => window.print() },
+                desktop && { icon: "🌐", label: t("Open in browser"), onClick: () => openInBrowser() },
                 {
                   icon: "⧉",
                   label: t("Duplicate"),

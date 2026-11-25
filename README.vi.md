@@ -31,7 +31,8 @@
 | 📥 **Import** | Từ Notion (file `.zip` Markdown & CSV, gồm trang con, ảnh, database) hoặc file `.md`. |
 | 💾 **An toàn dữ liệu** | Tự lưu, thùng rác, sao lưu tự động hằng ngày (giữ 30 bản, chọn được thư mục), xuất/nhập JSON, xuất Markdown/PDF. |
 | 🌐 **Ngôn ngữ** | Tiếng Việt và English, đổi ở cuối sidebar. |
-| 🌓 **Giao diện** | Sáng và tối. |
+| 🌓 **Giao diện** | Sáng và tối, sidebar kéo giãn được. |
+| 🖥️ **Desktop + trình duyệt** | App cho macOS, Windows, Linux. Nút **🌐 Mở trong trình duyệt** (ở sidebar) mở cùng dữ liệu trên trình duyệt web tại `http://localhost:37291` khi app đang chạy. |
 
 ## Chuyển từ Notion sang
 

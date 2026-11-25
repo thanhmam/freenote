@@ -403,7 +403,13 @@ export async function startServer({ port = 3001, host = "127.0.0.1", dataDir = d
   }
 
   return new Promise((resolve, reject) => {
-    const server = app.listen(port, host, () => {
+    // Express 5 passes listen errors (e.g. EADDRINUSE) to this callback
+    const server = app.listen(port, host, (err) => {
+      if (err) {
+        clearInterval(backupTimer);
+        db.close();
+        return reject(err);
+      }
       const actual = server.address().port;
       resolve({
         port: actual,
@@ -416,6 +422,5 @@ export async function startServer({ port = 3001, host = "127.0.0.1", dataDir = d
         },
       });
     });
-    server.on("error", reject);
   });
 }

@@ -37,7 +37,8 @@
 | 📥 **Import** | Notion export (Markdown & CSV `.zip`: pages, images, databases) or plain `.md` files. |
 | 💾 **Your data, safe** | Autosave, trash, daily automatic backups (30 kept, folder of your choice), JSON export/restore, Markdown and PDF export. |
 | 🌐 **Languages** | English and Tiếng Việt. Switch at the bottom of the sidebar. [Add yours](CONTRIBUTING.md#translations)! |
-| 🌓 **Themes** | Light and dark. |
+| 🌓 **Themes** | Light and dark. Resizable sidebar. |
+| 🖥️ **Desktop + browser** | Native app for macOS, Windows and Linux. **🌐 Open in browser** (sidebar) shows the same notes in your web browser at `http://localhost:37291` while the app is running. |
 
 ## Moving from Notion
 

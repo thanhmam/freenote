@@ -257,7 +257,38 @@ function TrashPanel({ onClose, refresh }) {
   );
 }
 
+const SB_MIN = 200;
+const SB_MAX = 520;
+const SB_DEFAULT = 260;
+
+/** Desktop app bridge (electron/preload.cjs); undefined in a normal browser. */
+export const desktop = typeof window !== "undefined" ? window.frntDesktop : undefined;
+export const openInBrowser = (url = window.location.href) => desktop?.openInBrowser(url);
+
 export default function Sidebar({ currentId, refresh, createPage, openSearch, theme, toggleTheme, collapse }) {
+  const [width, setWidth] = useState(() => {
+    const w = Number(localStorage.getItem("sidebarWidth"));
+    return w >= SB_MIN && w <= SB_MAX ? w : SB_DEFAULT;
+  });
+  const startResize = (e) => {
+    e.preventDefault();
+    const x0 = e.clientX;
+    const w0 = width;
+    let w = w0;
+    document.body.classList.add("resizing");
+    const move = (ev) => {
+      w = Math.min(SB_MAX, Math.max(SB_MIN, w0 + ev.clientX - x0));
+      setWidth(w);
+    };
+    const up = () => {
+      document.removeEventListener("mousemove", move);
+      document.removeEventListener("mouseup", up);
+      document.body.classList.remove("resizing");
+      localStorage.setItem("sidebarWidth", String(w));
+    };
+    document.addEventListener("mousemove", move);
+    document.addEventListener("mouseup", up);
+  };
   const { pages, byId } = usePages();
   const [expanded, setExpanded] = useState(() => JSON.parse(localStorage.getItem("expanded") || "{}"));
   const [trashOpen, setTrashOpen] = useState(false);
@@ -295,7 +326,16 @@ export default function Sidebar({ currentId, refresh, createPage, openSearch, th
   const treeProps = { childrenOf, currentId, refresh, createPage, expanded, setExpanded };
 
   return (
-    <aside className="sidebar">
+    <aside className="sidebar" style={{ width }}>
+      <div
+        className="sb-resizer"
+        title={t("Drag to resize · double-click to reset")}
+        onMouseDown={startResize}
+        onDoubleClick={() => {
+          setWidth(SB_DEFAULT);
+          localStorage.setItem("sidebarWidth", String(SB_DEFAULT));
+        }}
+      />
       <div className="sb-head">
         <div className="ws">
           <span className="ws-logo">F</span>
@@ -366,8 +406,14 @@ export default function Sidebar({ currentId, refresh, createPage, openSearch, th
         <button className="sb-link" onClick={() => setSettings(true)}>
           <span className="menu-ico">⚙</span> {t("Settings, backup & import")}
         </button>
+        {desktop && (
+          <button className="sb-link" title={t("Opens {url} in your browser. Works while Frnt is running.", { url: window.location.origin })} onClick={() => openInBrowser()}>
+            <span className="menu-ico">🌐</span> {t("Open in browser")}
+            <span className="sb-url">{window.location.host}</span>
+          </button>
+        )}
         <div className="lang-switch" title={t("Switch language")}>
-          <span className="menu-ico">🌐</span>
+          <span className="menu-ico">文</span>
           {Object.keys(LOCALES).map((code) => (
             <button key={code} className={code === lang ? "on" : ""} onClick={() => code !== lang && setLang(code)}>
               {code.toUpperCase()}
