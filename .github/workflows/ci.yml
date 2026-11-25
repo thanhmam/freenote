@@ -1,0 +1,27 @@
+name: CI
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - run: npm run build
+      - name: Server smoke test
+        run: |
+          DATA_DIR=$RUNNER_TEMP/data node server/index.js --prod &
+          for i in $(seq 1 30); do curl -sf http://localhost:3001/api/pages && break; sleep 1; done
+          curl -sf http://localhost:3001/ | grep -q '<div id="root">'
+      - name: Desktop smoke test
+        run: |
+          sudo apt-get update && sudo apt-get install -y xvfb
+          DATA_DIR=$RUNNER_TEMP/edata FRNT_SMOKE=1 xvfb-run -a npx electron . --no-sandbox 2>&1 | tee smoke.log
+          grep -q "SMOKE OK" smoke.log

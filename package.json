@@ -1,0 +1,122 @@
+{
+  "name": "frnt-notes",
+  "productName": "Frnt Notes",
+  "version": "0.1.0",
+  "description": "Free, open-source, local-first Notion alternative: block editor, nested pages, databases (table/board), version history. Your data stays on your machine.",
+  "license": "MIT",
+  "author": "Frnt Notes contributors",
+  "homepage": "https://github.com/thanhmam/frnt-notes",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/thanhmam/frnt-notes.git"
+  },
+  "keywords": [
+    "notion",
+    "notion-alternative",
+    "notes",
+    "local-first",
+    "block-editor",
+    "self-hosted",
+    "electron"
+  ],
+  "type": "module",
+  "main": "electron/main.mjs",
+  "engines": {
+    "node": ">=22.13"
+  },
+  "scripts": {
+    "dev": "node --watch-path=server server/index.js",
+    "build": "vite build",
+    "start": "vite build && node server/index.js --prod",
+    "desktop": "vite build && electron .",
+    "dist": "vite build && electron-builder",
+    "dist:mac": "vite build && electron-builder --mac",
+    "dist:win": "vite build && electron-builder --win",
+    "dist:linux": "vite build && electron-builder --linux",
+    "smoke": "vite build && FRNT_SMOKE=1 electron ."
+  },
+  "dependencies": {
+    "express": "^5.3.0"
+  },
+  "devDependencies": {
+    "@blocknote/core": "^0.57.0",
+    "@blocknote/mantine": "^0.57.0",
+    "@blocknote/react": "^0.57.0",
+    "@mantine/core": "^9.8.2",
+    "@mantine/hooks": "^9.8.2",
+    "@vitejs/plugin-react": "^6.3.0",
+    "electron": "^45.5.0",
+    "electron-builder": "^26.18.0",
+    "fflate": "^0.8.3",
+    "react": "^19.3.1",
+    "react-dom": "^19.3.1",
+    "vite": "^8.3.8"
+  },
+  "build": {
+    "appId": "io.github.frntnotes.app",
+    "productName": "Frnt Notes",
+    "artifactName": "Frnt-Notes-${version}-${os}-${arch}.${ext}",
+    "directories": {
+      "output": "release",
+      "buildResources": "build"
+    },
+    "files": [
+      "dist/**",
+      "server/**",
+      "electron/**",
+      "package.json"
+    ],
+    "mac": {
+      "target": [
+        {
+          "target": "dmg",
+          "arch": [
+            "arm64",
+            "x64"
+          ]
+        },
+        {
+          "target": "zip",
+          "arch": [
+            "arm64",
+            "x64"
+          ]
+        }
+      ],
+      "category": "public.app-category.productivity",
+      "icon": "build/icon.png",
+      "identity": "-",
+      "hardenedRuntime": false
+    },
+    "win": {
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64"
+          ]
+        }
+      ],
+      "icon": "build/icon.png"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true
+    },
+    "linux": {
+      "target": [
+        "AppImage",
+        "deb"
+      ],
+      "category": "Office",
+      "icon": "build/icon.png",
+      "maintainer": "Frnt Notes contributors"
+    },
+    "publish": {
+      "provider": "github",
+      "owner": "thanhmam",
+      "repo": "frnt-notes",
+      "releaseType": "release"
+    }
+  }
+}
