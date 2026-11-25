@@ -1,4 +1,9 @@
+/* System font stacks: always installed, all support Vietnamese (and most other scripts).
+   macOS/iOS → SF Pro · Windows → Segoe UI · Android/ChromeOS → Roboto · Linux → Noto Sans / Ubuntu / Cantarell / DejaVu Sans. */
 :root {
+  --font: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Noto Sans", Ubuntu, Cantarell,
+    "Helvetica Neue", Arial, "DejaVu Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji";
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, "Cascadia Mono", "Liberation Mono", "DejaVu Sans Mono", monospace;
   --bg: #ffffff;
   --sb: #f7f7f5;
   --text: #37352f;
@@ -27,14 +32,14 @@
 * { box-sizing: border-box; }
 html, body, #root { margin: 0; height: 100%; }
 body {
-  font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-family: var(--font);
   color: var(--text);
   background: var(--bg);
   font-size: 14px;
   -webkit-font-smoothing: antialiased;
 }
 button { font: inherit; color: inherit; background: none; border: 0; cursor: pointer; }
-kbd { font: 11px Inter, sans-serif; color: var(--muted); margin-left: auto; }
+kbd { font: 11px var(--font); color: var(--muted); margin-left: auto; }
 .muted { color: var(--muted); }
 .small { font-size: 12px; }
 .pad { padding: 12px; }
@@ -147,7 +152,7 @@ kbd { font: 11px Inter, sans-serif; color: var(--muted); margin-left: auto; }
 .page-head:hover .head-actions { opacity: 1; }
 .title {
   display: block; width: 100%; border: 0; outline: 0; resize: none; overflow: hidden; background: transparent;
-  color: var(--text); font: 700 40px/1.2 Inter, sans-serif; padding: 4px 0 12px;
+  color: var(--text); font: 700 40px/1.2 var(--font); padding: 4px 0 12px;
 }
 .title::placeholder { color: var(--muted); opacity: 0.5; }
 
@@ -163,7 +168,7 @@ kbd { font: 11px Inter, sans-serif; color: var(--muted); margin-left: auto; }
 .ep-grid.covers button { height: 48px; }
 
 /* BlockNote overrides to feel like Notion */
-.bn-container[data-color-scheme] { --bn-colors-editor-background: var(--bg); --bn-colors-editor-text: var(--text); --bn-font-family: Inter, sans-serif; }
+.bn-container[data-color-scheme] { --bn-colors-editor-background: var(--bg); --bn-colors-editor-text: var(--text); --bn-font-family: var(--font); }
 .bn-editor { padding-inline: 54px !important; }
 .page-link-block {
   display: flex; align-items: center; gap: 8px; width: 100%; padding: 3px 4px; border-radius: 4px; cursor: pointer;
@@ -174,7 +179,7 @@ kbd { font: 11px Inter, sans-serif; color: var(--muted); margin-left: auto; }
 /* Search */
 .overlay { position: fixed; inset: 0; background: rgba(15, 15, 15, 0.4); z-index: 100; display: flex; justify-content: center; align-items: flex-start; padding-top: 12vh; }
 .search { width: 640px; max-width: 92vw; background: var(--menu); border-radius: 12px; box-shadow: var(--shadow); overflow: hidden; }
-.search-input { width: 100%; border: 0; outline: 0; padding: 16px 18px; font: 16px Inter, sans-serif; background: transparent; color: var(--text); border-bottom: 1px solid var(--border); }
+.search-input { width: 100%; border: 0; outline: 0; padding: 16px 18px; font: 16px var(--font); background: transparent; color: var(--text); border-bottom: 1px solid var(--border); }
 .search-label { font-size: 12px; color: var(--muted); padding: 10px 18px 4px; font-weight: 500; }
 .search-results { max-height: 55vh; overflow-y: auto; padding: 4px 6px 8px; }
 .search-row { display: flex; align-items: center; gap: 10px; padding: 8px 12px; border-radius: 6px; cursor: pointer; }
@@ -196,7 +201,12 @@ kbd { font: 11px Inter, sans-serif; color: var(--muted); margin-left: auto; }
 }
 
 /* ================= Database (Day 2) ================= */
+/* System font stacks: always installed, all support Vietnamese (and most other scripts).
+   macOS/iOS → SF Pro · Windows → Segoe UI · Android/ChromeOS → Roboto · Linux → Noto Sans / Ubuntu / Cantarell / DejaVu Sans. */
 :root {
+  --font: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Noto Sans", Ubuntu, Cantarell,
+    "Helvetica Neue", Arial, "DejaVu Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji";
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, "Cascadia Mono", "Liberation Mono", "DejaVu Sans Mono", monospace;
   --c-default: rgba(227, 226, 224, 0.6); --c-gray: #e3e2e0; --c-brown: #eee0da; --c-orange: #fadec9; --c-yellow: #fdecc8;
   --c-green: #dbeddb; --c-blue: #d3e5ef; --c-purple: #e8deee; --c-pink: #f5e0e9; --c-red: #ffe2dd;
   --tag-text: #32302c;
@@ -242,7 +252,7 @@ kbd { font: 11px Inter, sans-serif; color: var(--muted); margin-left: auto; }
 .db-block { width: 100%; margin: 8px 0; }
 .db-inline-head { display: flex; align-items: center; gap: 6px; margin-bottom: 4px; }
 .db-inline-icon { font-size: 20px; }
-.db-inline-title { font: 700 20px Inter, sans-serif; border: 0; outline: 0; background: transparent; color: var(--text); flex: 1; padding: 2px 0; }
+.db-inline-title { font: 700 20px var(--font); border: 0; outline: 0; background: transparent; color: var(--text); flex: 1; padding: 2px 0; }
 
 .db-toolbar { display: flex; align-items: center; justify-content: space-between; gap: 8px; border-bottom: 1px solid var(--border); padding-bottom: 4px; flex-wrap: wrap; }
 .view-tabs { display: flex; align-items: center; gap: 2px; overflow-x: auto; }
@@ -391,3 +401,15 @@ code { font-size: 12px; background: var(--hover); padding: 1px 4px; border-radiu
 .lang-switch button:hover { background: var(--hover); color: var(--text); }
 .lang-switch button.on { background: var(--active); color: var(--text); }
 .lang-select { border: 1px solid var(--border); background: var(--hover); color: var(--text); border-radius: 6px; padding: 4px 8px; font: inherit; }
+
+/* Make sure editor popups (Mantine: slash menu, toolbars) and code use the same stacks */
+.bn-container, .bn-root, .mantine-Popover-dropdown, .bn-mantine { --bn-font-family: var(--font); font-family: var(--font); }
+.bn-block-content[data-content-type="codeBlock"] pre, .bn-block-content[data-content-type="codeBlock"] code, code, kbd.mono { font-family: var(--font-mono); }
+:root, .bn-container, [data-mantine-color-scheme] {
+  --bn-font-family: var(--font);
+  --mantine-font-family: var(--font);
+  --mantine-font-family-headings: var(--font);
+  --mantine-font-family-monospace: var(--font-mono);
+}
+/* BlockNote hard-codes Inter here (its bundled Inter has no Vietnamese glyphs) → use the system stack */
+.bn-container .bn-default-styles, .bn-default-styles { font-family: var(--font); }
