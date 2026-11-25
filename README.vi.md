@@ -33,6 +33,19 @@
 | 🌐 **Ngôn ngữ** | Tiếng Việt và English, đổi ở cuối sidebar. |
 | 🌓 **Giao diện** | Sáng và tối. |
 
+## Chuyển từ Notion sang
+
+1. Trong Notion, mở **Settings → General → Export all workspace content**. (Nếu chỉ cần một trang: **⋯ → Export**.)
+2. Chọn **Export format: Markdown & CSV** và bật **Include subpages**.
+3. Notion sẽ gửi link tải qua email. Tải file `.zip` về, **không cần giải nén**.
+4. Trong Frnt, mở **Cài đặt → Nhập dữ liệu → Từ Notion (.zip)** rồi chọn file. Nếu Notion chia export thành nhiều phần, chọn tất cả các phần cùng lúc.
+
+**Được chuyển sang:** cây trang, định dạng chữ, todo, toggle, code, quote, ảnh và file đính kèm, liên kết giữa các trang, và database (tự nhận dạng kiểu cột: chọn một, chọn nhiều, ngày, số, URL, checkbox, văn bản). Mỗi hàng database giữ nguyên nội dung trang của nó.
+
+**Chưa hỗ trợ:** bình luận, công thức/rollup (được nhập dưới dạng văn bản), synced block, và các view database ngoài dạng bảng.
+
+Đã thử với một workspace thật: file export 615 MB gồm 5.500 trang, 195 database và 735 ảnh, nhập xong trong khoảng 30 giây. Nếu có phần nào không nhập được, phần còn lại vẫn được nhập bình thường, và trang **⚠️ Báo cáo nhập dữ liệu** sẽ liệt kê từng lỗi kèm tên file.
+
 ## So sánh Frnt và Notion
 
 | | **Frnt** | **Notion bản Free** ¹ |

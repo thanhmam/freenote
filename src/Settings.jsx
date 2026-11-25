@@ -11,6 +11,8 @@ export default function Settings({ onClose, theme, toggleTheme }) {
   const [dir, setDir] = useState("");
   const [msg, setMsg] = useState("");
   const [busy, setBusy] = useState(false);
+  const [progress, setProgress] = useState(null); // { phase, done, total }
+  const [result, setResult] = useState(null); // import summary
   const jsonRef = useRef(null);
   const mdRef = useRef(null);
   const zipRef = useRef(null);
@@ -38,11 +40,16 @@ export default function Settings({ onClose, theme, toggleTheme }) {
 
   const doImport = (files) =>
     run(t("Importing"), async () => {
-      const id = await importFiles(files, (m) => setMsg(t("Importing") + ": " + m));
-      store.setPages(await api.list());
-      setMsg("✓ " + t("Import finished"));
-      navigate(id);
-      onClose();
+      setResult(null);
+      try {
+        const r = await importFiles(files, (p) => setProgress(p));
+        store.setPages(await api.list());
+        setMsg("");
+        setResult(r);
+        navigate(r.rootId);
+      } finally {
+        setProgress(null);
+      }
     });
 
   const restoreJson = (file) =>
@@ -55,11 +62,11 @@ export default function Settings({ onClose, theme, toggleTheme }) {
     });
 
   return (
-    <div className="overlay" onMouseDown={onClose}>
+    <div className="overlay" onMouseDown={() => !busy && onClose()}>
       <div className="modal settings" onMouseDown={(e) => e.stopPropagation()}>
         <div className="modal-head">
           <h2>{t("Settings")}</h2>
-          <button className="icon-btn" onClick={onClose}>✕</button>
+          <button className="icon-btn" disabled={busy} onClick={onClose}>✕</button>
         </div>
 
         <section>
@@ -175,7 +182,42 @@ export default function Settings({ onClose, theme, toggleTheme }) {
           </div>
         </section>
 
-        {msg && <div className="set-msg">{msg}</div>}
+        {progress && (
+          <div className="set-msg">
+            <div>
+              {progress.phase}
+              {progress.total > 1 && ` — ${progress.done}/${progress.total}`}
+            </div>
+            <div className="progress">
+              <div style={{ width: `${progress.total ? Math.round((progress.done / progress.total) * 100) : 0}%` }} />
+            </div>
+            <div className="muted small">{t("Please keep the app open until the import finishes.")}</div>
+          </div>
+        )}
+        {result && (
+          <div className={`set-msg ${result.warnings.length ? "warn" : "ok"}`}>
+            <b>✓ {t("Import finished")}</b>
+            <div>
+              {t("{pages} pages, {databases} databases ({rows} rows), {files} images & files", result.stats)}
+            </div>
+            {result.warnings.length > 0 && (
+              <>
+                <div style={{ marginTop: 6 }}>
+                  ⚠ {t("{n} problems while importing. Everything else was imported.", { n: result.warnings.length })}{" "}
+                  {t("See the “⚠️ Import report” page for the full list.")}
+                </div>
+                <ul className="warn-list">
+                  {result.warnings.slice(0, 8).map((w, i) => (
+                    <li key={i}>
+                      <b>{w.step}</b> — {w.file}: {w.message}
+                    </li>
+                  ))}
+                </ul>
+              </>
+            )}
+          </div>
+        )}
+        {msg && !progress && <div className="set-msg error-msg">{msg}</div>}
 
         <div className="muted small about">
           Frnt (Free Notes) — {t("open source (MIT)")} ·{" "}
@@ -184,7 +226,7 @@ export default function Settings({ onClose, theme, toggleTheme }) {
           </a>
         </div>
 
-        <input ref={zipRef} type="file" accept=".zip" hidden onChange={(e) => e.target.files.length && doImport(e.target.files)} />
+        <input ref={zipRef} type="file" accept=".zip" multiple hidden onChange={(e) => e.target.files.length && doImport(e.target.files)} />
         <input ref={mdRef} type="file" accept=".md,.markdown,.txt" multiple hidden onChange={(e) => e.target.files.length && doImport(e.target.files)} />
         <input ref={jsonRef} type="file" accept="application/json" hidden onChange={(e) => e.target.files[0] && restoreJson(e.target.files[0])} />
       </div>

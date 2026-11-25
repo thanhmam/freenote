@@ -413,3 +413,10 @@ code { font-size: 12px; background: var(--hover); padding: 1px 4px; border-radiu
 }
 /* BlockNote hard-codes Inter here (its bundled Inter has no Vietnamese glyphs) → use the system stack */
 .bn-container .bn-default-styles, .bn-default-styles { font-family: var(--font); }
+.progress { height: 6px; background: var(--active); border-radius: 3px; overflow: hidden; margin: 6px 0; }
+.progress > div { height: 100%; background: var(--accent); transition: width 0.2s; }
+.set-msg.ok { background: rgba(46, 160, 67, 0.12); }
+.set-msg.warn { background: rgba(212, 167, 44, 0.15); }
+.set-msg.error-msg { background: rgba(235, 87, 87, 0.12); white-space: pre-wrap; }
+.warn-list { margin: 6px 0 0; padding-left: 18px; max-height: 160px; overflow-y: auto; font-size: 12px; }
+.load-more { color: var(--accent); }

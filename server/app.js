@@ -8,6 +8,7 @@ import os from "node:os";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { seedTemplates, seedWelcome, detectLang } from "./seed.js";
+import { mountImport } from "./importSession.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.join(__dirname, "..");
@@ -87,8 +88,8 @@ export async function startServer({ port = 3001, host = "127.0.0.1", dataDir = d
 
   const getPage = (id) => parseRow(db.prepare(`SELECT ${META}, content FROM pages WHERE id = ?`).get(id));
 
-  function createPage({ parent_id = null, title = "", icon = null, cover = null, content = null, text = "", kind = "page", db_schema = null, props = null, position = null, is_template = 0 }) {
-    const id = randomUUID();
+  function createPage({ id = null, parent_id = null, title = "", icon = null, cover = null, content = null, text = "", kind = "page", db_schema = null, props = null, position = null, is_template = 0 }) {
+    id = typeof id === "string" && /^[0-9a-f-]{36}$/i.test(id) ? id : randomUUID();
     const { m } = db.prepare(`SELECT COALESCE(MAX(position), 0) AS m FROM pages WHERE parent_id IS ?`).get(parent_id);
     db.prepare(
       `INSERT INTO pages (id, parent_id, kind, title, icon, cover, content, text, db_schema, props, position, is_template, created_at, updated_at)
@@ -199,6 +200,26 @@ export async function startServer({ port = 3001, host = "127.0.0.1", dataDir = d
   });
 
   app.post("/api/pages", (req, res) => res.json(createPage(req.body || {})));
+
+  // Bulk create (used by import). All-or-nothing in one transaction; ids may be provided by the client.
+  app.post("/api/pages/batch", (req, res) => {
+    const list = Array.isArray(req.body?.pages) ? req.body.pages : [];
+    db.exec("BEGIN");
+    try {
+      list.forEach((p, i) => {
+        try {
+          createPage({ ...p, is_template: 0 });
+        } catch (e) {
+          throw new Error(`page #${i + 1} "${String(p?.title || "").slice(0, 80)}": ${e.message}`);
+        }
+      });
+      db.exec("COMMIT");
+    } catch (e) {
+      db.exec("ROLLBACK");
+      throw e;
+    }
+    res.json({ ok: true, count: list.length });
+  });
 
   const EDITABLE = ["title", "icon", "cover", "content", "text", "parent_id", "position", "is_favorite", "is_template", "full_width", "db_schema", "props"];
   app.patch("/api/pages/:id", (req, res) => {
@@ -357,6 +378,18 @@ export async function startServer({ port = 3001, host = "127.0.0.1", dataDir = d
       }));
     }
     res.json({ ok: true, count: pages.length });
+  });
+
+  mountImport(app, { dataDir, uploadDir: UPLOAD_DIR });
+
+  // ---- errors: always answer API calls with a readable JSON message ----
+  app.use("/api", (err, req, res, _next) => {
+    const status = err.status || err.statusCode || 500;
+    const message =
+      err.type === "entity.too.large" ? `Request too large (${Math.round((err.length || 0) / 1048576)} MB, limit ${err.limit ? Math.round(err.limit / 1048576) : "?"} MB)` :
+      err.type === "entity.parse.failed" ? "Invalid JSON in request" : err.message || String(err);
+    if (status >= 500) console.error(`[api] ${req.method} ${req.originalUrl}:`, err);
+    res.status(status).json({ error: message });
   });
 
   // ---- frontend ----

@@ -275,6 +275,8 @@ function TableView({ dbId, schema, view, rows, visibleProps, manualOrder }) {
   const [addProp, setAddProp] = useState(null);
   const [rowMenu, setRowMenu] = useState(null);
   const [dropOn, setDropOn] = useState(null);
+  const [limit, setLimit] = useState(100); // render big databases progressively
+  const shown = rows.slice(0, limit);
   const widths = view.widths || {};
   const w = (p) => widths[p.id] || (p.type === "title" ? 280 : p.type === "checkbox" ? 90 : 180);
 
@@ -331,7 +333,7 @@ function TableView({ dbId, schema, view, rows, visibleProps, manualOrder }) {
           </tr>
         </thead>
         <tbody>
-          {rows.map((r) => (
+          {shown.map((r) => (
             <tr
               key={r.id}
               className={dropOn === r.id ? "drop-target" : ""}
@@ -360,6 +362,11 @@ function TableView({ dbId, schema, view, rows, visibleProps, manualOrder }) {
           ))}
         </tbody>
       </table>
+      {rows.length > limit && (
+        <button className="new-row load-more" onClick={() => setLimit((l) => l + 200)}>
+          ↓ {t("Load {n} more", { n: Math.min(200, rows.length - limit) })} ({limit}/{rows.length})
+        </button>
+      )}
       <button className="new-row" onClick={() => createRow(dbId)}>{t("+ New")}</button>
       <div className="db-count muted small">{t("{n} items", { n: rows.length })}</div>
       {propMenu && <PropMenu dbId={dbId} schema={schema} view={view} prop={propMenu.prop} anchor={propMenu.anchor} onClose={() => setPropMenu(null)} />}
@@ -376,6 +383,7 @@ function BoardView({ dbId, schema, view, rows, visibleProps }) {
   const group = schema.properties.find((p) => p.id === view.groupBy && (p.type === "select" || p.type === "status"));
   const [over, setOver] = useState(null);
   const [rowMenu, setRowMenu] = useState(null);
+  const [colLimit, setColLimit] = useState({}); // column id → number of cards shown
 
   if (!group) {
     const candidates = schema.properties.filter((p) => p.type === "select" || p.type === "status");
@@ -427,7 +435,7 @@ function BoardView({ dbId, schema, view, rows, visibleProps }) {
               <Tag opt={c} />
               <span className="muted small">{items.length}</span>
             </div>
-            {items.map((r) => (
+            {items.slice(0, colLimit[c.id ?? "none"] || 50).map((r) => (
               <div
                 key={r.id}
                 className="card"
@@ -447,6 +455,11 @@ function BoardView({ dbId, schema, view, rows, visibleProps }) {
                 ))}
               </div>
             ))}
+            {items.length > (colLimit[c.id ?? "none"] || 50) && (
+              <button className="new-card" onClick={() => setColLimit((m) => ({ ...m, [c.id ?? "none"]: (m[c.id ?? "none"] || 50) + 100 }))}>
+                ↓ {t("Load {n} more", { n: Math.min(100, items.length - (colLimit[c.id ?? "none"] || 50)) })}
+              </button>
+            )}
             <button className="new-card" onClick={() => createRow(dbId, c.id ? { [group.id]: c.id } : {})}>{t("+ New")}</button>
           </div>
         );

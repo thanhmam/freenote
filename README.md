@@ -39,6 +39,18 @@
 | 🌐 **Languages** | English and Tiếng Việt. Switch at the bottom of the sidebar. [Add yours](CONTRIBUTING.md#translations)! |
 | 🌓 **Themes** | Light and dark. |
 
+## Moving from Notion
+
+1. In Notion, open **Settings → General → Export all workspace content**. (For a single page: **⋯ → Export**.)
+2. Choose **Export format: Markdown & CSV** and **Include subpages**. Leave "Create folders for subpages" on.
+3. Notion emails you a download link. Save the `.zip` file. There's no need to unzip it.
+4. In Frnt, open **Settings → Import → From Notion (.zip)** and pick the file. If Notion split the export into several parts, select all of them at once.
+
+What comes across: the page tree, text formatting, to-dos, toggles, code, quotes, images and attached files, links between pages, and databases (with property types detected: select, multi-select, date, number, URL, checkbox, text). Each database row keeps its page content.
+Not yet: comments, formulas/rollups (imported as text), synced blocks and database views other than table.
+
+Tested with a real workspace: a 615 MB export with 5,500 pages, 195 databases and 735 images imported in about 30 seconds. If anything can't be imported, the rest still is, and an **⚠️ Import report** page lists each problem with the file it came from.
+
 ## Frnt vs Notion
 
 | | **Frnt** | **Notion Free** ¹ |

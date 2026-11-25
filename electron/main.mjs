@@ -1,6 +1,7 @@
 // Desktop shell: runs the Frnt server in-process and shows it in a native window.
 import { app, BrowserWindow, Menu, shell, dialog } from "electron";
 import path from "node:path";
+import os from "node:os";
 import { fileURLToPath } from "node:url";
 import { startServer, defaultDataDir } from "../server/app.js";
 
@@ -11,7 +12,9 @@ const SMOKE = process.env.FRNT_SMOKE === "1"; // CI/self-test: load once, print,
 let server;
 let win;
 
-if (!app.requestSingleInstanceLock()) app.quit();
+// Self-test runs in its own profile so it works even while the real app is open
+if (SMOKE) app.setPath("userData", path.join(os.tmpdir(), `frnt-smoke-${process.pid}`));
+else if (!app.requestSingleInstanceLock()) app.quit();
 app.on("second-instance", () => {
   if (win) (win.isMinimized() && win.restore(), win.focus());
 });
