@@ -4,6 +4,7 @@ import { BlockNoteView } from "@blocknote/mantine";
 import { api } from "./api.js";
 import { schema } from "./Editor.jsx";
 import { timeAgo } from "./store.js";
+import { t, dateLocale } from "./i18n.js";
 
 function Preview({ content, theme }) {
   const editor = useCreateBlockNote({ schema, initialContent: content?.length ? content : undefined });
@@ -38,37 +39,37 @@ export default function History({ pageId, theme, onClose, onRestored }) {
         <div className="history-preview">
           {version ? (
             <>
-              <h1 className="history-title">{version.title || "Untitled"}</h1>
+              <h1 className="history-title">{version.title || t("Untitled")}</h1>
               <Preview key={version.id} content={version.content} theme={theme} />
             </>
           ) : (
             <div className="muted pad">
               {list?.length === 0
-                ? "Chưa có phiên bản cũ. Phiên bản được lưu tự động tối đa 10 phút một lần khi bạn chỉnh sửa."
-                : "Đang tải…"}
+                ? t("No older versions yet. A version is saved automatically at most every 10 minutes while you edit.")
+                : t("Loading…")}
             </div>
           )}
         </div>
         <div className="history-side">
           <div className="modal-head">
-            <h3>Lịch sử phiên bản</h3>
+            <h3>{t("Version history")}</h3>
             <button className="icon-btn" onClick={onClose}>✕</button>
           </div>
           <div className="history-list">
             {list?.map((v) => (
               <button key={v.id} className={`history-item ${v.id === sel ? "sel" : ""}`} onClick={() => setSel(v.id)}>
-                <div>{new Date(v.created_at).toLocaleString("vi-VN")}</div>
+                <div>{new Date(v.created_at).toLocaleString(dateLocale)}</div>
                 <div className="muted small">
-                  {timeAgo(v.created_at)} · {v.title || "Untitled"}
+                  {timeAgo(v.created_at)} · {v.title || t("Untitled")}
                 </div>
               </button>
             ))}
           </div>
           <button className="btn" disabled={!sel} onClick={restore}>
-            Khôi phục phiên bản này
+            {t("Restore this version")}
           </button>
           <div className="muted small" style={{ marginTop: 6 }}>
-            Trạng thái hiện tại cũng được lưu lại, nên bạn có thể quay lại nếu cần.
+            {t("The current state is saved too, so you can always go back.")}
           </div>
         </div>
       </div>

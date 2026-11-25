@@ -1,4 +1,4 @@
-// Desktop shell: runs the Frnt Notes server in-process and shows it in a native window.
+// Desktop shell: runs the Frnt server in-process and shows it in a native window.
 import { app, BrowserWindow, Menu, shell, dialog } from "electron";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
@@ -17,7 +17,7 @@ app.on("second-instance", () => {
 });
 
 async function boot() {
-  const opts = { dataDir: defaultDataDir(), distDir: path.join(__dirname, "..", "dist") };
+  const opts = { dataDir: defaultDataDir(), distDir: path.join(__dirname, "..", "dist"), lang: app.getLocale() };
   try {
     server = await startServer({ ...opts, port: PREFERRED_PORT });
   } catch (e) {
@@ -32,7 +32,7 @@ function createWindow() {
     height: 900,
     minWidth: 720,
     minHeight: 480,
-    title: "Frnt Notes",
+    title: "Frnt",
     show: !SMOKE,
     backgroundColor: "#ffffff",
     webPreferences: { contextIsolation: true, sandbox: true },
@@ -72,7 +72,7 @@ function buildMenu() {
       {
         role: "help",
         submenu: [
-          { label: "Mở thư mục dữ liệu", click: () => shell.openPath(server.dataDir) },
+          { label: app.getLocale().startsWith("vi") ? "Mở thư mục dữ liệu" : "Open data folder", click: () => shell.openPath(server.dataDir) },
           { label: "GitHub", click: () => shell.openExternal("https://github.com/thanhmam/frnt-notes") },
         ],
       },
@@ -84,7 +84,7 @@ app.whenReady().then(async () => {
   try {
     await boot();
   } catch (e) {
-    dialog.showErrorBox("Frnt Notes không khởi động được", String(e?.stack || e));
+    dialog.showErrorBox("Frnt could not start", String(e?.stack || e));
     app.quit();
     return;
   }

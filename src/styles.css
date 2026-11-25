@@ -386,3 +386,8 @@ code { font-size: 12px; background: var(--hover); padding: 1px 4px; border-radiu
 .backlinks-head { margin-bottom: 4px; }
 .backlink { display: flex; align-items: center; gap: 8px; padding: 4px 6px; border-radius: 4px; width: 100%; text-align: left; }
 .backlink:hover { background: var(--hover); }
+.lang-switch { display: flex; align-items: center; gap: 4px; padding: 4px 8px; color: var(--muted); font-size: 12px; }
+.lang-switch button { padding: 2px 8px; border-radius: 4px; font-size: 12px; font-weight: 600; color: var(--muted); }
+.lang-switch button:hover { background: var(--hover); color: var(--text); }
+.lang-switch button.on { background: var(--active); color: var(--text); }
+.lang-select { border: 1px solid var(--border); background: var(--hover); color: var(--text); border-radius: 6px; padding: 4px 8px; font: inherit; }

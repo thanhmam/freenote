@@ -3,6 +3,8 @@ import { api } from "./api.js";
 import { usePages, navigate, pageTitle, store, timeAgo } from "./store.js";
 import { createDatabase } from "./db/dbUtils.js";
 import Settings from "./Settings.jsx";
+import { lang, setLang, LOCALES } from "./i18n.js";
+import { t } from "./i18n.js";
 
 function useClickOutside(ref, onClose) {
   useEffect(() => {
@@ -78,7 +80,7 @@ function TreeItem({ page, depth, childrenOf, currentId, refresh, createPage, exp
     try {
       await api.update(id, patch);
     } catch {
-      alert("Không thể di chuyển trang vào chính nó.");
+      alert(t("Can't move a page into itself."));
     }
     refresh();
   };
@@ -112,7 +114,7 @@ function TreeItem({ page, depth, childrenOf, currentId, refresh, createPage, exp
         <span className="tree-actions">
           <button
             className="icon-btn sm"
-            title="Thêm, xoá, ..."
+            title={t("Delete, duplicate, and more…")}
             onClick={(e) => {
               e.stopPropagation();
               setMenu(true);
@@ -122,7 +124,7 @@ function TreeItem({ page, depth, childrenOf, currentId, refresh, createPage, exp
           </button>
           <button
             className="icon-btn sm"
-            title="Thêm trang con"
+            title={t("Add a sub-page")}
             onClick={(e) => {
               e.stopPropagation();
               setExpanded((x) => ({ ...x, [page.id]: true }));
@@ -139,7 +141,7 @@ function TreeItem({ page, depth, childrenOf, currentId, refresh, createPage, exp
             items={[
               {
                 icon: page.is_favorite ? "☆" : "★",
-                label: page.is_favorite ? "Bỏ yêu thích" : "Thêm vào yêu thích",
+                label: page.is_favorite ? t("Remove from favorites") : t("Add to favorites"),
                 onClick: async () => {
                   store.patch(page.id, { is_favorite: page.is_favorite ? 0 : 1 });
                   await api.update(page.id, { is_favorite: !page.is_favorite });
@@ -147,7 +149,7 @@ function TreeItem({ page, depth, childrenOf, currentId, refresh, createPage, exp
               },
               {
                 icon: "⧉",
-                label: "Nhân bản",
+                label: t("Duplicate"),
                 onClick: async () => {
                   const p = await api.duplicate(page.id);
                   await refresh();
@@ -156,7 +158,7 @@ function TreeItem({ page, depth, childrenOf, currentId, refresh, createPage, exp
               },
               {
                 icon: "📋",
-                label: "Lưu thành mẫu",
+                label: t("Save as template"),
                 onClick: async () => {
                   const p = await api.duplicate(page.id, { template: true });
                   await refresh();
@@ -165,7 +167,7 @@ function TreeItem({ page, depth, childrenOf, currentId, refresh, createPage, exp
               },
               {
                 icon: "↗",
-                label: "Chuyển ra ngoài cùng",
+                label: t("Move to top level"),
                 onClick: async () => {
                   await api.update(page.id, { parent_id: null });
                   refresh();
@@ -174,7 +176,7 @@ function TreeItem({ page, depth, childrenOf, currentId, refresh, createPage, exp
               "-",
               {
                 icon: "🗑",
-                label: "Chuyển vào thùng rác",
+                label: t("Move to trash"),
                 danger: true,
                 onClick: async () => {
                   await api.moveToTrash(page.id);
@@ -197,7 +199,7 @@ function TreeItem({ page, depth, childrenOf, currentId, refresh, createPage, exp
           ))
         ) : page.kind === "database" ? null : (
           <div className="tree-empty" style={{ paddingLeft: 30 + depth * 14 }}>
-            Không có trang con
+            {t("No pages inside")}
           </div>
         ))}
     </>
@@ -216,9 +218,9 @@ function TrashPanel({ onClose, refresh }) {
   const shown = items.filter((p) => pageTitle(p).toLowerCase().includes(q.toLowerCase()));
   return (
     <div className="trash-panel" ref={ref}>
-      <input className="input" placeholder="Lọc trang trong thùng rác…" value={q} onChange={(e) => setQ(e.target.value)} autoFocus />
+      <input className="input" placeholder={t("Filter pages in trash…")} value={q} onChange={(e) => setQ(e.target.value)} autoFocus />
       <div className="trash-list">
-        {shown.length === 0 && <div className="muted pad">Thùng rác trống</div>}
+        {shown.length === 0 && <div className="muted pad">{t("Trash is empty")}</div>}
         {shown.map((p) => (
           <div key={p.id} className="trash-row">
             <span>{p.icon || "📄"}</span>
@@ -228,7 +230,7 @@ function TrashPanel({ onClose, refresh }) {
             </span>
             <button
               className="icon-btn sm"
-              title="Khôi phục"
+              title={t("Restore")}
               onClick={async () => {
                 await api.restore(p.id);
                 load();
@@ -239,9 +241,9 @@ function TrashPanel({ onClose, refresh }) {
             </button>
             <button
               className="icon-btn sm"
-              title="Xoá vĩnh viễn"
+              title={t("Delete permanently")}
               onClick={async () => {
-                if (!confirm(`Xoá vĩnh viễn "${pageTitle(p)}" và các trang con?`)) return;
+                if (!confirm(t('Permanently delete "{title}" and its sub-pages?', { title: pageTitle(p) }))) return;
                 await api.destroy(p.id);
                 load();
               }}
@@ -297,27 +299,27 @@ export default function Sidebar({ currentId, refresh, createPage, openSearch, th
       <div className="sb-head">
         <div className="ws">
           <span className="ws-logo">F</span>
-          <span>Frnt Notes</span>
+          <span>Frnt</span>
         </div>
-        <button className="icon-btn" title="Ẩn sidebar (⌘\)" onClick={collapse}>«</button>
+        <button className="icon-btn" title={t("Hide sidebar") + " (⌘\\)"} onClick={collapse}>«</button>
       </div>
 
       <div className="sb-nav">
         <button className="sb-link" onClick={openSearch}>
-          <span className="menu-ico">🔍</span> Tìm kiếm <kbd>⌘K</kbd>
+          <span className="menu-ico">🔍</span> {t("Search")} <kbd>⌘K</kbd>
         </button>
         <button className="sb-link" onClick={() => createPage(null)}>
-          <span className="menu-ico">✚</span> Trang mới
+          <span className="menu-ico">✚</span> {t("New page")}
         </button>
         <button className="sb-link" onClick={async () => navigate((await createDatabase(null)).id)}>
-          <span className="menu-ico">🗃</span> Database mới
+          <span className="menu-ico">🗃</span> {t("New database")}
         </button>
       </div>
 
       <div className="sb-scroll">
         {favorites.length > 0 && (
           <>
-            <div className="sb-section">Yêu thích</div>
+            <div className="sb-section">{t("Favorites")}</div>
             {favorites.map((p) => (
               <div
                 key={p.id}
@@ -333,14 +335,14 @@ export default function Sidebar({ currentId, refresh, createPage, openSearch, th
           </>
         )}
         <div className="sb-section">
-          Trang cá nhân
-          <button className="icon-btn sm" title="Thêm trang" onClick={() => createPage(null)}>+</button>
+          {t("Private")}
+          <button className="icon-btn sm" title={t("Add a page")} onClick={() => createPage(null)}>+</button>
         </div>
         {(childrenOf.root || []).map((p) => (
           <TreeItem key={p.id} page={p} depth={0} {...treeProps} />
         ))}
         <div className="sb-section clickable" onClick={() => setTplOpen((v) => !v)}>
-          <span>{tplOpen ? "▾" : "▸"} Mẫu ({templates.length})</span>
+          <span>{tplOpen ? "▾" : "▸"} {t("Templates")} ({templates.length})</span>
         </div>
         {tplOpen &&
           templates.map((p) => (
@@ -359,11 +361,19 @@ export default function Sidebar({ currentId, refresh, createPage, openSearch, th
 
       <div className="sb-foot">
         <button className="sb-link" onClick={() => setTrashOpen((v) => !v)}>
-          <span className="menu-ico">🗑</span> Thùng rác
+          <span className="menu-ico">🗑</span> {t("Trash")}
         </button>
         <button className="sb-link" onClick={() => setSettings(true)}>
-          <span className="menu-ico">⚙</span> Cài đặt, sao lưu & nhập
+          <span className="menu-ico">⚙</span> {t("Settings, backup & import")}
         </button>
+        <div className="lang-switch" title={t("Switch language")}>
+          <span className="menu-ico">🌐</span>
+          {Object.keys(LOCALES).map((code) => (
+            <button key={code} className={code === lang ? "on" : ""} onClick={() => code !== lang && setLang(code)}>
+              {code.toUpperCase()}
+            </button>
+          ))}
+        </div>
         {trashOpen && <TrashPanel onClose={() => setTrashOpen(false)} refresh={refresh} />}
         {settings && <Settings onClose={() => setSettings(false)} theme={theme} toggleTheme={toggleTheme} />}
       </div>

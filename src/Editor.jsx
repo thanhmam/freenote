@@ -11,6 +11,7 @@ import { api } from "./api.js";
 import { store, usePages, navigate, pageTitle, extractText } from "./store.js";
 import DatabaseView from "./db/DatabaseView.jsx";
 import { createDatabase } from "./db/dbUtils.js";
+import { t, editorDictionary } from "./i18n.js";
 
 // "Page" block: a live link to another page (shows its current icon + title)
 function PageLink({ pageId }) {
@@ -21,10 +22,10 @@ function PageLink({ pageId }) {
       className="page-link-block"
       contentEditable={false}
       onClick={() => p && navigate(pageId)}
-      title={p ? "Mở trang" : "Trang đã bị xoá"}
+      title={p ? t("Open page") : t("Page was deleted")}
     >
       <span>{p ? p.icon || "📄" : "🚫"}</span>
-      <span className={p ? "plb-title" : "plb-title muted"}>{p ? pageTitle(p) : "Trang không tồn tại"}</span>
+      <span className={p ? "plb-title" : "plb-title muted"}>{p ? pageTitle(p) : t("Page not found")}</span>
     </div>
   );
 }
@@ -56,6 +57,7 @@ export default function Editor({ page, theme, onSaving, onSaved }) {
 
   const editor = useCreateBlockNote({
     schema,
+    dictionary: editorDictionary,
     initialContent: Array.isArray(page.content) && page.content.length ? page.content : undefined,
     uploadFile: (file) => api.upload(file),
   });
@@ -101,10 +103,10 @@ export default function Editor({ page, theme, onSaving, onSaved }) {
       filterSuggestionItems(
         [
           {
-            title: "Trang con",
-            subtext: "Tạo một trang con lồng bên trong trang này",
+            title: t("Sub-page"),
+            subtext: t("Create a page nested inside this one"),
             aliases: ["page", "subpage", "trang"],
-            group: "Trang",
+            group: t("Pages"),
             icon: <span style={{ fontSize: 16 }}>📄</span>,
             onItemClick: async () => {
               const child = await api.create({ parent_id: page.id });
@@ -115,8 +117,8 @@ export default function Editor({ page, theme, onSaving, onSaved }) {
             },
           },
           {
-            title: "Database – Inline",
-            subtext: "Bảng/Board nhúng ngay trong trang này",
+            title: t("Database – Inline"),
+            subtext: t("Table/board embedded in this page"),
             aliases: ["database", "db", "table", "bang", "board", "kanban"],
             group: "Database",
             icon: <span style={{ fontSize: 16 }}>🗃️</span>,
@@ -127,8 +129,8 @@ export default function Editor({ page, theme, onSaving, onSaved }) {
             },
           },
           {
-            title: "Database – Toàn trang",
-            subtext: "Tạo database thành một trang con riêng",
+            title: t("Database – Full page"),
+            subtext: t("Create a database as its own sub-page"),
             aliases: ["database", "db", "fullpage"],
             group: "Database",
             icon: <span style={{ fontSize: 16 }}>📊</span>,
@@ -153,7 +155,7 @@ export default function Editor({ page, theme, onSaving, onSaved }) {
         .pages.filter((p) => p.id !== page.id)
         .map((p) => ({
           title: pageTitle(p),
-          group: "Liên kết tới trang",
+          group: t("Link to page"),
           icon: <span>{p.icon || "📄"}</span>,
           onItemClick: () => insertOrUpdateBlockForSlashMenu(editor, { type: "page", props: { pageId: p.id } }),
         })),

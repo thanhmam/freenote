@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { api } from "./api.js";
 import { usePages, navigate, pageTitle, breadcrumbs, timeAgo } from "./store.js";
+import { t } from "./i18n.js";
 
 export default function SearchModal({ onClose }) {
   const { pages, byId } = usePages();
@@ -30,7 +31,7 @@ export default function SearchModal({ onClose }) {
         <input
           className="search-input"
           autoFocus
-          placeholder="Tìm trong tất cả các trang…"
+          placeholder={t("Search all pages…")}
           value={q}
           onChange={(e) => setQ(e.target.value)}
           onKeyDown={(e) => {
@@ -39,7 +40,7 @@ export default function SearchModal({ onClose }) {
             if (e.key === "Enter") go(results[sel]);
           }}
         />
-        <div className="search-label">{q.trim() ? `${results.length} kết quả` : "Gần đây"}</div>
+        <div className="search-label">{q.trim() ? t("{n} results", { n: results.length }) : t("Recent")}</div>
         <div className="search-results">
           {results.map((r, i) => {
             const path = breadcrumbs(r.id, byId).slice(0, -1).map(pageTitle).join(" / ");
@@ -61,7 +62,7 @@ export default function SearchModal({ onClose }) {
               </div>
             );
           })}
-          {q && results.length === 0 && <div className="muted pad">Không tìm thấy kết quả</div>}
+          {q && results.length === 0 && <div className="muted pad">{t("No results")}</div>}
         </div>
       </div>
     </div>

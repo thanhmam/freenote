@@ -1,10 +1,10 @@
 {
   "name": "frnt-notes",
-  "productName": "Frnt Notes",
-  "version": "0.1.0",
-  "description": "Free, open-source, local-first Notion alternative: block editor, nested pages, databases (table/board), version history. Your data stays on your machine.",
+  "productName": "Frnt",
+  "version": "0.2.0",
+  "description": "Frnt (Free Notes): a free, open-source, local-first Notion alternative. Block editor, nested pages, databases, version history, Notion import. English & Vietnamese UI.",
   "license": "MIT",
-  "author": "Frnt Notes contributors",
+  "author": "Frnt contributors",
   "homepage": "https://github.com/thanhmam/frnt-notes",
   "repository": {
     "type": "git",
@@ -33,7 +33,8 @@
     "dist:mac": "vite build && electron-builder --mac",
     "dist:win": "vite build && electron-builder --win",
     "dist:linux": "vite build && electron-builder --linux",
-    "smoke": "vite build && FRNT_SMOKE=1 electron ."
+    "smoke": "vite build && FRNT_SMOKE=1 electron .",
+    "i18n:check": "node scripts/i18n-check.mjs"
   },
   "dependencies": {
     "express": "^5.3.0"
@@ -54,8 +55,8 @@
   },
   "build": {
     "appId": "io.github.frntnotes.app",
-    "productName": "Frnt Notes",
-    "artifactName": "Frnt-Notes-${version}-${os}-${arch}.${ext}",
+    "productName": "Frnt",
+    "artifactName": "Frnt-${version}-${os}-${arch}.${ext}",
     "directories": {
       "output": "release",
       "buildResources": "build"
@@ -110,7 +111,8 @@
       ],
       "category": "Office",
       "icon": "build/icon.png",
-      "maintainer": "Frnt Notes contributors"
+      "maintainer": "Frnt contributors",
+      "executableName": "frnt"
     },
     "publish": {
       "provider": "github",

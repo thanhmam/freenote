@@ -1,49 +1,50 @@
 import { api } from "../api.js";
 import { store } from "../store.js";
+import { t, dateLocale } from "../i18n.js";
 
 export const uid = () => crypto.randomUUID().slice(0, 8);
 
 export const TYPES = {
-  title: { label: "Tiêu đề", icon: "Aa" },
-  text: { label: "Văn bản", icon: "≡" },
-  number: { label: "Số", icon: "#" },
-  select: { label: "Chọn một", icon: "◉" },
-  multi_select: { label: "Chọn nhiều", icon: "☰" },
-  status: { label: "Trạng thái", icon: "◐" },
-  date: { label: "Ngày", icon: "📅" },
+  title: { label: t("Title"), icon: "Aa" },
+  text: { label: t("Text"), icon: "≡" },
+  number: { label: t("Number"), icon: "#" },
+  select: { label: t("Select"), icon: "◉" },
+  multi_select: { label: t("Multi-select"), icon: "☰" },
+  status: { label: t("Status"), icon: "◐" },
+  date: { label: t("Date"), icon: "📅" },
   checkbox: { label: "Checkbox", icon: "☑" },
   url: { label: "URL", icon: "🔗" },
-  created_time: { label: "Ngày tạo", icon: "🕒" },
-  updated_time: { label: "Ngày sửa", icon: "🕘" },
+  created_time: { label: t("Created time"), icon: "🕒" },
+  updated_time: { label: t("Last edited time"), icon: "🕘" },
 };
 export const ADDABLE_TYPES = Object.keys(TYPES).filter((t) => t !== "title");
 export const isSelectType = (t) => t === "select" || t === "status" || t === "multi_select";
 
 export const COLORS = ["default", "gray", "brown", "orange", "yellow", "green", "blue", "purple", "pink", "red"];
 export const COLOR_NAMES = {
-  default: "Mặc định", gray: "Xám", brown: "Nâu", orange: "Cam", yellow: "Vàng",
-  green: "Xanh lá", blue: "Xanh dương", purple: "Tím", pink: "Hồng", red: "Đỏ",
+  default: t("Default"), gray: t("Gray"), brown: t("Brown"), orange: t("Orange"), yellow: t("Yellow"),
+  green: t("Green"), blue: t("Blue"), purple: t("Purple"), pink: t("Pink"), red: t("Red"),
 };
 export const randomColor = () => COLORS[1 + Math.floor(Math.random() * (COLORS.length - 1))];
 
-export const TITLE_PROP = (schema) => ({ id: "title", name: schema?.titleName || "Tên", type: "title" });
+export const TITLE_PROP = (schema) => ({ id: "title", name: schema?.titleName || t("Name"), type: "title" });
 
 export function defaultSchema() {
   const status = {
     id: uid(),
-    name: "Trạng thái",
+    name: t("Status"),
     type: "status",
     options: [
-      { id: uid(), name: "Chưa làm", color: "gray" },
-      { id: uid(), name: "Đang làm", color: "blue" },
-      { id: uid(), name: "Xong", color: "green" },
+      { id: uid(), name: t("Not started"), color: "gray" },
+      { id: uid(), name: t("In progress"), color: "blue" },
+      { id: uid(), name: t("Done"), color: "green" },
     ],
   };
   return {
-    titleName: "Tên",
-    properties: [status, { id: uid(), name: "Tags", type: "multi_select", options: [] }, { id: uid(), name: "Ngày", type: "date" }],
+    titleName: t("Name"),
+    properties: [status, { id: uid(), name: "Tags", type: "multi_select", options: [] }, { id: uid(), name: t("Date"), type: "date" }],
     views: [
-      { id: uid(), name: "Bảng", type: "table", sorts: [], filters: [], hidden: [], widths: {} },
+      { id: uid(), name: t("Table"), type: "table", sorts: [], filters: [], hidden: [], widths: {} },
       { id: uid(), name: "Board", type: "board", sorts: [], filters: [], hidden: [], groupBy: status.id },
     ],
   };
@@ -63,20 +64,20 @@ export const isEmpty = (v) => v == null || v === "" || (Array.isArray(v) && v.le
 export function opsFor(type) {
   switch (type) {
     case "number":
-      return { eq: "=", neq: "≠", gt: ">", lt: "<", is_empty: "Trống", not_empty: "Không trống" };
+      return { eq: "=", neq: "≠", gt: ">", lt: "<", is_empty: t("Is empty"), not_empty: t("Is not empty") };
     case "select":
     case "status":
-      return { is: "Là", is_not: "Không là", is_empty: "Trống", not_empty: "Không trống" };
+      return { is: t("Is"), is_not: t("Is not"), is_empty: t("Is empty"), not_empty: t("Is not empty") };
     case "multi_select":
-      return { contains: "Chứa", not_contains: "Không chứa", is_empty: "Trống", not_empty: "Không trống" };
+      return { contains: t("Contains"), not_contains: t("Does not contain"), is_empty: t("Is empty"), not_empty: t("Is not empty") };
     case "checkbox":
-      return { checked: "Đã tick", unchecked: "Chưa tick" };
+      return { checked: t("Is checked"), unchecked: t("Is unchecked") };
     case "date":
     case "created_time":
     case "updated_time":
-      return { is: "Là ngày", before: "Trước", after: "Sau", is_empty: "Trống", not_empty: "Không trống" };
+      return { is: t("Is on"), before: t("Before"), after: t("After"), is_empty: t("Is empty"), not_empty: t("Is not empty") };
     default:
-      return { contains: "Chứa", not_contains: "Không chứa", is: "Là", is_empty: "Trống", not_empty: "Không trống" };
+      return { contains: t("Contains"), not_contains: t("Does not contain"), is: t("Is"), is_empty: t("Is empty"), not_empty: t("Is not empty") };
   }
 }
 export const opNeedsValue = (op) => !["is_empty", "not_empty", "checked", "unchecked"].includes(op);
@@ -165,7 +166,7 @@ export function formatDate(v) {
   if (v == null || v === "") return "";
   const d = typeof v === "number" ? new Date(v) : new Date(String(v) + (String(v).length === 10 ? "T00:00:00" : ""));
   if (isNaN(d)) return String(v);
-  return d.toLocaleDateString("vi-VN", { day: "2-digit", month: "2-digit", year: "numeric" });
+  return d.toLocaleDateString(dateLocale, { day: "2-digit", month: "2-digit", year: "numeric" });
 }
 
 // ---- persistence helpers ----

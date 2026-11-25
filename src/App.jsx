@@ -4,6 +4,7 @@ import { store, usePages, navigate } from "./store.js";
 import Sidebar from "./Sidebar.jsx";
 import PageView from "./PageView.jsx";
 import SearchModal from "./SearchModal.jsx";
+import { t } from "./i18n.js";
 
 const routeId = () => (window.location.hash.match(/^#\/p\/([\w-]+)/) || [])[1] || null;
 
@@ -100,8 +101,8 @@ export default function App() {
               {!sidebarOpen && (
                 <button className="icon-btn floating-toggle" onClick={() => setSidebarOpen(true)}>☰</button>
               )}
-              <p>Chưa có trang nào.</p>
-              <button className="btn" onClick={() => createPage(null)}>+ Tạo trang mới</button>
+              <p>{t("No pages yet.")}</p>
+              <button className="btn" onClick={() => createPage(null)}>{t("+ New page")}</button>
             </div>
           )
         )}

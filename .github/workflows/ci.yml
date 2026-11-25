@@ -14,6 +14,7 @@ jobs:
           node-version: 24
           cache: npm
       - run: npm ci
+      - run: npm run i18n:check
       - run: npm run build
       - name: Server smoke test
         run: |

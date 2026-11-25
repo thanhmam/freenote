@@ -6,6 +6,7 @@ import {
   saveSchema, updateView, updateProp, setRowValue, createRow, uid, randomColor,
 } from "./dbUtils.js";
 import { Popover, Cell, Tag } from "./Cells.jsx";
+import { t } from "../i18n.js";
 
 const MenuBtn = ({ icon, label, onClick, danger, right }) => (
   <button className={`menu-item ${danger ? "danger" : ""}`} onClick={onClick}>
@@ -47,13 +48,13 @@ function PropMenu({ dbId, schema, view, prop, anchor, onClose }) {
       />
       <div className="menu-sep" />
       {prop.type !== "title" && (
-        <MenuBtn icon={TYPES[prop.type].icon} label="Kiểu thuộc tính" right={`${TYPES[prop.type].label} ›`} onClick={(e) => setTypeOpen(e.currentTarget)} />
+        <MenuBtn icon={TYPES[prop.type].icon} label={t("Property type")} right={`${TYPES[prop.type].label} ›`} onClick={(e) => setTypeOpen(e.currentTarget)} />
       )}
-      <MenuBtn icon="↑" label="Sắp xếp tăng dần" onClick={() => sortBy("asc")} />
-      <MenuBtn icon="↓" label="Sắp xếp giảm dần" onClick={() => sortBy("desc")} />
+      <MenuBtn icon="↑" label={t("Sort ascending")} onClick={() => sortBy("asc")} />
+      <MenuBtn icon="↓" label={t("Sort descending")} onClick={() => sortBy("desc")} />
       <MenuBtn
         icon="⚲"
-        label="Lọc theo thuộc tính này"
+        label={t("Filter by this property")}
         onClick={() => {
           updateView(dbId, schema, view.id, { filters: [...(view.filters || []), { id: uid(), prop: prop.id, op: Object.keys(opsFor(prop.type))[0], value: "" }] });
           onClose();
@@ -61,10 +62,10 @@ function PropMenu({ dbId, schema, view, prop, anchor, onClose }) {
       />
       {prop.type !== "title" && (
         <>
-          <MenuBtn icon="👁" label="Ẩn trong view này" onClick={() => (updateView(dbId, schema, view.id, { hidden: [...(view.hidden || []), prop.id] }), onClose())} />
+          <MenuBtn icon="👁" label={t("Hide in this view")} onClick={() => (updateView(dbId, schema, view.id, { hidden: [...(view.hidden || []), prop.id] }), onClose())} />
           <MenuBtn
             icon="⧉"
-            label="Nhân bản thuộc tính"
+            label={t("Duplicate property")}
             onClick={() => {
               const i = schema.properties.findIndex((p) => p.id === prop.id);
               const props = [...schema.properties];
@@ -76,10 +77,10 @@ function PropMenu({ dbId, schema, view, prop, anchor, onClose }) {
           <div className="menu-sep" />
           <MenuBtn
             icon="🗑"
-            label="Xoá thuộc tính"
+            label={t("Delete property")}
             danger
             onClick={() => {
-              if (!confirm(`Xoá thuộc tính "${prop.name}"? Dữ liệu của cột này sẽ không hiển thị nữa.`)) return;
+              if (!confirm(t('Delete property "{name}"? Its values will no longer be shown.', { name: prop.name }))) return;
               saveSchema(dbId, {
                 ...schema,
                 properties: schema.properties.filter((p) => p.id !== prop.id),
@@ -111,15 +112,15 @@ function AddPropMenu({ dbId, schema, anchor, onClose }) {
   const add = (type) => {
     const p = { id: uid(), name: name.trim() || TYPES[type].label, type };
     if (isSelectType(type)) p.options = type === "status"
-      ? [{ id: uid(), name: "Chưa làm", color: "gray" }, { id: uid(), name: "Đang làm", color: "blue" }, { id: uid(), name: "Xong", color: "green" }]
+      ? [{ id: uid(), name: t("Not started"), color: "gray" }, { id: uid(), name: t("In progress"), color: "blue" }, { id: uid(), name: t("Done"), color: "green" }]
       : [];
     saveSchema(dbId, { ...schema, properties: [...schema.properties, p] });
     onClose();
   };
   return (
     <Popover anchor={anchor} onClose={onClose} width={220}>
-      <input className="input" autoFocus placeholder="Tên thuộc tính" value={name} onChange={(e) => setName(e.target.value)} onKeyDown={(e) => e.key === "Enter" && add("text")} />
-      <div className="muted small" style={{ padding: "8px 8px 2px" }}>Chọn kiểu</div>
+      <input className="input" autoFocus placeholder={t("Property name")} value={name} onChange={(e) => setName(e.target.value)} onKeyDown={(e) => e.key === "Enter" && add("text")} />
+      <div className="muted small" style={{ padding: "8px 8px 2px" }}>{t("Type")}</div>
       {ADDABLE_TYPES.map((t) => (
         <MenuBtn key={t} icon={TYPES[t].icon} label={TYPES[t].label} onClick={() => add(t)} />
       ))}
@@ -135,13 +136,13 @@ function FilterEditor({ dbId, schema, view, anchor, onClose }) {
   const patch = (id, p) => set(filters.map((f) => (f.id === id ? { ...f, ...p } : f)));
   return (
     <Popover anchor={anchor} onClose={onClose} width={480} align="right">
-      {filters.length === 0 && <div className="muted pad">Chưa có bộ lọc nào</div>}
+      {filters.length === 0 && <div className="muted pad">{t("No filters yet")}</div>}
       {filters.map((f, i) => {
         const prop = props.find((p) => p.id === f.prop) || props[0];
         const ops = opsFor(prop.type);
         return (
           <div key={f.id} className="rule">
-            <span className="muted small rule-and">{i === 0 ? "Nơi" : "Và"}</span>
+            <span className="muted small rule-and">{i === 0 ? t("Where") : t("And")}</span>
             <select value={f.prop} onChange={(e) => {
               const np = props.find((p) => p.id === e.target.value);
               patch(f.id, { prop: np.id, op: Object.keys(opsFor(np.type))[0], value: "" });
@@ -154,7 +155,7 @@ function FilterEditor({ dbId, schema, view, anchor, onClose }) {
             {opNeedsValue(f.op) ? (
               isSelectType(prop.type) ? (
                 <select value={f.value} onChange={(e) => patch(f.id, { value: e.target.value })}>
-                  <option value="">— chọn —</option>
+                  <option value="">{t("— select —")}</option>
                   {(prop.options || []).map((o) => <option key={o.id} value={o.id}>{o.name}</option>)}
                 </select>
               ) : (
@@ -162,7 +163,7 @@ function FilterEditor({ dbId, schema, view, anchor, onClose }) {
                   className="input rule-val"
                   type={prop.type === "number" ? "number" : ["date", "created_time", "updated_time"].includes(prop.type) ? "date" : "text"}
                   defaultValue={f.value}
-                  placeholder="Giá trị…"
+                  placeholder={t("Value…")}
                   onChange={(e) => patch(f.id, { value: e.target.value })}
                 />
               )
@@ -174,7 +175,7 @@ function FilterEditor({ dbId, schema, view, anchor, onClose }) {
         );
       })}
       <button className="menu-item" onClick={() => set([...filters, { id: uid(), prop: "title", op: "contains", value: "" }])}>
-        <span className="menu-ico">+</span>Thêm bộ lọc
+        <span className="menu-ico">+</span>{t("Add filter")}
       </button>
     </Popover>
   );
@@ -186,22 +187,22 @@ function SortEditor({ dbId, schema, view, anchor, onClose }) {
   const set = (sorts) => updateView(dbId, schema, view.id, { sorts });
   return (
     <Popover anchor={anchor} onClose={onClose} width={360} align="right">
-      {sorts.length === 0 && <div className="muted pad">Chưa sắp xếp — theo thứ tự thủ công</div>}
+      {sorts.length === 0 && <div className="muted pad">{t("No sorts, using manual order")}</div>}
       {sorts.map((s, i) => (
         <div key={i} className="rule">
           <select value={s.prop} onChange={(e) => set(sorts.map((x, j) => (j === i ? { ...x, prop: e.target.value } : x)))}>
             {props.map((p) => <option key={p.id} value={p.id}>{p.name}</option>)}
           </select>
           <select value={s.dir} onChange={(e) => set(sorts.map((x, j) => (j === i ? { ...x, dir: e.target.value } : x)))}>
-            <option value="asc">Tăng dần</option>
-            <option value="desc">Giảm dần</option>
+            <option value="asc">{t("Ascending")}</option>
+            <option value="desc">{t("Descending")}</option>
           </select>
           <span className="rule-val" />
           <button className="icon-btn sm" onClick={() => set(sorts.filter((_, j) => j !== i))}>✕</button>
         </div>
       ))}
       <button className="menu-item" onClick={() => set([...sorts, { prop: "title", dir: "asc" }])}>
-        <span className="menu-ico">+</span>Thêm sắp xếp
+        <span className="menu-ico">+</span>{t("Add sort")}
       </button>
     </Popover>
   );
@@ -211,7 +212,7 @@ function PropsVisibility({ dbId, schema, view, anchor, onClose }) {
   const hidden = view.hidden || [];
   return (
     <Popover anchor={anchor} onClose={onClose} width={260} align="right">
-      <div className="muted small" style={{ padding: "4px 8px" }}>Thuộc tính hiển thị</div>
+      <div className="muted small" style={{ padding: "4px 8px" }}>{t("Visible properties")}</div>
       {schema.properties.map((p) => (
         <label key={p.id} className="menu-item">
           <span className="menu-ico">{TYPES[p.type]?.icon}</span>
@@ -227,7 +228,7 @@ function PropsVisibility({ dbId, schema, view, anchor, onClose }) {
       {view.type === "board" && (
         <>
           <div className="menu-sep" />
-          <div className="muted small" style={{ padding: "4px 8px" }}>Nhóm theo</div>
+          <div className="muted small" style={{ padding: "4px 8px" }}>{t("Group by")}</div>
           {schema.properties.filter((p) => p.type === "select" || p.type === "status").map((p) => (
             <MenuBtn key={p.id} icon="◉" label={p.name} right={view.groupBy === p.id ? "✓" : ""} onClick={() => updateView(dbId, schema, view.id, { groupBy: p.id })} />
           ))}
@@ -241,10 +242,10 @@ function PropsVisibility({ dbId, schema, view, anchor, onClose }) {
 function RowMenu({ row, anchor, onClose }) {
   return (
     <Popover anchor={anchor} onClose={onClose} width={200}>
-      <MenuBtn icon="↗" label="Mở thành trang" onClick={() => navigate(row.id)} />
+      <MenuBtn icon="↗" label={t("Open as page")} onClick={() => navigate(row.id)} />
       <MenuBtn
         icon="⧉"
-        label="Nhân bản"
+        label={t("Duplicate")}
         onClick={async () => {
           await api.duplicate(row.id);
           store.setPages(await api.list());
@@ -254,7 +255,7 @@ function RowMenu({ row, anchor, onClose }) {
       <div className="menu-sep" />
       <MenuBtn
         icon="🗑"
-        label="Xoá"
+        label={t("Delete")}
         danger
         onClick={async () => {
           onClose();
@@ -325,7 +326,7 @@ function TableView({ dbId, schema, view, rows, visibleProps, manualOrder }) {
               </th>
             ))}
             <th className="add-col">
-              <button className="th-btn" title="Thêm thuộc tính" onClick={(e) => setAddProp(e.currentTarget)}>+</button>
+              <button className="th-btn" title={t("Add property")} onClick={(e) => setAddProp(e.currentTarget)}>+</button>
             </th>
           </tr>
         </thead>
@@ -342,7 +343,7 @@ function TableView({ dbId, schema, view, rows, visibleProps, manualOrder }) {
                 <button
                   className="row-handle"
                   draggable={manualOrder}
-                  title={manualOrder ? "Kéo để sắp xếp · bấm để mở menu" : "Bấm để mở menu"}
+                  title={manualOrder ? t("Drag to reorder · click for menu") : t("Click for menu")}
                   onDragStart={() => (dragRowId = r.id)}
                   onClick={(e) => setRowMenu({ row: r, anchor: e.currentTarget })}
                 >
@@ -359,8 +360,8 @@ function TableView({ dbId, schema, view, rows, visibleProps, manualOrder }) {
           ))}
         </tbody>
       </table>
-      <button className="new-row" onClick={() => createRow(dbId)}>+ Mới</button>
-      <div className="db-count muted small">{rows.length} mục</div>
+      <button className="new-row" onClick={() => createRow(dbId)}>{t("+ New")}</button>
+      <div className="db-count muted small">{t("{n} items", { n: rows.length })}</div>
       {propMenu && <PropMenu dbId={dbId} schema={schema} view={view} prop={propMenu.prop} anchor={propMenu.anchor} onClose={() => setPropMenu(null)} />}
       {addProp && <AddPropMenu dbId={dbId} schema={schema} anchor={addProp} onClose={() => setAddProp(null)} />}
       {rowMenu && <RowMenu row={rowMenu.row} anchor={rowMenu.anchor} onClose={() => setRowMenu(null)} />}
@@ -380,25 +381,25 @@ function BoardView({ dbId, schema, view, rows, visibleProps }) {
     const candidates = schema.properties.filter((p) => p.type === "select" || p.type === "status");
     return (
       <div className="muted pad">
-        Board cần một thuộc tính kiểu <b>Chọn một</b> hoặc <b>Trạng thái</b> để nhóm.{" "}
+        {t("A board needs a Select or Status property to group cards by.")}{" "}
         {candidates[0] ? (
-          <button className="btn small" onClick={() => updateView(dbId, schema, view.id, { groupBy: candidates[0].id })}>Nhóm theo "{candidates[0].name}"</button>
+          <button className="btn small" onClick={() => updateView(dbId, schema, view.id, { groupBy: candidates[0].id })}>{t('Group by "{name}"', { name: candidates[0].name })}</button>
         ) : (
           <button
             className="btn small"
             onClick={() => {
-              const p = { id: uid(), name: "Trạng thái", type: "status", options: [{ id: uid(), name: "Chưa làm", color: "gray" }, { id: uid(), name: "Đang làm", color: "blue" }, { id: uid(), name: "Xong", color: "green" }] };
+              const p = { id: uid(), name: t("Status"), type: "status", options: [{ id: uid(), name: t("Not started"), color: "gray" }, { id: uid(), name: t("In progress"), color: "blue" }, { id: uid(), name: t("Done"), color: "green" }] };
               saveSchema(dbId, { ...schema, properties: [...schema.properties, p], views: schema.views.map((v) => (v.id === view.id ? { ...v, groupBy: p.id } : v)) });
             }}
           >
-            Tạo thuộc tính Trạng thái
+            {t("Create a Status property")}
           </button>
         )}
       </div>
     );
   }
 
-  const columns = [{ id: null, name: `Không có ${group.name}`, color: "default" }, ...(group.options || [])];
+  const columns = [{ id: null, name: t("No {name}", { name: group.name }), color: "default" }, ...(group.options || [])];
   const cardProps = visibleProps.filter((p) => p.type !== "title" && p.id !== group.id);
 
   const drop = async (colId) => {
@@ -446,19 +447,19 @@ function BoardView({ dbId, schema, view, rows, visibleProps }) {
                 ))}
               </div>
             ))}
-            <button className="new-card" onClick={() => createRow(dbId, c.id ? { [group.id]: c.id } : {})}>+ Mới</button>
+            <button className="new-card" onClick={() => createRow(dbId, c.id ? { [group.id]: c.id } : {})}>{t("+ New")}</button>
           </div>
         );
       })}
       <button
         className="board-add-col"
         onClick={() => {
-          const name = prompt("Tên nhóm mới:");
+          const name = prompt(t("New group name:"));
           if (name?.trim())
             saveSchema(dbId, { ...schema, properties: schema.properties.map((p) => (p.id === group.id ? { ...p, options: [...(p.options || []), { id: uid(), name: name.trim(), color: randomColor() }] } : p)) });
         }}
       >
-        + Thêm nhóm
+        {t("+ Add group")}
       </button>
       {rowMenu && <RowMenu row={rowMenu.row} anchor={rowMenu.anchor} onClose={() => setRowMenu(null)} />}
     </div>
@@ -480,8 +481,8 @@ export default function DatabaseView({ dbId, inline }) {
   const view = schema?.views?.find((v) => v.id === activeId) || schema?.views?.[0];
   const rows = useMemo(() => (view ? applyView(allRows, view, schema, search) : []), [allRows, view, schema, search]);
 
-  if (!db) return <div className="muted pad">Database đã bị xoá.</div>;
-  if (!schema || !view) return <div className="muted pad">Database lỗi cấu trúc.</div>;
+  if (!db) return <div className="muted pad">{t("This database was deleted.")}</div>;
+  if (!schema || !view) return <div className="muted pad">{t("This database is corrupted.")}</div>;
 
   const visibleProps = allProps(schema).filter((p) => !(view.hidden || []).includes(p.id));
   const selectView = (id) => {
@@ -490,7 +491,7 @@ export default function DatabaseView({ dbId, inline }) {
   };
   const addView = (type) => {
     const v = {
-      id: uid(), name: type === "table" ? "Bảng" : "Board", type, sorts: [], filters: [], hidden: [], widths: {},
+      id: uid(), name: type === "table" ? t("Table") : "Board", type, sorts: [], filters: [], hidden: [], widths: {},
       groupBy: schema.properties.find((p) => p.type === "status" || p.type === "select")?.id || null,
     };
     saveSchema(dbId, { ...schema, views: [...schema.views, v] });
@@ -510,12 +511,12 @@ export default function DatabaseView({ dbId, inline }) {
           <input
             ref={titleRef}
             className="db-inline-title"
-            placeholder="Untitled"
+            placeholder={t("Untitled")}
             defaultValue={db.title}
             onBlur={(e) => e.target.value !== db.title && (store.patch(dbId, { title: e.target.value }), api.update(dbId, { title: e.target.value }))}
             onKeyDown={(e) => e.key === "Enter" && e.target.blur()}
           />
-          <button className="icon-btn sm" title="Mở toàn trang" onClick={() => navigate(dbId)}>↗</button>
+          <button className="icon-btn sm" title={t("Open as full page")} onClick={() => navigate(dbId)}>↗</button>
         </div>
       )}
       <div className="db-toolbar">
@@ -525,23 +526,23 @@ export default function DatabaseView({ dbId, inline }) {
               key={v.id}
               className={`view-tab ${v.id === view.id ? "active" : ""}`}
               onClick={(e) => (v.id === view.id ? setPop({ kind: "viewMenu", anchor: e.currentTarget }) : selectView(v.id))}
-              title={v.id === view.id ? "Bấm để đổi tên / xoá view" : ""}
+              title={v.id === view.id ? t("Click to rename / delete view") : ""}
             >
               <span>{v.type === "table" ? "▦" : "▥"}</span> {v.name}
             </button>
           ))}
-          <button className="icon-btn sm" title="Thêm view" onClick={open("addView")}>+</button>
+          <button className="icon-btn sm" title={t("Add view")} onClick={open("addView")}>+</button>
         </div>
         <div className="db-actions">
-          <button className={`tool-btn ${nFilters ? "on" : ""}`} onClick={open("filter")}>Lọc{nFilters ? ` · ${nFilters}` : ""}</button>
-          <button className={`tool-btn ${nSorts ? "on" : ""}`} onClick={open("sort")}>Sắp xếp{nSorts ? ` · ${nSorts}` : ""}</button>
+          <button className={`tool-btn ${nFilters ? "on" : ""}`} onClick={open("filter")}>{t("Filter")}{nFilters ? ` · ${nFilters}` : ""}</button>
+          <button className={`tool-btn ${nSorts ? "on" : ""}`} onClick={open("sort")}>{t("Sort")}{nSorts ? ` · ${nSorts}` : ""}</button>
           {searchOpen ? (
-            <input className="input db-search" autoFocus placeholder="Tìm…" value={search} onChange={(e) => setSearch(e.target.value)} onBlur={() => !search && setSearchOpen(false)} />
+            <input className="input db-search" autoFocus placeholder={t("Search…")} value={search} onChange={(e) => setSearch(e.target.value)} onBlur={() => !search && setSearchOpen(false)} />
           ) : (
             <button className="tool-btn" onClick={() => setSearchOpen(true)}>🔍</button>
           )}
-          <button className="tool-btn" title="Thuộc tính" onClick={open("props")}>⚙</button>
-          <button className="btn small" onClick={() => createRow(dbId)}>Mới</button>
+          <button className="tool-btn" title={t("Properties")} onClick={open("props")}>⚙</button>
+          <button className="btn small" onClick={() => createRow(dbId)}>{t("New")}</button>
         </div>
       </div>
 
@@ -556,7 +557,7 @@ export default function DatabaseView({ dbId, inline }) {
       {pop?.kind === "props" && <PropsVisibility dbId={dbId} schema={schema} view={view} anchor={pop.anchor} onClose={close} />}
       {pop?.kind === "addView" && (
         <Popover anchor={pop.anchor} onClose={close} width={180}>
-          <MenuBtn icon="▦" label="Bảng (Table)" onClick={() => addView("table")} />
+          <MenuBtn icon="▦" label={t("Table")} onClick={() => addView("table")} />
           <MenuBtn icon="▥" label="Board (Kanban)" onClick={() => addView("board")} />
         </Popover>
       )}
@@ -571,7 +572,7 @@ export default function DatabaseView({ dbId, inline }) {
           />
           <MenuBtn
             icon="⧉"
-            label="Nhân bản view"
+            label={t("Duplicate view")}
             onClick={() => {
               const v = { ...view, id: uid(), name: `${view.name} (copy)` };
               saveSchema(dbId, { ...schema, views: [...schema.views, v] });
@@ -582,7 +583,7 @@ export default function DatabaseView({ dbId, inline }) {
           {schema.views.length > 1 && (
             <MenuBtn
               icon="🗑"
-              label="Xoá view"
+              label={t("Delete view")}
               danger
               onClick={() => {
                 saveSchema(dbId, { ...schema, views: schema.views.filter((v) => v.id !== view.id) });
@@ -617,9 +618,9 @@ export function RowProperties({ row }) {
           </div>
         </div>
       ))}
-      <button className="row-prop-add muted" onClick={(e) => setAddProp(e.currentTarget)}>+ Thêm thuộc tính</button>
+      <button className="row-prop-add muted" onClick={(e) => setAddProp(e.currentTarget)}>{t("+ Add property")}</button>
       <div className="muted small row-prop-db">
-        Thuộc database <button className="crumb" onClick={() => navigate(db.id)}>{db.icon || "🗃️"} {pageTitle(db)}</button>
+        {t("In database")} <button className="crumb" onClick={() => navigate(db.id)}>{db.icon || "🗃️"} {pageTitle(db)}</button>
       </div>
       {addProp && <AddPropMenu dbId={db.id} schema={schema} anchor={addProp} onClose={() => setAddProp(null)} />}
       {propMenu && (

@@ -1,18 +1,19 @@
 <p align="center">
-  <img src="build/icon.png" width="96" alt="Frnt Notes icon" />
+  <img src="build/icon.png" width="96" alt="Frnt icon" />
 </p>
 
-<h1 align="center">Frnt Notes</h1>
+<h1 align="center">Frnt — Free Notes</h1>
 
 <p align="center">
   A free, open-source, <b>local-first</b> alternative to Notion.<br/>
   Block editor · nested pages · databases (table &amp; board) · version history · Notion import.<br/>
-  No account. No limits on pages or blocks. Your data is a single SQLite file on your own disk.
+  No account. No limits. Your notes are one SQLite file on your own disk.
 </p>
 
 <p align="center">
   <a href="../../releases/latest"><b>⬇ Download</b></a> ·
   <a href="#run-from-source">Run from source</a> ·
+  <a href="#frnt-vs-notion">Frnt vs Notion</a> ·
   <a href="README.vi.md">Tiếng Việt</a>
 </p>
 
@@ -22,38 +23,93 @@
 |---|---|
 | ![Board](docs/screenshots/board-dark.png) | ![Table](docs/screenshots/table.png) |
 
-> **Note:** the interface is currently in **Vietnamese** only. English UI (i18n) is the #1 item on the roadmap. Contributions are very welcome!
+## Core features
 
-## Features
-
-- **Block editor**: type `/` for headings, to-dos, toggles, quotes, code, tables, images/video/files, dividers. Drag blocks to reorder. Markdown shortcuts. Rich-text toolbar.
-- **Pages**: unlimited nesting, emoji icons, cover images, breadcrumbs, favourites, full-width mode, drag & drop in the sidebar.
-- **Links**: `/Trang con` creates a sub-page inline; `@` links to any page (titles stay in sync). Each page shows its **backlinks**.
-- **Databases**: table and Kanban board views, 10 property types (text, number, select, multi-select, status, date, checkbox, URL, created/edited time), filters, multi-level sorts, column resizing, several views per database, inline or full-page. Each row is a full page.
-- **Search** (`⌘K` / `Ctrl+K`) across titles and content, accent-insensitive.
-- **Version history** per page, with one-click restore.
-- **Templates**: four built-in, and you can save any page as a template.
-- **Import** from a Notion export (Markdown & CSV `.zip`: pages, images and databases) or from plain `.md` files.
-- **Safety**: autosave, trash with restore, daily automatic backups (30 kept, folder configurable, for example a cloud-synced folder), full JSON export/import, Markdown/PDF export.
-- Light and dark themes.
-
-## Download
-
-Grab the installer for your OS from **[Releases](../../releases/latest)**:
-
-| OS | File |
+| | |
 |---|---|
-| macOS (Apple Silicon / Intel) | `Frnt-Notes-x.y.z-mac-arm64.dmg` / `-mac-x64.dmg` |
-| Windows | `Frnt-Notes-x.y.z-win-x64.exe` |
-| Linux | `.AppImage` or `.deb` |
+| ✍️ **Block editor** | Type `/` for headings, to-dos, toggles, quotes, code, tables, images/video/files, dividers. Drag blocks to reorder, use Markdown shortcuts, format with the toolbar. |
+| 📄 **Pages** | Unlimited nesting, emoji icons, covers, breadcrumbs, favourites, full-width mode, drag & drop in the sidebar. |
+| 🔗 **Links** | Create sub-pages inline, `@`-link any page (titles stay in sync), and see **backlinks** on every page. |
+| 🗃️ **Databases** | Table and Kanban board views. 10 property types (text, number, select, multi-select, status, date, checkbox, URL, created/edited time). Filters, multi-level sorts, column resizing, several saved views per database, inline or full page. Every row is a full page. |
+| 🔍 **Search** | `⌘K` / `Ctrl+K` across titles and content, accent-insensitive. |
+| 🕘 **Version history** | Automatic snapshots per page, with one-click restore. |
+| 📋 **Templates** | Four built in, and you can save any page as a template. |
+| 📥 **Import** | Notion export (Markdown & CSV `.zip`: pages, images, databases) or plain `.md` files. |
+| 💾 **Your data, safe** | Autosave, trash, daily automatic backups (30 kept, folder of your choice), JSON export/restore, Markdown and PDF export. |
+| 🌐 **Languages** | English and Tiếng Việt. Switch at the bottom of the sidebar. [Add yours](CONTRIBUTING.md#translations)! |
+| 🌓 **Themes** | Light and dark. |
 
-> The builds are **not code-signed** yet, because signing certificates cost money.
-> - **macOS:** after dragging the app to Applications, right-click it, choose **Open**, then confirm (first launch only). If macOS says the app "is damaged", run `xattr -cr "/Applications/Frnt Notes.app"`.
-> - **Windows:** on the SmartScreen warning, choose **More info**, then **Run anyway**.
+## Frnt vs Notion
+
+| | **Frnt** | **Notion Free** ¹ |
+|---|---|---|
+| Price | Free forever (MIT) | Free; paid plans for more |
+| Where your data lives | Your computer (one SQLite file) | Notion's cloud servers |
+| Account required | No | Yes |
+| Works offline | Always, completely | Partly (offline mode for selected pages) |
+| Pages & blocks | Unlimited | Unlimited for one person; block limit once 2+ members share a workspace |
+| File uploads | No limit (your disk) | 5 MB per file |
+| Page history | 100 versions per page, no time limit | 7 days |
+| Backups | Automatic daily, to any folder | Manual export |
+| Block editor, nested pages, `/` menu, `@` links | ✅ | ✅ |
+| Databases: table & board | ✅ | ✅ |
+| Databases: calendar, gallery, timeline, list | ❌ (roadmap) | ✅ |
+| Relations, rollups, formulas | ❌ (roadmap) | ✅ |
+| Templates | ✅ | ✅ |
+| Import from Notion | ✅ | — |
+| Real-time collaboration, comments, sharing | ❌ (single user) | ✅ |
+| Publish pages to the web | ❌ | ✅ |
+| Mobile apps | ❌ (roadmap) | ✅ |
+| Sync across devices | Manual (backup folder) ² | ✅ automatic |
+| AI features | ❌ (not planned) | Limited trial |
+| Third-party integrations / API | ❌ | ✅ |
+| Open source, self-hostable | ✅ | ❌ |
+
+¹ Based on Notion's public pricing page as of November 2026. Plans change, so check [notion.com/pricing](https://www.notion.com/pricing).
+² Point the backup folder to iCloud Drive, Google Drive or Dropbox to keep copies in the cloud. Live sync between devices is on the roadmap.
+
+**In short:** choose Frnt if you want a private, unlimited, offline notebook that you fully own. Choose Notion if you need team collaboration, mobile apps or integrations.
+
+## Download & install
+
+Get the installer for your system from **[Releases](../../releases/latest)**:
+
+| System | File |
+|---|---|
+| macOS, Apple Silicon (M1–M4) | `Frnt-x.y.z-mac-arm64.dmg` |
+| macOS, Intel | `Frnt-x.y.z-mac-x64.dmg` |
+| Windows | `Frnt-x.y.z-win-x64.exe` |
+| Linux | `Frnt-x.y.z-linux-x86_64.AppImage` or `.deb` |
+
+### System requirements
+
+**Nothing else to install.** The installer bundles everything Frnt needs (its own runtime and database engine). You don't need Node.js, a database server or an internet connection.
+
+| | Minimum | Recommended |
+|---|---|---|
+| **macOS** | 13 Ventura | 14 Sonoma or newer |
+| **Windows** | Windows 10, 64-bit | Windows 11 |
+| **Linux** | 64-bit, e.g. Ubuntu 22.04, Debian 12, Fedora 38 | newer |
+| **CPU** | 64-bit: x64 or Apple Silicon (Windows/Linux ARM not built yet) | |
+| **RAM** | 4 GB (Frnt itself uses about 200–300 MB) | 8 GB |
+| **Disk** | ~300 MB for the app, plus your notes and attachments | SSD |
+
+### First launch (unsigned builds)
+
+The installers are **not code-signed yet**, because signing certificates cost money. Your system will warn you the first time:
+
+- **macOS:** open the `.dmg`, drag **Frnt** to Applications, then **right-click → Open → Open**. If macOS says the app "is damaged", run `xattr -cr /Applications/Frnt.app` in Terminal.
+- **Windows:** on the SmartScreen warning, click **More info → Run anyway**.
+- **Linux (AppImage):** `chmod +x Frnt-*.AppImage`, then run it. Some distributions need `libfuse2` installed to run AppImages.
 
 ## Run from source
 
-Requirements: **Node.js ≥ 22.13** (Node 24 recommended). No native modules: SQLite comes built into Node.
+**Prerequisites:**
+
+| Tool | Version | Notes |
+|---|---|---|
+| [Node.js](https://nodejs.org) | **≥ 22.13** (24 LTS recommended) | Includes npm. SQLite is built into Node, so no compiler or native build tools are needed |
+| [Git](https://git-scm.com) | any | to clone the repo |
 
 ```bash
 git clone https://github.com/thanhmam/frnt-notes.git
@@ -61,7 +117,7 @@ cd frnt-notes
 npm install
 
 npm run dev        # development with hot reload → http://localhost:3001
-npm start          # production build in the browser → http://localhost:3001
+npm start          # production build in your browser → http://localhost:3001
 npm run desktop    # run as a desktop app (Electron)
 npm run dist       # build an installer for your current OS → ./release
 ```
@@ -77,7 +133,7 @@ npm run dist       # build an installer for your current OS → ./release
 | Linux | `~/.local/share/frnt-notes/` |
 
 It contains `notes.db` (SQLite), `uploads/` (images and files) and `backups/`. The browser and desktop versions share the same data.
-Override it with `DATA_DIR=/path`, and the port with `PORT=4000`.
+Override it with `DATA_DIR=/path`, the port with `PORT=4000`, and the language of the first-run content with `FRNT_LANG=en|vi`.
 
 > The server listens on `127.0.0.1` only and has **no authentication**. Don't expose it to a network (`HOST=0.0.0.0`) unless it sits behind your own authenticating reverse proxy or VPN.
 
@@ -85,19 +141,19 @@ Override it with `DATA_DIR=/path`, and the port with `PORT=4000`.
 
 ```
 server/app.js        Express + node:sqlite: pages, databases, versions, search, uploads, backups
-server/index.js      CLI entry (npm run dev / npm start)
+server/seed.js       First-run welcome page & templates (en / vi)
 electron/main.mjs    Desktop shell: runs the server in-process and opens a window
 src/                 React frontend (Vite)
+  i18n.js, locales/  Translations (English is the source language)
   Editor.jsx         BlockNote editor + custom "page" and "database" blocks
   db/                Database views (table, board, filters, sorts, cells)
   importer.js        Notion / Markdown import
 ```
 
-A page is one row in the `pages` table. Content is stored as BlockNote JSON. Databases are pages with `kind = 'database'`: their schema is JSON, and their rows are child pages with `props`.
-
 ## Roadmap
 
-- [ ] English UI / i18n
+- [x] English & Vietnamese UI
+- [ ] More languages (help wanted!)
 - [ ] Calendar & gallery database views; relation and formula properties
 - [ ] Side-peek for database rows
 - [ ] Optional encrypted sync between devices
@@ -110,4 +166,4 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) to help out.
 ## License
 
 [MIT](LICENSE). The editor is built on [BlockNote](https://github.com/TypeCellOS/BlockNote) (MPL-2.0).
-"Notion" is a trademark of Notion Labs, Inc. This project is not affiliated with or endorsed by Notion.
+"Notion" is a trademark of Notion Labs, Inc. Frnt is an independent project and is not affiliated with or endorsed by Notion.

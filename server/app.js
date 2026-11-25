@@ -1,4 +1,4 @@
-// Frnt Notes server: Express + SQLite (node:sqlite, built into Node ≥ 22.13).
+// Frnt server: Express + SQLite (node:sqlite, built into Node ≥ 22.13).
 // Used by both the CLI (server/index.js) and the desktop app (electron/main.mjs).
 import express from "express";
 import { DatabaseSync } from "node:sqlite";
@@ -7,7 +7,7 @@ import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-import { seedTemplates, seedWelcome } from "./seed.js";
+import { seedTemplates, seedWelcome, detectLang } from "./seed.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.join(__dirname, "..");
@@ -26,7 +26,8 @@ const MAX_VERSIONS = 100; // per page
 const BACKUP_INTERVAL = 24 * 60 * 60 * 1000;
 const BACKUPS_KEPT = 30;
 
-export async function startServer({ port = 3001, host = "127.0.0.1", dataDir = defaultDataDir(), dev = false, distDir = path.join(ROOT, "dist") } = {}) {
+export async function startServer({ port = 3001, host = "127.0.0.1", dataDir = defaultDataDir(), dev = false, distDir = path.join(ROOT, "dist"), lang } = {}) {
+  const seedLang = detectLang(lang);
   const UPLOAD_DIR = path.join(dataDir, "uploads");
   fs.mkdirSync(UPLOAD_DIR, { recursive: true });
 
@@ -116,9 +117,9 @@ export async function startServer({ port = 3001, host = "127.0.0.1", dataDir = d
     return getPage(copy.id);
   }
 
-  if (db.prepare(`SELECT COUNT(*) AS c FROM pages`).get().c === 0) seedWelcome(createPage);
+  if (db.prepare(`SELECT COUNT(*) AS c FROM pages`).get().c === 0) seedWelcome(createPage, seedLang);
   if (!getSetting("templates_seeded")) {
-    seedTemplates(createPage);
+    seedTemplates(createPage, seedLang);
     setSetting("templates_seeded", 1);
   }
 
@@ -324,7 +325,7 @@ export async function startServer({ port = 3001, host = "127.0.0.1", dataDir = d
   app.post("/api/settings", (req, res) => {
     if ("backup_dir" in req.body) {
       const d = String(req.body.backup_dir || "").trim();
-      if (d && !path.isAbsolute(d)) return res.status(400).json({ error: "Đường dẫn phải là đường dẫn tuyệt đối" });
+      if (d && !path.isAbsolute(d)) return res.status(400).json({ error: "Backup folder must be an absolute path" });
       setSetting("backup_dir", d || null);
     }
     if ("auto_backup" in req.body) setSetting("auto_backup", req.body.auto_backup ? "1" : "0");
@@ -341,7 +342,7 @@ export async function startServer({ port = 3001, host = "127.0.0.1", dataDir = d
   // ---- full JSON export / import ----
   app.get("/api/export", (_req, res) => {
     const pages = db.prepare(`SELECT * FROM pages`).all();
-    res.setHeader("Content-Disposition", `attachment; filename="frnt-notes-backup-${new Date().toISOString().slice(0, 10)}.json"`);
+    res.setHeader("Content-Disposition", `attachment; filename="frnt-backup-${new Date().toISOString().slice(0, 10)}.json"`);
     res.json({ version: 2, exported_at: now(), pages });
   });
   app.post("/api/import", (req, res) => {

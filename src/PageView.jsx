@@ -5,6 +5,7 @@ import Editor from "./Editor.jsx";
 import { Menu } from "./Sidebar.jsx";
 import DatabaseView, { RowProperties } from "./db/DatabaseView.jsx";
 import History from "./History.jsx";
+import { t } from "./i18n.js";
 
 function Backlinks({ id }) {
   const { byId } = usePages();
@@ -17,7 +18,7 @@ function Backlinks({ id }) {
   if (!links.length) return null;
   return (
     <div className="backlinks">
-      <div className="muted small backlinks-head">↙ {links.length} trang liên kết tới đây</div>
+      <div className="muted small backlinks-head">↙ {t("{n} pages link here", { n: links.length })}</div>
       {links.map((l) => (
         <button key={l.id} className="backlink" onClick={() => navigate(l.id)}>
           <span>{l.icon || (l.kind === "database" ? "🗃️" : "📄")}</span> {pageTitle(l)}
@@ -55,13 +56,13 @@ function EmojiPicker({ onPick, onRemove, onClose }) {
       <div className="ep-head">
         <input
           className="input"
-          placeholder="Dán emoji bất kỳ rồi Enter…"
+          placeholder={t("Paste any emoji, then press Enter…")}
           onKeyDown={(e) => e.key === "Enter" && e.target.value.trim() && onPick(e.target.value.trim())}
         />
         <button className="btn ghost" onClick={() => onPick(EMOJI_LIST[Math.floor(Math.random() * EMOJI_LIST.length)])}>
-          Ngẫu nhiên
+          {t("Random")}
         </button>
-        <button className="btn ghost" onClick={onRemove}>Xoá</button>
+        <button className="btn ghost" onClick={onRemove}>{t("Remove")}</button>
       </div>
       <div className="ep-grid">
         {EMOJI_LIST.map((e) => (
@@ -95,7 +96,7 @@ export default function PageView({ id, theme, sidebarOpen, openSidebar }) {
   }, [id]);
 
   useEffect(() => {
-    document.title = `${meta?.icon ? meta.icon + " " : ""}${pageTitle(meta)} – Frnt Notes`;
+    document.title = `${meta?.icon ? meta.icon + " " : ""}${pageTitle(meta)} – Frnt`;
   }, [meta?.icon, meta?.title]);
 
   useLayoutEffect(() => {
@@ -138,7 +139,7 @@ export default function PageView({ id, theme, sidebarOpen, openSidebar }) {
     <div className={`page ${meta.full_width || isDb ? "full" : ""} ${isDb ? "db-page" : ""}`}>
       <div className="topbar">
         {!sidebarOpen && (
-          <button className="icon-btn" title="Hiện sidebar (⌘\)" onClick={openSidebar}>☰</button>
+          <button className="icon-btn" title={t("Show sidebar") + " (⌘\\)"} onClick={openSidebar}>☰</button>
         )}
         <div className="crumbs">
           {crumbs.map((c, i) => (
@@ -152,11 +153,11 @@ export default function PageView({ id, theme, sidebarOpen, openSidebar }) {
           ))}
         </div>
         <span className="muted status">
-          {status === "saving" ? "Đang lưu…" : status === "error" ? "⚠ Lỗi lưu" : `Sửa ${timeAgo(meta.updated_at)}`}
+          {status === "saving" ? t("Saving…") : status === "error" ? t("⚠ Save failed") : t("Edited {time}", { time: timeAgo(meta.updated_at) })}
         </span>
         <button
           className="icon-btn"
-          title={meta.is_favorite ? "Bỏ yêu thích" : "Yêu thích"}
+          title={meta.is_favorite ? t("Remove from favorites") : t("Add to favorites")}
           onClick={() => save({ is_favorite: meta.is_favorite ? 0 : 1 })}
         >
           {meta.is_favorite ? "★" : "☆"}
@@ -168,22 +169,22 @@ export default function PageView({ id, theme, sidebarOpen, openSidebar }) {
               onClose={() => setMenu(false)}
               style={{ right: 0, top: 32 }}
               items={[
-                { icon: "↔", label: meta.full_width ? "Độ rộng chuẩn" : "Toàn chiều rộng", onClick: () => save({ full_width: meta.full_width ? 0 : 1 }) },
-                !isDb && { icon: "🕘", label: "Lịch sử phiên bản", onClick: () => setHistory(true) },
-                !isDb && { icon: "⬇", label: "Xuất Markdown", onClick: exportMarkdown },
+                { icon: "↔", label: meta.full_width ? t("Default width") : t("Full width"), onClick: () => save({ full_width: meta.full_width ? 0 : 1 }) },
+                !isDb && { icon: "🕘", label: t("Version history"), onClick: () => setHistory(true) },
+                !isDb && { icon: "⬇", label: t("Export Markdown"), onClick: exportMarkdown },
                 !meta.is_template && {
                   icon: "📋",
-                  label: "Lưu thành mẫu",
+                  label: t("Save as template"),
                   onClick: async () => {
                     const p = await api.duplicate(id, { template: true });
                     store.setPages(await api.list());
                     navigate(p.id);
                   },
                 },
-                { icon: "🖨", label: "In / Lưu PDF", onClick: () => window.print() },
+                { icon: "🖨", label: t("Print / Save as PDF"), onClick: () => window.print() },
                 {
                   icon: "⧉",
-                  label: "Nhân bản",
+                  label: t("Duplicate"),
                   onClick: async () => {
                     const p = await api.duplicate(id);
                     store.setPages(await api.list());
@@ -193,7 +194,7 @@ export default function PageView({ id, theme, sidebarOpen, openSidebar }) {
                 "-",
                 {
                   icon: "🗑",
-                  label: "Chuyển vào thùng rác",
+                  label: t("Move to trash"),
                   danger: true,
                   onClick: async () => {
                     await api.moveToTrash(id);
@@ -224,7 +225,7 @@ export default function PageView({ id, theme, sidebarOpen, openSidebar }) {
       <div className="scroll">
         {!!meta.is_template && (
           <div className="tpl-banner">
-            <span>📋 Đây là <b>mẫu</b>. Sửa trang này để thay đổi mẫu.</span>
+            <span>📋 {t("This is a template. Edits here change the template itself.")}</span>
             <button
               className="btn small"
               onClick={async () => {
@@ -233,15 +234,15 @@ export default function PageView({ id, theme, sidebarOpen, openSidebar }) {
                 navigate(p.id);
               }}
             >
-              Dùng mẫu này
+              {t("Use this template")}
             </button>
           </div>
         )}
         {meta.cover && (
           <div className="cover" style={coverStyle(meta.cover)}>
             <div className="cover-actions">
-              <button className="btn small" onClick={() => setCoverMenu(true)}>Đổi ảnh bìa</button>
-              <button className="btn small" onClick={() => save({ cover: null })}>Xoá</button>
+              <button className="btn small" onClick={() => setCoverMenu(true)}>{t("Change cover")}</button>
+              <button className="btn small" onClick={() => save({ cover: null })}>{t("Remove")}</button>
             </div>
           </div>
         )}
@@ -254,8 +255,8 @@ export default function PageView({ id, theme, sidebarOpen, openSidebar }) {
                 ))}
               </div>
               <div className="row">
-                <button className="btn ghost" onClick={() => coverFile.current.click()}>Tải ảnh lên…</button>
-                <button className="btn ghost" onClick={() => setCoverMenu(false)}>Đóng</button>
+                <button className="btn ghost" onClick={() => coverFile.current.click()}>{t("Upload image…")}</button>
+                <button className="btn ghost" onClick={() => setCoverMenu(false)}>{t("Close")}</button>
               </div>
               <input
                 ref={coverFile}
@@ -279,11 +280,11 @@ export default function PageView({ id, theme, sidebarOpen, openSidebar }) {
             )}
             <div className="head-actions">
               {!meta.icon && (
-                <button className="btn ghost small" onClick={() => setPicker(true)}>☺ Thêm icon</button>
+                <button className="btn ghost small" onClick={() => setPicker(true)}>{t("☺ Add icon")}</button>
               )}
               {!meta.cover && (
                 <button className="btn ghost small" onClick={() => save({ cover: COVERS[Math.floor(Math.random() * COVERS.length)] })}>
-                  🖼 Thêm ảnh bìa
+                  {t("🖼 Add cover")}
                 </button>
               )}
             </div>
@@ -298,7 +299,7 @@ export default function PageView({ id, theme, sidebarOpen, openSidebar }) {
               ref={titleRef}
               className="title"
               rows={1}
-              placeholder="Untitled"
+              placeholder={t("Untitled")}
               value={title}
               autoFocus={!title}
               onChange={(e) => onTitle(e.target.value)}

@@ -2,6 +2,7 @@ import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { COLORS, COLOR_NAMES, formatDate, isSelectType, randomColor, saveSchema, setRowValue, uid } from "./dbUtils.js";
 import { navigate } from "../store.js";
+import { t } from "../i18n.js";
 
 // Fixed-position popover rendered in <body>, anchored to an element. Escapes overflow clipping.
 export function Popover({ anchor, onClose, children, width, align = "left" }) {
@@ -100,7 +101,7 @@ export function SelectEditor({ dbId, schema, prop, value, onChange, anchor, onCl
         <input
           autoFocus
           className="sel-input"
-          placeholder={options.length ? "Tìm hoặc tạo mới…" : "Gõ để tạo lựa chọn…"}
+          placeholder={options.length ? t("Search or create…") : t("Type to create an option…")}
           value={q}
           onChange={(e) => setQ(e.target.value)}
           onKeyDown={(e) => {
@@ -132,7 +133,7 @@ export function SelectEditor({ dbId, schema, prop, value, onChange, anchor, onCl
         ))}
         {q.trim() && !exact && (
           <div className="pop-row" onClick={create}>
-            <span className="muted">Tạo</span> <Tag opt={{ name: q.trim(), color: "default" }} />
+            <span className="muted">{t("Create")}</span> <Tag opt={{ name: q.trim(), color: "default" }} />
           </div>
         )}
       </div>
@@ -155,10 +156,10 @@ export function SelectEditor({ dbId, schema, prop, value, onChange, anchor, onCl
               setEditing(null);
             }}
           >
-            <span className="menu-ico">🗑</span>Xoá lựa chọn
+            <span className="menu-ico">🗑</span>{t("Delete option")}
           </button>
           <div className="menu-sep" />
-          <div className="muted small" style={{ padding: "2px 8px" }}>Màu</div>
+          <div className="muted small" style={{ padding: "2px 8px" }}>{t("Color")}</div>
           {COLORS.map((c) => (
             <button
               key={c}
@@ -208,12 +209,12 @@ export function Cell({ dbId, schema, prop, row, compact }) {
   switch (prop.type) {
     case "title":
       return compact ? (
-        <span className="card-title">{v || "Untitled"}</span>
+        <span className="card-title">{v || t("Untitled")}</span>
       ) : (
         <div className="title-cell">
           <span className="row-icon">{row.icon || "📄"}</span>
-          <TextInput value={v} onCommit={set} placeholder="Untitled" className="bold" />
-          <button className="open-btn" onClick={() => navigate(row.id)} title="Mở thành trang">↗ MỞ</button>
+          <TextInput value={v} onCommit={set} placeholder={t("Untitled")} className="bold" />
+          <button className="open-btn" onClick={() => navigate(row.id)} title={t("Open as page")}>{t("↗ OPEN")}</button>
         </div>
       );
     case "text":

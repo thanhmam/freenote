@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { api } from "./api.js";
 import { store, navigate, timeAgo } from "./store.js";
 import { importFiles } from "./importer.js";
+import { t, lang, setLang, LOCALES } from "./i18n.js";
 
 export const REPO_URL = "https://github.com/thanhmam/frnt-notes";
 
@@ -36,47 +37,57 @@ export default function Settings({ onClose, theme, toggleTheme }) {
   };
 
   const doImport = (files) =>
-    run("Đang nhập", async () => {
-      const id = await importFiles(files, (m) => setMsg("Đang nhập: " + m));
+    run(t("Importing"), async () => {
+      const id = await importFiles(files, (m) => setMsg(t("Importing") + ": " + m));
       store.setPages(await api.list());
-      setMsg("✓ Đã nhập xong");
+      setMsg("✓ " + t("Import finished"));
       navigate(id);
       onClose();
     });
 
   const restoreJson = (file) =>
-    run("Đang khôi phục", async () => {
+    run(t("Restoring"), async () => {
       const data = JSON.parse(await file.text());
-      if (!confirm(`Khôi phục ${data.pages?.length || 0} trang từ file sao lưu? Trang trùng ID sẽ bị ghi đè.`)) return setMsg("");
+      if (!confirm(t("Restore {n} pages from this backup? Pages with the same ID will be overwritten.", { n: data.pages?.length || 0 }))) return setMsg("");
       const r = await api.importAll(data);
       store.setPages(await api.list());
-      setMsg(`✓ Đã khôi phục ${r.count} trang`);
+      setMsg("✓ " + t("Restored {n} pages", { n: r.count }));
     });
 
   return (
     <div className="overlay" onMouseDown={onClose}>
       <div className="modal settings" onMouseDown={(e) => e.stopPropagation()}>
         <div className="modal-head">
-          <h2>Cài đặt</h2>
+          <h2>{t("Settings")}</h2>
           <button className="icon-btn" onClick={onClose}>✕</button>
         </div>
 
         <section>
-          <h3>Giao diện</h3>
+          <h3>{t("Appearance")}</h3>
           <div className="set-row">
-            <span>Chế độ tối</span>
+            <span>{t("Language")}</span>
+            <select className="lang-select" value={lang} onChange={(e) => setLang(e.target.value)}>
+              {Object.entries(LOCALES).map(([code, l]) => (
+                <option key={code} value={code}>{l.name}</option>
+              ))}
+            </select>
+          </div>
+          <div className="set-row">
+            <span>{t("Dark mode")}</span>
             <input type="checkbox" className="switch" checked={theme === "dark"} onChange={toggleTheme} />
           </div>
         </section>
 
         <section>
-          <h3>Sao lưu tự động</h3>
+          <h3>{t("Automatic backups")}</h3>
           {s && (
             <>
               <div className="set-row">
                 <span>
-                  Sao lưu mỗi ngày (giữ 30 bản gần nhất)
-                  <div className="muted small">Lần gần nhất: {s.last_backup ? timeAgo(s.last_backup) : "chưa có"}</div>
+                  {t("Back up every day (keeps the last 30)")}
+                  <div className="muted small">
+                    {t("Last backup")}: {s.last_backup ? timeAgo(s.last_backup) : t("never")}
+                  </div>
                 </span>
                 <input
                   type="checkbox"
@@ -89,17 +100,17 @@ export default function Settings({ onClose, theme, toggleTheme }) {
                 />
               </div>
               <div className="set-col">
-                <span>Thư mục sao lưu</span>
+                <span>{t("Backup folder")}</span>
                 <div className="muted small">
-                  Có thể trỏ tới iCloud Drive / Google Drive / Dropbox để có bản sao trên cloud. File sao lưu là ảnh chụp tĩnh nên đồng bộ an toàn.
+                  {t("You can point this to iCloud Drive, Google Drive or Dropbox to keep a copy in the cloud. Backups are static snapshots, so syncing them is safe.")}
                 </div>
                 <div className="row">
-                  <input className="input" value={dir} onChange={(e) => setDir(e.target.value)} placeholder="/đường/dẫn/tuyệt/đối" />
+                  <input className="input" value={dir} onChange={(e) => setDir(e.target.value)} placeholder={t("/absolute/path")} />
                   <button
                     className="btn ghost"
                     disabled={dir === s.backup_dir}
                     onClick={() =>
-                      run("Đang lưu", async () => {
+                      run(t("Saving"), async () => {
                         const r = await fetch("/api/settings", {
                           method: "POST",
                           headers: { "Content-Type": "application/json" },
@@ -107,11 +118,11 @@ export default function Settings({ onClose, theme, toggleTheme }) {
                         });
                         if (!r.ok) throw new Error((await r.json()).error);
                         await load();
-                        setMsg("✓ Đã đổi thư mục sao lưu");
+                        setMsg("✓ " + t("Backup folder changed"));
                       })
                     }
                   >
-                    Lưu
+                    {t("Save")}
                   </button>
                 </div>
               </div>
@@ -120,47 +131,46 @@ export default function Settings({ onClose, theme, toggleTheme }) {
                   className="btn"
                   disabled={busy}
                   onClick={() =>
-                    run("Đang sao lưu", async () => {
+                    run(t("Backing up"), async () => {
                       const r = await api.backupNow();
                       await load();
-                      setMsg("✓ Đã sao lưu: " + r.file);
+                      setMsg("✓ " + t("Backed up to") + ": " + r.file);
                     })
                   }
                 >
-                  Sao lưu ngay
+                  {t("Back up now")}
                 </button>
               </div>
               <div className="muted small" style={{ marginTop: 8 }}>
-                Dữ liệu chính: <code>{s.data_dir}</code>
+                {t("Data folder")}: <code>{s.data_dir}</code>
               </div>
             </>
           )}
         </section>
 
         <section>
-          <h3>Nhập dữ liệu</h3>
+          <h3>{t("Import")}</h3>
           <div className="row wrap">
             <button className="btn ghost bordered" disabled={busy} onClick={() => zipRef.current.click()}>
-              📦 Từ Notion (.zip)
+              📦 {t("From Notion (.zip)")}
             </button>
             <button className="btn ghost bordered" disabled={busy} onClick={() => mdRef.current.click()}>
-              📝 File Markdown (.md)
+              📝 {t("Markdown files (.md)")}
             </button>
           </div>
           <div className="muted small" style={{ marginTop: 6 }}>
-            Notion: Settings → Export all workspace content → định dạng <b>Markdown &amp; CSV</b>, có cả subpages. Trang con, ảnh và
-            database (CSV) đều được nhập.
+            {t("In Notion: Settings → Export all workspace content → format “Markdown & CSV”, include subpages. Sub-pages, images and databases (CSV) are all imported.")}
           </div>
         </section>
 
         <section>
-          <h3>Xuất &amp; khôi phục toàn bộ</h3>
+          <h3>{t("Export & restore everything")}</h3>
           <div className="row wrap">
             <button className="btn ghost bordered" onClick={() => (window.location.href = "/api/export")}>
-              ⬇ Tải file sao lưu (.json)
+              ⬇ {t("Download backup (.json)")}
             </button>
             <button className="btn ghost bordered" disabled={busy} onClick={() => jsonRef.current.click()}>
-              ⬆ Khôi phục từ file .json
+              ⬆ {t("Restore from .json")}
             </button>
           </div>
         </section>
@@ -168,7 +178,7 @@ export default function Settings({ onClose, theme, toggleTheme }) {
         {msg && <div className="set-msg">{msg}</div>}
 
         <div className="muted small about">
-          Frnt Notes — mã nguồn mở (MIT) ·{" "}
+          Frnt (Free Notes) — {t("open source (MIT)")} ·{" "}
           <a href={REPO_URL} target="_blank" rel="noreferrer">
             GitHub
           </a>

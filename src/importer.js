@@ -1,9 +1,10 @@
-// Import Markdown files or a Notion "Markdown & CSV" export (.zip) into Frnt Notes.
+// Import Markdown files or a Notion "Markdown & CSV" export (.zip) into Frnt.
 import { BlockNoteEditor } from "@blocknote/core";
 import { unzipSync, strFromU8 } from "fflate";
 import { api } from "./api.js";
 import { extractText } from "./store.js";
 import { uid } from "./db/dbUtils.js";
+import { t, dateLocale } from "./i18n.js";
 
 let parser;
 const mdToBlocks = (md) => (parser ||= BlockNoteEditor.create()).tryParseMarkdownToBlocks(md);
@@ -129,16 +130,16 @@ async function importFileMap(files, rootTitle, onProgress) {
       const table = parseCSV(strFromU8(files[p]));
       if (!table.length) continue;
       const [header, ...body] = table;
-      const properties = header.slice(1).map((name, i) => guessProperty(name || `Cột ${i + 2}`, body.map((r) => r[i + 1] ?? "")));
+      const properties = header.slice(1).map((name, i) => guessProperty(name || t("Column {n}", { n: i + 2 }), body.map((r) => r[i + 1] ?? "")));
       const db = await api.create({
         parent_id,
         kind: "database",
         title: cleanName(baseOf(p)),
         icon: "🗃️",
         db_schema: {
-          titleName: header[0] || "Tên",
+          titleName: header[0] || t("Name"),
           properties,
-          views: [{ id: uid(), name: "Bảng", type: "table", sorts: [], filters: [], hidden: [], widths: {} }],
+          views: [{ id: uid(), name: t("Table"), type: "table", sorts: [], filters: [], hidden: [], widths: {} }],
         },
       });
       idByKey[key] = db.id;
@@ -233,6 +234,6 @@ export async function importFiles(fileList, onProgress) {
     else files[f.webkitRelativePath || f.name] = data;
   }
   const isNotion = list.some((f) => /\.zip$/i.test(f.name));
-  const title = isNotion ? `Notion import ${new Date().toLocaleDateString("vi-VN")}` : `Import ${new Date().toLocaleDateString("vi-VN")}`;
+  const title = isNotion ? `Notion import ${new Date().toLocaleDateString(dateLocale)}` : `Import ${new Date().toLocaleDateString(dateLocale)}`;
   return importFileMap(files, title, onProgress);
 }

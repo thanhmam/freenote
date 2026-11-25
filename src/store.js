@@ -1,3 +1,4 @@
+import { t, dateLocale } from "./i18n.js";
 // Tiny global store so editor blocks (rendered in portals) can read page titles & navigate.
 import { useSyncExternalStore } from "react";
 
@@ -25,7 +26,7 @@ export const navigate = (id) => {
   window.location.hash = id ? `#/p/${id}` : "#/";
 };
 
-export const pageTitle = (p) => (p?.title?.trim() ? p.title : "Untitled");
+export const pageTitle = (p) => (p?.title?.trim() ? p.title : t("Untitled"));
 
 export function breadcrumbs(id, byId) {
   const out = [];
@@ -50,8 +51,8 @@ export function extractText(node, acc = []) {
 
 export function timeAgo(ts) {
   const s = Math.round((Date.now() - ts) / 1000);
-  if (s < 60) return "vừa xong";
-  if (s < 3600) return `${Math.floor(s / 60)} phút trước`;
-  if (s < 86400) return `${Math.floor(s / 3600)} giờ trước`;
-  return new Date(ts).toLocaleDateString("vi-VN");
+  if (s < 60) return t("just now");
+  if (s < 3600) return t("{n} min ago", { n: Math.floor(s / 60) });
+  if (s < 86400) return t("{n} h ago", { n: Math.floor(s / 3600) });
+  return new Date(ts).toLocaleDateString(dateLocale);
 }
