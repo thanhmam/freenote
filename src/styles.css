@@ -428,3 +428,18 @@ code { font-size: 12px; background: var(--hover); padding: 1px 4px; border-radiu
 body.resizing, body.resizing * { cursor: col-resize !important; user-select: none !important; }
 .sb-url { margin-left: auto; font-size: 11px; color: var(--muted); }
 .sidebar .tree-title, .sidebar .sb-link { min-width: 0; }
+
+/* nesting guides: a thin line under each open page, aligned with its chevron */
+.tree-children { position: relative; }
+.tree-children::before {
+  content: ""; position: absolute; left: var(--guide); top: 0; bottom: 2px; width: 1px;
+  background: var(--border); pointer-events: none;
+}
+.tree-row .tree-actions { flex-shrink: 0; }
+.crumbs { min-width: 0; }
+.crumb-item { display: inline-flex; align-items: center; min-width: 0; flex-shrink: 1; }
+.crumb-item:first-child, .crumb-item:last-child { flex-shrink: 0; max-width: 40%; }
+.crumb { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.crumb.current { color: var(--text); }
+.topbar .status { flex-shrink: 0; white-space: nowrap; }
+.tree-children::before { background: var(--muted); opacity: 0.35; }

@@ -42,6 +42,9 @@ export function Menu({ items, onClose, style }) {
 
 let dragId = null;
 
+/** Left indent of a tree row: roomy for shallow levels, compact for deep ones so titles stay readable. */
+export const indent = (depth) => (depth <= 6 ? depth * 14 : 6 * 14 + (depth - 6) * 8);
+
 function TreeItem({ page, depth, childrenOf, currentId, refresh, createPage, expanded, setExpanded }) {
   const kids = childrenOf[page.id] || [];
   const open = expanded[page.id];
@@ -89,7 +92,8 @@ function TreeItem({ page, depth, childrenOf, currentId, refresh, createPage, exp
     <>
       <div
         className={`tree-row ${currentId === page.id ? "active" : ""} ${drop ? "drop-" + drop : ""}`}
-        style={{ paddingLeft: 8 + depth * 14 }}
+        style={{ paddingLeft: 8 + indent(depth), "--depth": depth }}
+        title={pageTitle(page)}
         draggable
         onDragStart={(e) => {
           dragId = page.id;
@@ -189,16 +193,18 @@ function TreeItem({ page, depth, childrenOf, currentId, refresh, createPage, exp
       </div>
       {open &&
         (kids.length ? (
-          kids.map((k) => (
-            <TreeItem
-              key={k.id}
-              page={k}
-              depth={depth + 1}
-              {...{ childrenOf, currentId, refresh, createPage, expanded, setExpanded }}
-            />
-          ))
+          <div className="tree-children" style={{ "--guide": `${8 + indent(depth) + 9}px` }}>
+            {kids.map((k) => (
+              <TreeItem
+                key={k.id}
+                page={k}
+                depth={depth + 1}
+                {...{ childrenOf, currentId, refresh, createPage, expanded, setExpanded }}
+              />
+            ))}
+          </div>
         ) : page.kind === "database" ? null : (
-          <div className="tree-empty" style={{ paddingLeft: 30 + depth * 14 }}>
+          <div className="tree-empty" style={{ paddingLeft: 30 + indent(depth) }}>
             {t("No pages inside")}
           </div>
         ))}
@@ -258,7 +264,8 @@ function TrashPanel({ onClose, refresh }) {
 }
 
 const SB_MIN = 200;
-const SB_MAX = 520;
+const SB_MAX_FIXED = 520;
+const sbMax = () => Math.max(SB_MAX_FIXED, Math.round(window.innerWidth * 0.7));
 const SB_DEFAULT = 260;
 
 /** Desktop app bridge (electron/preload.cjs); undefined in a normal browser. */
@@ -268,7 +275,7 @@ export const openInBrowser = (url = window.location.href) => desktop?.openInBrow
 export default function Sidebar({ currentId, refresh, createPage, openSearch, theme, toggleTheme, collapse }) {
   const [width, setWidth] = useState(() => {
     const w = Number(localStorage.getItem("sidebarWidth"));
-    return w >= SB_MIN && w <= SB_MAX ? w : SB_DEFAULT;
+    return w >= SB_MIN && w <= sbMax() ? w : SB_DEFAULT;
   });
   const startResize = (e) => {
     e.preventDefault();
@@ -277,7 +284,7 @@ export default function Sidebar({ currentId, refresh, createPage, openSearch, th
     let w = w0;
     document.body.classList.add("resizing");
     const move = (ev) => {
-      w = Math.min(SB_MAX, Math.max(SB_MIN, w0 + ev.clientX - x0));
+      w = Math.min(sbMax(), Math.max(SB_MIN, w0 + ev.clientX - x0));
       setWidth(w);
     };
     const up = () => {

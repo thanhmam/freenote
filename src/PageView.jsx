@@ -5,6 +5,7 @@ import Editor from "./Editor.jsx";
 import { Menu, desktop, openInBrowser } from "./Sidebar.jsx";
 import DatabaseView, { RowProperties } from "./db/DatabaseView.jsx";
 import History from "./History.jsx";
+import { Popover } from "./db/Cells.jsx";
 import { t } from "./i18n.js";
 
 function Backlinks({ id }) {
@@ -69,6 +70,54 @@ function EmojiPicker({ onPick, onRemove, onClose }) {
           <button key={e} onClick={() => onPick(e)}>{e}</button>
         ))}
       </div>
+    </div>
+  );
+}
+
+/** Long paths collapse like Notion: first / … / last two. "…" lists the hidden levels. */
+function Breadcrumbs({ crumbs }) {
+  const [more, setMore] = useState(null); // anchor element of the "…" button
+  const crumb = (c, last) => (
+    <button key={c.id} className={`crumb ${last ? "current" : ""}`} title={pageTitle(c)} onClick={() => navigate(c.id)}>
+      {c.icon && <span>{c.icon} </span>}
+      {pageTitle(c)}
+    </button>
+  );
+  const collapse = crumbs.length > 4;
+  const hidden = collapse ? crumbs.slice(1, -2) : [];
+  const shown = collapse ? [crumbs[0], null, ...crumbs.slice(-2)] : crumbs;
+  return (
+    <div className="crumbs">
+      {shown.map((c, i) => (
+        <span key={c ? c.id : "more"} className="crumb-item">
+          {i > 0 && <span className="crumb-sep">/</span>}
+          {c ? (
+            crumb(c, i === shown.length - 1)
+          ) : (
+            <>
+              <button className="crumb" title={t("{n} more levels", { n: hidden.length })} onClick={(e) => setMore(e.currentTarget)}>…</button>
+              {more && (
+                <Popover anchor={more} onClose={() => setMore(null)} width={300}>
+                  {hidden.map((h, i) => (
+                    <button
+                      key={h.id}
+                      className="menu-item"
+                      style={{ paddingLeft: 8 + i * 12 }}
+                      onClick={() => {
+                        setMore(null);
+                        navigate(h.id);
+                      }}
+                    >
+                      <span className="menu-ico">{h.icon || "📄"}</span>
+                      <span className="tree-title">{pageTitle(h)}</span>
+                    </button>
+                  ))}
+                </Popover>
+              )}
+            </>
+          )}
+        </span>
+      ))}
     </div>
   );
 }
@@ -141,17 +190,7 @@ export default function PageView({ id, theme, sidebarOpen, openSidebar }) {
         {!sidebarOpen && (
           <button className="icon-btn" title={t("Show sidebar") + " (⌘\\)"} onClick={openSidebar}>☰</button>
         )}
-        <div className="crumbs">
-          {crumbs.map((c, i) => (
-            <span key={c.id}>
-              {i > 0 && <span className="crumb-sep">/</span>}
-              <button className="crumb" onClick={() => navigate(c.id)}>
-                {c.icon && <span>{c.icon} </span>}
-                {pageTitle(c)}
-              </button>
-            </span>
-          ))}
-        </div>
+        <Breadcrumbs crumbs={crumbs} />
         <span className="muted status">
           {status === "saving" ? t("Saving…") : status === "error" ? t("⚠ Save failed") : t("Edited {time}", { time: timeAgo(meta.updated_at) })}
         </span>

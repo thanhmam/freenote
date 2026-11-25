@@ -1,7 +1,7 @@
 {
   "name": "frnt-notes",
   "productName": "Frnt",
-  "version": "0.4.0",
+  "version": "0.4.1",
   "description": "Frnt (Free Notes): a free, open-source, local-first Notion alternative. Block editor, nested pages, databases, version history, Notion import. English & Vietnamese UI.",
   "license": "MIT",
   "author": "Frnt contributors",
