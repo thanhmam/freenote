@@ -1,0 +1,82 @@
+{
+ "format": "frnt-template",
+ "version": 1,
+ "id": "ke-hoach-du-an",
+ "title": "Kế hoạch dự án",
+ "description": "Tổng quan, phạm vi, mốc thời gian và rủi ro của một dự án.",
+ "category": "Projects",
+ "lang": "vi",
+ "icon": "🚀",
+ "author": "Frnt",
+ "updated": "2026-11-25",
+ "pages": [
+  {
+   "key": "952e7229-6f89-44e8-b247-e0e95a3df015",
+   "parent": null,
+   "kind": "page",
+   "title": "Kế hoạch dự án",
+   "icon": "🚀",
+   "cover": null,
+   "content": [
+    {
+     "type": "heading",
+     "props": {
+      "level": 2
+     },
+     "content": "Tổng quan"
+    },
+    {
+     "type": "paragraph",
+     "content": "Vấn đề cần giải quyết, mục tiêu và tiêu chí thành công."
+    },
+    {
+     "type": "heading",
+     "props": {
+      "level": 2
+     },
+     "content": "Phạm vi"
+    },
+    {
+     "type": "bulletListItem",
+     "content": "Làm: …"
+    },
+    {
+     "type": "bulletListItem",
+     "content": "Không làm: …"
+    },
+    {
+     "type": "heading",
+     "props": {
+      "level": 2
+     },
+     "content": "Mốc thời gian"
+    },
+    {
+     "type": "checkListItem",
+     "content": "Mốc 1 — ngày"
+    },
+    {
+     "type": "checkListItem",
+     "content": "Mốc 2 — ngày"
+    },
+    {
+     "type": "heading",
+     "props": {
+      "level": 2
+     },
+     "content": "Rủi ro"
+    },
+    {
+     "type": "bulletListItem",
+     "content": ""
+    }
+   ],
+   "text": "Kế hoạch dự án",
+   "db_schema": null,
+   "props": null,
+   "position": 4,
+   "full_width": 0
+  }
+ ],
+ "assets": {}
+}

@@ -1,0 +1,67 @@
+{
+ "format": "frnt-template",
+ "version": 1,
+ "id": "book-notes",
+ "title": "Book notes",
+ "description": "Summary, key ideas and favourite quotes from a book.",
+ "category": "Education",
+ "lang": "en",
+ "icon": "📚",
+ "author": "Frnt",
+ "updated": "2026-11-25",
+ "pages": [
+  {
+   "key": "1a3f7f13-8d7e-43a7-b735-1622aedfd041",
+   "parent": null,
+   "kind": "page",
+   "title": "Book notes",
+   "icon": "📚",
+   "cover": null,
+   "content": [
+    {
+     "type": "paragraph",
+     "content": "✍️ Author: … · ⭐ Rating: …/5"
+    },
+    {
+     "type": "heading",
+     "props": {
+      "level": 2
+     },
+     "content": "Summary in 3 sentences"
+    },
+    {
+     "type": "paragraph",
+     "content": ""
+    },
+    {
+     "type": "heading",
+     "props": {
+      "level": 2
+     },
+     "content": "Key ideas"
+    },
+    {
+     "type": "bulletListItem",
+     "content": ""
+    },
+    {
+     "type": "heading",
+     "props": {
+      "level": 2
+     },
+     "content": "Favourite quotes"
+    },
+    {
+     "type": "quote",
+     "content": ""
+    }
+   ],
+   "text": "Book notes",
+   "db_schema": null,
+   "props": null,
+   "position": 5,
+   "full_width": 0
+  }
+ ],
+ "assets": {}
+}

@@ -1,0 +1,185 @@
+{
+ "format": "frnt-template",
+ "version": 1,
+ "id": "quan-ly-cong-viec",
+ "title": "Quản lý công việc",
+ "description": "Database công việc với Board theo trạng thái, độ ưu tiên và hạn chót.",
+ "category": "Projects",
+ "lang": "vi",
+ "icon": "✅",
+ "author": "Frnt",
+ "updated": "2026-11-25",
+ "pages": [
+  {
+   "key": "a7104ed1-c4cc-4e7d-aebc-227f0644bdef",
+   "parent": null,
+   "kind": "database",
+   "title": "Quản lý công việc",
+   "icon": "✅",
+   "cover": null,
+   "content": null,
+   "text": "",
+   "db_schema": {
+    "titleName": "Công việc",
+    "properties": [
+     {
+      "id": "aca50346",
+      "name": "Trạng thái",
+      "type": "status",
+      "options": [
+       {
+        "id": "776c7b58",
+        "name": "Chưa làm",
+        "color": "gray"
+       },
+       {
+        "id": "18769b87",
+        "name": "Đang làm",
+        "color": "blue"
+       },
+       {
+        "id": "8366b5d8",
+        "name": "Xong",
+        "color": "green"
+       }
+      ]
+     },
+     {
+      "id": "a6c0647b",
+      "name": "Ưu tiên",
+      "type": "select",
+      "options": [
+       {
+        "id": "7f9ebcb4",
+        "name": "Cao",
+        "color": "red"
+       },
+       {
+        "id": "f0980453",
+        "name": "Trung bình",
+        "color": "orange"
+       },
+       {
+        "id": "9266a63a",
+        "name": "Thấp",
+        "color": "gray"
+       }
+      ]
+     },
+     {
+      "id": "6ce2621c",
+      "name": "Hạn",
+      "type": "date"
+     },
+     {
+      "id": "b5678097",
+      "name": "Người làm",
+      "type": "text"
+     }
+    ],
+    "views": [
+     {
+      "id": "0d9eada8",
+      "name": "Board",
+      "type": "board",
+      "sorts": [],
+      "filters": [],
+      "hidden": [],
+      "groupBy": "aca50346"
+     },
+     {
+      "id": "d58c6cda",
+      "name": "Tất cả",
+      "type": "table",
+      "sorts": [
+       {
+        "prop": "6ce2621c",
+        "dir": "asc"
+       }
+      ],
+      "filters": [],
+      "hidden": [],
+      "widths": {},
+      "tableGroup": "a6c0647b",
+      "calcs": {
+       "title": "count"
+      }
+     }
+    ]
+   },
+   "props": null,
+   "position": 6,
+   "full_width": 0
+  },
+  {
+   "key": "5b1f8921-1920-4f95-90c3-6d9009edfc89",
+   "parent": "a7104ed1-c4cc-4e7d-aebc-227f0644bdef",
+   "kind": "page",
+   "title": "Lên kế hoạch tuần",
+   "icon": null,
+   "cover": null,
+   "content": [
+    {
+     "type": "paragraph",
+     "content": "Ghi chú cho công việc này…"
+    }
+   ],
+   "text": "",
+   "db_schema": null,
+   "props": {
+    "aca50346": "18769b87",
+    "a6c0647b": "7f9ebcb4",
+    "6ce2621c": "2026-12-01",
+    "b5678097": "Bạn"
+   },
+   "position": 1,
+   "full_width": 0
+  },
+  {
+   "key": "960cc66d-1b61-4563-91dd-fa4fa28b2c2c",
+   "parent": "a7104ed1-c4cc-4e7d-aebc-227f0644bdef",
+   "kind": "page",
+   "title": "Viết báo cáo",
+   "icon": null,
+   "cover": null,
+   "content": [
+    {
+     "type": "paragraph",
+     "content": "Ghi chú cho công việc này…"
+    }
+   ],
+   "text": "",
+   "db_schema": null,
+   "props": {
+    "aca50346": "776c7b58",
+    "a6c0647b": "f0980453",
+    "6ce2621c": "2026-12-03"
+   },
+   "position": 2,
+   "full_width": 0
+  },
+  {
+   "key": "9ea6e377-c37d-4789-91b2-2dbfe5511d57",
+   "parent": "a7104ed1-c4cc-4e7d-aebc-227f0644bdef",
+   "kind": "page",
+   "title": "Dọn hộp thư",
+   "icon": null,
+   "cover": null,
+   "content": [
+    {
+     "type": "paragraph",
+     "content": "Ghi chú cho công việc này…"
+    }
+   ],
+   "text": "",
+   "db_schema": null,
+   "props": {
+    "aca50346": "8366b5d8",
+    "a6c0647b": "9266a63a"
+   },
+   "position": 3,
+   "full_width": 0
+  }
+ ],
+ "assets": {}
+}

@@ -56,9 +56,13 @@ t("Edited {time}", { time })      // placeholders in {braces}
 
 When you add a new UI string, wrap it in `t("...")` and add its translation to every file in `src/locales/`. CI fails if a translation is missing.
 
+## Templates
+
+To add a template to the shared library, see [library/README.md](library/README.md).
+
 ## Guidelines
 
-- Keep it **local-first**: no telemetry, no required accounts, no network calls to third parties.
+- Keep it **local-first**: no telemetry, no required accounts, no network calls to third parties. The one exception is the Template library, which is fetched only when the user opens it.
 - Schema changes go through the migration block at the top of `startServer()` (add columns, never drop).
 - Keep dependencies small. The packaged app only ships `express` as its runtime dependency. Frontend libs are bundled by Vite.
 

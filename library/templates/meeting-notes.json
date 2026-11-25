@@ -1,0 +1,78 @@
+{
+ "format": "frnt-template",
+ "version": 1,
+ "id": "meeting-notes",
+ "title": "Meeting notes",
+ "description": "Agenda, discussion, decisions and action items for a meeting.",
+ "category": "Work",
+ "lang": "en",
+ "icon": "🗓️",
+ "author": "Frnt",
+ "updated": "2026-11-25",
+ "pages": [
+  {
+   "key": "06b91b2b-3c99-439d-b339-09d4b32424c3",
+   "parent": null,
+   "kind": "page",
+   "title": "Meeting notes",
+   "icon": "🗓️",
+   "cover": null,
+   "content": [
+    {
+     "type": "paragraph",
+     "content": "📅 Date: … · 👥 Attendees: …"
+    },
+    {
+     "type": "heading",
+     "props": {
+      "level": 2
+     },
+     "content": "Goals"
+    },
+    {
+     "type": "bulletListItem",
+     "content": ""
+    },
+    {
+     "type": "heading",
+     "props": {
+      "level": 2
+     },
+     "content": "Discussion"
+    },
+    {
+     "type": "bulletListItem",
+     "content": ""
+    },
+    {
+     "type": "heading",
+     "props": {
+      "level": 2
+     },
+     "content": "Decisions"
+    },
+    {
+     "type": "bulletListItem",
+     "content": ""
+    },
+    {
+     "type": "heading",
+     "props": {
+      "level": 2
+     },
+     "content": "Action items"
+    },
+    {
+     "type": "checkListItem",
+     "content": "… — owner — due date"
+    }
+   ],
+   "text": "Meeting notes",
+   "db_schema": null,
+   "props": null,
+   "position": 2,
+   "full_width": 0
+  }
+ ],
+ "assets": {}
+}

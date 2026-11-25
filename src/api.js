@@ -98,4 +98,9 @@ export const api = {
   },
   importAttach: (sid, paths) => send("POST", `/api/import/${sid}/attach`, { paths }),
   importCleanup: (sid) => send("DELETE", `/api/import/${sid}`),
+  // template library
+  library: (refresh = false) => get(`/api/library${refresh ? "?refresh=1" : ""}`),
+  librarySeen: (templates) => send("POST", "/api/library/seen", { templates: templates.map((t) => ({ id: t.id, updated: t.updated })) }),
+  libraryInstall: (id, asTemplate = false) => send("POST", `/api/library/install/${encodeURIComponent(id)}`, { asTemplate }),
+  installTemplateFile: (pkg, asTemplate = false) => send("POST", `/api/templates/install${asTemplate ? "?asTemplate=1" : ""}`, pkg),
 };

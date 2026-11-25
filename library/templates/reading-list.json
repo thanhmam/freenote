@@ -1,0 +1,166 @@
+{
+ "format": "frnt-template",
+ "version": 1,
+ "id": "reading-list",
+ "title": "Reading list",
+ "description": "Track books, articles and podcasts with status, author and rating.",
+ "category": "Personal",
+ "lang": "en",
+ "icon": "📚",
+ "author": "Frnt",
+ "updated": "2026-11-25",
+ "pages": [
+  {
+   "key": "a2930ed3-ae5c-412f-9dee-787c1bdf9674",
+   "parent": null,
+   "kind": "database",
+   "title": "Reading list",
+   "icon": "📚",
+   "cover": null,
+   "content": null,
+   "text": "",
+   "db_schema": {
+    "titleName": "Title",
+    "properties": [
+     {
+      "id": "075acaf4",
+      "name": "Type",
+      "type": "select",
+      "options": [
+       {
+        "id": "4e0dec7b",
+        "name": "Book",
+        "color": "blue"
+       },
+       {
+        "id": "a6be97df",
+        "name": "Article",
+        "color": "purple"
+       },
+       {
+        "id": "31f18fb2",
+        "name": "Podcast",
+        "color": "pink"
+       }
+      ]
+     },
+     {
+      "id": "9853461e",
+      "name": "Status",
+      "type": "status",
+      "options": [
+       {
+        "id": "c64cf6df",
+        "name": "Want to read",
+        "color": "gray"
+       },
+       {
+        "id": "15798096",
+        "name": "Reading",
+        "color": "yellow"
+       },
+       {
+        "id": "9fb2ee99",
+        "name": "Finished",
+        "color": "green"
+       }
+      ]
+     },
+     {
+      "id": "64fda135",
+      "name": "Author",
+      "type": "text"
+     },
+     {
+      "id": "6183cbd6",
+      "name": "Rating",
+      "type": "number"
+     }
+    ],
+    "views": [
+     {
+      "id": "643956c2",
+      "name": "Table",
+      "type": "table",
+      "sorts": [],
+      "filters": [],
+      "hidden": [],
+      "widths": {},
+      "tableGroup": "9853461e",
+      "calcs": {
+       "6183cbd6": "avg"
+      }
+     },
+     {
+      "id": "d83dbbb1",
+      "name": "Board",
+      "type": "board",
+      "sorts": [],
+      "filters": [],
+      "hidden": [],
+      "groupBy": "9853461e"
+     }
+    ]
+   },
+   "props": null,
+   "position": 7,
+   "full_width": 0
+  },
+  {
+   "key": "2ce7beff-6a5f-4f97-8b9e-58ee14a480d4",
+   "parent": "a2930ed3-ae5c-412f-9dee-787c1bdf9674",
+   "kind": "page",
+   "title": "Atomic Habits",
+   "icon": null,
+   "cover": null,
+   "content": null,
+   "text": "",
+   "db_schema": null,
+   "props": {
+    "075acaf4": "4e0dec7b",
+    "9853461e": "9fb2ee99",
+    "64fda135": "James Clear",
+    "6183cbd6": 5
+   },
+   "position": 1,
+   "full_width": 0
+  },
+  {
+   "key": "748b957b-bf77-4dc8-8760-0c4b83d13eeb",
+   "parent": "a2930ed3-ae5c-412f-9dee-787c1bdf9674",
+   "kind": "page",
+   "title": "Sapiens",
+   "icon": null,
+   "cover": null,
+   "content": null,
+   "text": "",
+   "db_schema": null,
+   "props": {
+    "075acaf4": "4e0dec7b",
+    "9853461e": "15798096",
+    "64fda135": "Yuval Noah Harari"
+   },
+   "position": 2,
+   "full_width": 0
+  },
+  {
+   "key": "009b1d2a-af31-4d34-977b-956b12829a51",
+   "parent": "a2930ed3-ae5c-412f-9dee-787c1bdf9674",
+   "kind": "page",
+   "title": "Deep Work",
+   "icon": null,
+   "cover": null,
+   "content": null,
+   "text": "",
+   "db_schema": null,
+   "props": {
+    "075acaf4": "4e0dec7b",
+    "9853461e": "c64cf6df",
+    "64fda135": "Cal Newport"
+   },
+   "position": 3,
+   "full_width": 0
+  }
+ ],
+ "assets": {}
+}

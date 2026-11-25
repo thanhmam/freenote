@@ -1,0 +1,185 @@
+{
+ "format": "frnt-template",
+ "version": 1,
+ "id": "task-tracker",
+ "title": "Task tracker",
+ "description": "A task database with a Kanban board by status, priority and due dates.",
+ "category": "Projects",
+ "lang": "en",
+ "icon": "✅",
+ "author": "Frnt",
+ "updated": "2026-11-25",
+ "pages": [
+  {
+   "key": "c7f03371-75d0-478a-9740-031446e50b8c",
+   "parent": null,
+   "kind": "database",
+   "title": "Task tracker",
+   "icon": "✅",
+   "cover": null,
+   "content": null,
+   "text": "",
+   "db_schema": {
+    "titleName": "Task",
+    "properties": [
+     {
+      "id": "ba27a0c2",
+      "name": "Status",
+      "type": "status",
+      "options": [
+       {
+        "id": "70d5fa9d",
+        "name": "To do",
+        "color": "gray"
+       },
+       {
+        "id": "fbf4fc62",
+        "name": "In progress",
+        "color": "blue"
+       },
+       {
+        "id": "2dd57b4d",
+        "name": "Done",
+        "color": "green"
+       }
+      ]
+     },
+     {
+      "id": "563a3500",
+      "name": "Priority",
+      "type": "select",
+      "options": [
+       {
+        "id": "9506ffdd",
+        "name": "High",
+        "color": "red"
+       },
+       {
+        "id": "f0b87867",
+        "name": "Medium",
+        "color": "orange"
+       },
+       {
+        "id": "c339f34d",
+        "name": "Low",
+        "color": "gray"
+       }
+      ]
+     },
+     {
+      "id": "a0facf26",
+      "name": "Due",
+      "type": "date"
+     },
+     {
+      "id": "fcade73e",
+      "name": "Owner",
+      "type": "text"
+     }
+    ],
+    "views": [
+     {
+      "id": "09acceab",
+      "name": "Board",
+      "type": "board",
+      "sorts": [],
+      "filters": [],
+      "hidden": [],
+      "groupBy": "ba27a0c2"
+     },
+     {
+      "id": "74a16d03",
+      "name": "All tasks",
+      "type": "table",
+      "sorts": [
+       {
+        "prop": "a0facf26",
+        "dir": "asc"
+       }
+      ],
+      "filters": [],
+      "hidden": [],
+      "widths": {},
+      "tableGroup": "563a3500",
+      "calcs": {
+       "title": "count"
+      }
+     }
+    ]
+   },
+   "props": null,
+   "position": 6,
+   "full_width": 0
+  },
+  {
+   "key": "4116395f-5593-484b-a479-a95df63c859a",
+   "parent": "c7f03371-75d0-478a-9740-031446e50b8c",
+   "kind": "page",
+   "title": "Plan the week",
+   "icon": null,
+   "cover": null,
+   "content": [
+    {
+     "type": "paragraph",
+     "content": "Notes for this task…"
+    }
+   ],
+   "text": "",
+   "db_schema": null,
+   "props": {
+    "ba27a0c2": "fbf4fc62",
+    "563a3500": "9506ffdd",
+    "a0facf26": "2026-12-01",
+    "fcade73e": "You"
+   },
+   "position": 1,
+   "full_width": 0
+  },
+  {
+   "key": "63d2fda0-763f-43cb-89b1-f4e927ab1c48",
+   "parent": "c7f03371-75d0-478a-9740-031446e50b8c",
+   "kind": "page",
+   "title": "Write the report",
+   "icon": null,
+   "cover": null,
+   "content": [
+    {
+     "type": "paragraph",
+     "content": "Notes for this task…"
+    }
+   ],
+   "text": "",
+   "db_schema": null,
+   "props": {
+    "ba27a0c2": "70d5fa9d",
+    "563a3500": "f0b87867",
+    "a0facf26": "2026-12-03"
+   },
+   "position": 2,
+   "full_width": 0
+  },
+  {
+   "key": "a80d64a9-0299-4128-b8d1-c03a590d05b9",
+   "parent": "c7f03371-75d0-478a-9740-031446e50b8c",
+   "kind": "page",
+   "title": "Clean up inbox",
+   "icon": null,
+   "cover": null,
+   "content": [
+    {
+     "type": "paragraph",
+     "content": "Notes for this task…"
+    }
+   ],
+   "text": "",
+   "db_schema": null,
+   "props": {
+    "ba27a0c2": "2dd57b4d",
+    "563a3500": "c339f34d"
+   },
+   "position": 3,
+   "full_width": 0
+  }
+ ],
+ "assets": {}
+}

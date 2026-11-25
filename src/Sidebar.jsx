@@ -3,6 +3,7 @@ import { api } from "./api.js";
 import { usePages, navigate, pageTitle, store, timeAgo } from "./store.js";
 import { createDatabase } from "./db/dbUtils.js";
 import Settings from "./Settings.jsx";
+import Library from "./Library.jsx";
 import { lang, setLang, LOCALES } from "./i18n.js";
 import { t } from "./i18n.js";
 
@@ -300,6 +301,7 @@ export default function Sidebar({ currentId, refresh, createPage, openSearch, th
   const [expanded, setExpanded] = useState(() => JSON.parse(localStorage.getItem("expanded") || "{}"));
   const [trashOpen, setTrashOpen] = useState(false);
   const [settings, setSettings] = useState(false);
+  const [libraryOpen, setLibraryOpen] = useState(false);
   const [tplOpen, setTplOpen] = useState(() => localStorage.getItem("tplOpen") === "1");
 
   useEffect(() => localStorage.setItem("tplOpen", tplOpen ? "1" : "0"), [tplOpen]);
@@ -360,6 +362,9 @@ export default function Sidebar({ currentId, refresh, createPage, openSearch, th
         </button>
         <button className="sb-link" onClick={async () => navigate((await createDatabase(null)).id)}>
           <span className="menu-ico">🗃</span> {t("New database")}
+        </button>
+        <button className="sb-link" onClick={() => setLibraryOpen(true)}>
+          <span className="menu-ico">📚</span> {t("Template library")}
         </button>
       </div>
 
@@ -428,6 +433,7 @@ export default function Sidebar({ currentId, refresh, createPage, openSearch, th
           ))}
         </div>
         {trashOpen && <TrashPanel onClose={() => setTrashOpen(false)} refresh={refresh} />}
+        {libraryOpen && <Library onClose={() => setLibraryOpen(false)} />}
         {settings && <Settings onClose={() => setSettings(false)} theme={theme} toggleTheme={toggleTheme} />}
       </div>
     </aside>

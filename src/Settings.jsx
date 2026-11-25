@@ -9,6 +9,7 @@ export const REPO_URL = "https://github.com/thanhmam/frnt-notes";
 export default function Settings({ onClose, theme, toggleTheme }) {
   const [s, setS] = useState(null);
   const [dir, setDir] = useState("");
+  const [libSrc, setLibSrc] = useState("");
   const [msg, setMsg] = useState("");
   const [busy, setBusy] = useState(false);
   const [progress, setProgress] = useState(null); // { phase, done, total }
@@ -21,6 +22,7 @@ export default function Settings({ onClose, theme, toggleTheme }) {
     api.settings().then((r) => {
       setS(r);
       setDir(r.backup_dir);
+      setLibSrc(r.library_source);
     });
   useEffect(() => {
     load();
@@ -152,6 +154,37 @@ export default function Settings({ onClose, theme, toggleTheme }) {
                 {t("Data folder")}: <code>{s.data_dir}</code>
               </div>
             </>
+          )}
+        </section>
+
+        <section>
+          <h3>{t("Template library")}</h3>
+          {s && (
+            <div className="set-col">
+              <span>{t("Library address")}</span>
+              <div className="muted small">{t("Where the Template library is loaded from. Frnt only connects to it when you open the library.")}</div>
+              <div className="row">
+                <input className="input" value={libSrc} onChange={(e) => setLibSrc(e.target.value)} placeholder={s.library_default} />
+                <button
+                  className="btn ghost"
+                  disabled={libSrc === s.library_source}
+                  onClick={() =>
+                    run(t("Saving"), async () => {
+                      await api.saveSettings({ library_source: libSrc });
+                      await load();
+                      setMsg("✓ " + t("Library address saved"));
+                    })
+                  }
+                >
+                  {t("Save")}
+                </button>
+                {s.library_source !== s.library_default && (
+                  <button className="btn ghost" onClick={() => run(t("Saving"), async () => (await api.saveSettings({ library_source: "" }), await load(), setMsg("✓ " + t("Library address saved"))))}>
+                    {t("Reset")}
+                  </button>
+                )}
+              </div>
+            </div>
           )}
         </section>
 

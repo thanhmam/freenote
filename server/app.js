@@ -9,6 +9,7 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { seedTemplates, seedWelcome, detectLang } from "./seed.js";
 import { mountImport } from "./importSession.js";
+import { mountTemplates, DEFAULT_LIBRARY } from "./templates.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.join(__dirname, "..");
@@ -341,6 +342,8 @@ export async function startServer({ port = 3001, host = "127.0.0.1", dataDir = d
       backup_dir: backupDir(),
       auto_backup: getSetting("auto_backup", "1") === "1",
       last_backup: Number(getSetting("last_backup", 0)) || null,
+      library_source: getSetting("library_source") || DEFAULT_LIBRARY,
+      library_default: DEFAULT_LIBRARY,
     });
   });
   app.post("/api/settings", (req, res) => {
@@ -350,6 +353,11 @@ export async function startServer({ port = 3001, host = "127.0.0.1", dataDir = d
       setSetting("backup_dir", d || null);
     }
     if ("auto_backup" in req.body) setSetting("auto_backup", req.body.auto_backup ? "1" : "0");
+    if ("library_source" in req.body) {
+      const src = String(req.body.library_source || "").trim().replace(/\/+$/, "");
+      if (src && !/^https:\/\/|^http:\/\/(localhost|127\.0\.0\.1)(:\d+)?\//.test(src + "/")) return res.status(400).json({ error: "The library address must start with https://" });
+      setSetting("library_source", src && src !== DEFAULT_LIBRARY ? src : null);
+    }
     res.json({ ok: true });
   });
   app.post("/api/backup", (_req, res) => {
@@ -381,6 +389,7 @@ export async function startServer({ port = 3001, host = "127.0.0.1", dataDir = d
   });
 
   mountImport(app, { dataDir, uploadDir: UPLOAD_DIR });
+  mountTemplates(app, { db, dataDir, uploadDir: UPLOAD_DIR, getPage, createPage, descendants, getSetting, setSetting });
 
   // ---- errors: always answer API calls with a readable JSON message ----
   app.use("/api", (err, req, res, _next) => {

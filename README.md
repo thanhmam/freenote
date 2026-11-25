@@ -30,7 +30,8 @@
 | ✍️ **Block editor** | Type `/` for headings, to-dos, toggles, quotes, code, tables, images/video/files, dividers. Drag blocks to reorder, use Markdown shortcuts, format with the toolbar. |
 | 📄 **Pages** | Unlimited nesting, emoji icons, covers, breadcrumbs, favourites, full-width mode, drag & drop in the sidebar. |
 | 🔗 **Links** | Create sub-pages inline, `@`-link any page (titles stay in sync), and see **backlinks** on every page. |
-| 🗃️ **Databases** | Table and Kanban board views. 10 property types (text, number, select, multi-select, status, date, checkbox, URL, created/edited time). Filters, multi-level sorts, column resizing, several saved views per database, inline or full page. Every row is a full page. |
+| 🗃️ **Databases** | Table and Kanban board views. 10 property types (text, number, select, multi-select, status, date, checkbox, URL, created/edited time). **Group by**, column **calculations** (count, sum, average, min/max, % checked…), filters, multi-level sorts, column resizing, several saved views per database, inline or full page. Every row is a full page. |
+| 📚 **Template library** | Browse and copy ready-made templates (documents and databases) maintained in this repo. Updated templates show up as **New**, with no app update needed. [How to add one](library/README.md). |
 | 🔍 **Search** | `⌘K` / `Ctrl+K` across titles and content, accent-insensitive. |
 | 🕘 **Version history** | Automatic snapshots per page, with one-click restore. |
 | 📋 **Templates** | Four built in, and you can save any page as a template. |
@@ -147,6 +148,8 @@ npm run dist       # build an installer for your current OS → ./release
 
 It contains `notes.db` (SQLite), `uploads/` (images and files) and `backups/`. The browser and desktop versions share the same data.
 Override it with `DATA_DIR=/path`, the port with `PORT=4000`, and the language of the first-run content with `FRNT_LANG=en|vi`.
+
+> **Network use:** Frnt works fully offline. The only time it connects to the internet is when you open the **Template library**, to download its list from GitHub (the address can be changed in Settings).
 
 > The server listens on `127.0.0.1` only and has **no authentication**. Don't expose it to a network (`HOST=0.0.0.0`) unless it sits behind your own authenticating reverse proxy or VPN.
 

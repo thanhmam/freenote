@@ -5,6 +5,7 @@ import Editor from "./Editor.jsx";
 import { Menu, desktop, openInBrowser } from "./Sidebar.jsx";
 import DatabaseView, { RowProperties } from "./db/DatabaseView.jsx";
 import History from "./History.jsx";
+import ExportTemplate from "./ExportTemplate.jsx";
 import { Popover } from "./db/Cells.jsx";
 import { t } from "./i18n.js";
 
@@ -132,6 +133,7 @@ export default function PageView({ id, theme, sidebarOpen, openSidebar }) {
   const [coverMenu, setCoverMenu] = useState(false);
   const [menu, setMenu] = useState(false);
   const [history, setHistory] = useState(false);
+  const [exportTpl, setExportTpl] = useState(false);
   const [editorKey, setEditorKey] = useState(0);
   const titleRef = useRef(null);
   const titleTimer = useRef(null);
@@ -220,6 +222,7 @@ export default function PageView({ id, theme, sidebarOpen, openSidebar }) {
                     navigate(p.id);
                   },
                 },
+                { icon: "📦", label: t("Export as library template…"), onClick: () => setExportTpl(true) },
                 { icon: "🖨", label: t("Print / Save as PDF"), onClick: () => window.print() },
                 desktop && { icon: "🌐", label: t("Open in browser"), onClick: () => openInBrowser() },
                 {
@@ -248,6 +251,7 @@ export default function PageView({ id, theme, sidebarOpen, openSidebar }) {
         </div>
       </div>
 
+      {exportTpl && <ExportTemplate id={id} onClose={() => setExportTpl(false)} />}
       {history && (
         <History
           pageId={id}

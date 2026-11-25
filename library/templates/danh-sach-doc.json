@@ -1,0 +1,166 @@
+{
+ "format": "frnt-template",
+ "version": 1,
+ "id": "danh-sach-doc",
+ "title": "Danh sách đọc",
+ "description": "Theo dõi sách, bài viết và podcast: trạng thái, tác giả, đánh giá.",
+ "category": "Personal",
+ "lang": "vi",
+ "icon": "📚",
+ "author": "Frnt",
+ "updated": "2026-11-25",
+ "pages": [
+  {
+   "key": "5382f3a1-fc9e-4e31-8486-2cdfaac77daf",
+   "parent": null,
+   "kind": "database",
+   "title": "Danh sách đọc",
+   "icon": "📚",
+   "cover": null,
+   "content": null,
+   "text": "",
+   "db_schema": {
+    "titleName": "Tên",
+    "properties": [
+     {
+      "id": "44b9cd39",
+      "name": "Loại",
+      "type": "select",
+      "options": [
+       {
+        "id": "0ce9373b",
+        "name": "Sách",
+        "color": "blue"
+       },
+       {
+        "id": "0a428c84",
+        "name": "Bài viết",
+        "color": "purple"
+       },
+       {
+        "id": "df985fb2",
+        "name": "Podcast",
+        "color": "pink"
+       }
+      ]
+     },
+     {
+      "id": "bc253cd3",
+      "name": "Trạng thái",
+      "type": "status",
+      "options": [
+       {
+        "id": "d35ef361",
+        "name": "Muốn đọc",
+        "color": "gray"
+       },
+       {
+        "id": "41efcc5d",
+        "name": "Đang đọc",
+        "color": "yellow"
+       },
+       {
+        "id": "236a4763",
+        "name": "Đã đọc",
+        "color": "green"
+       }
+      ]
+     },
+     {
+      "id": "78115ebc",
+      "name": "Tác giả",
+      "type": "text"
+     },
+     {
+      "id": "05172acf",
+      "name": "Đánh giá",
+      "type": "number"
+     }
+    ],
+    "views": [
+     {
+      "id": "702b6a1a",
+      "name": "Bảng",
+      "type": "table",
+      "sorts": [],
+      "filters": [],
+      "hidden": [],
+      "widths": {},
+      "tableGroup": "bc253cd3",
+      "calcs": {
+       "05172acf": "avg"
+      }
+     },
+     {
+      "id": "65dd34db",
+      "name": "Board",
+      "type": "board",
+      "sorts": [],
+      "filters": [],
+      "hidden": [],
+      "groupBy": "bc253cd3"
+     }
+    ]
+   },
+   "props": null,
+   "position": 7,
+   "full_width": 0
+  },
+  {
+   "key": "9d6cb928-aa25-4715-82ab-4696de3bc888",
+   "parent": "5382f3a1-fc9e-4e31-8486-2cdfaac77daf",
+   "kind": "page",
+   "title": "Atomic Habits",
+   "icon": null,
+   "cover": null,
+   "content": null,
+   "text": "",
+   "db_schema": null,
+   "props": {
+    "44b9cd39": "0ce9373b",
+    "bc253cd3": "236a4763",
+    "78115ebc": "James Clear",
+    "05172acf": 5
+   },
+   "position": 1,
+   "full_width": 0
+  },
+  {
+   "key": "bc52d8ab-1218-4ebd-86ef-dec6e749bd61",
+   "parent": "5382f3a1-fc9e-4e31-8486-2cdfaac77daf",
+   "kind": "page",
+   "title": "Sapiens",
+   "icon": null,
+   "cover": null,
+   "content": null,
+   "text": "",
+   "db_schema": null,
+   "props": {
+    "44b9cd39": "0ce9373b",
+    "bc253cd3": "41efcc5d",
+    "78115ebc": "Yuval Noah Harari"
+   },
+   "position": 2,
+   "full_width": 0
+  },
+  {
+   "key": "fb5d5126-b173-432d-9ef0-85f1cdf32907",
+   "parent": "5382f3a1-fc9e-4e31-8486-2cdfaac77daf",
+   "kind": "page",
+   "title": "Deep Work",
+   "icon": null,
+   "cover": null,
+   "content": null,
+   "text": "",
+   "db_schema": null,
+   "props": {
+    "44b9cd39": "0ce9373b",
+    "bc253cd3": "d35ef361",
+    "78115ebc": "Cal Newport"
+   },
+   "position": 3,
+   "full_width": 0
+  }
+ ],
+ "assets": {}
+}

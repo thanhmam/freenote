@@ -1,0 +1,78 @@
+{
+ "format": "frnt-template",
+ "version": 1,
+ "id": "bien-ban-hop",
+ "title": "Biên bản họp",
+ "description": "Mẫu ghi biên bản họp: mục tiêu, thảo luận, quyết định và việc cần làm.",
+ "category": "Work",
+ "lang": "vi",
+ "icon": "🗓️",
+ "author": "Frnt",
+ "updated": "2026-11-25",
+ "pages": [
+  {
+   "key": "56445014-9bd8-42c7-8e43-486757a3bbd9",
+   "parent": null,
+   "kind": "page",
+   "title": "Biên bản họp",
+   "icon": "🗓️",
+   "cover": null,
+   "content": [
+    {
+     "type": "paragraph",
+     "content": "📅 Ngày: … · 👥 Thành phần: …"
+    },
+    {
+     "type": "heading",
+     "props": {
+      "level": 2
+     },
+     "content": "Mục tiêu"
+    },
+    {
+     "type": "bulletListItem",
+     "content": ""
+    },
+    {
+     "type": "heading",
+     "props": {
+      "level": 2
+     },
+     "content": "Nội dung thảo luận"
+    },
+    {
+     "type": "bulletListItem",
+     "content": ""
+    },
+    {
+     "type": "heading",
+     "props": {
+      "level": 2
+     },
+     "content": "Quyết định"
+    },
+    {
+     "type": "bulletListItem",
+     "content": ""
+    },
+    {
+     "type": "heading",
+     "props": {
+      "level": 2
+     },
+     "content": "Việc cần làm"
+    },
+    {
+     "type": "checkListItem",
+     "content": "… — người phụ trách — hạn"
+    }
+   ],
+   "text": "Biên bản họp",
+   "db_schema": null,
+   "props": null,
+   "position": 2,
+   "full_width": 0
+  }
+ ],
+ "assets": {}
+}

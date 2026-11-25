@@ -4,6 +4,7 @@ import { usePages, store, navigate, pageTitle } from "../store.js";
 import {
   TYPES, ADDABLE_TYPES, allProps, applyView, opsFor, opNeedsValue, isSelectType, getVal,
   saveSchema, updateView, updateProp, setRowValue, createRow, uid, randomColor,
+  groupRows, GROUPABLE, calcsFor, calculate,
 } from "./dbUtils.js";
 import { Popover, Cell, Tag } from "./Cells.jsx";
 import { t } from "../i18n.js";
@@ -52,6 +53,13 @@ function PropMenu({ dbId, schema, view, prop, anchor, onClose }) {
       )}
       <MenuBtn icon="↑" label={t("Sort ascending")} onClick={() => sortBy("asc")} />
       <MenuBtn icon="↓" label={t("Sort descending")} onClick={() => sortBy("desc")} />
+      {view.type === "table" && GROUPABLE.includes(prop.type) && (
+        <MenuBtn
+          icon="▤"
+          label={view.tableGroup === prop.id ? t("Ungroup") : t("Group by this property")}
+          onClick={() => (updateView(dbId, schema, view.id, { tableGroup: view.tableGroup === prop.id ? null : prop.id }), onClose())}
+        />
+      )}
       <MenuBtn
         icon="⚲"
         label={t("Filter by this property")}
@@ -89,6 +97,7 @@ function PropMenu({ dbId, schema, view, prop, anchor, onClose }) {
                   sorts: (v.sorts || []).filter((s) => s.prop !== prop.id),
                   filters: (v.filters || []).filter((f) => f.prop !== prop.id),
                   groupBy: v.groupBy === prop.id ? null : v.groupBy,
+                  tableGroup: v.tableGroup === prop.id ? null : v.tableGroup,
                 })),
               });
               onClose();
@@ -208,6 +217,22 @@ function SortEditor({ dbId, schema, view, anchor, onClose }) {
   );
 }
 
+function GroupEditor({ dbId, schema, view, anchor, onClose }) {
+  const options = schema.properties.filter((p) => GROUPABLE.includes(p.type));
+  const set = (id) => (updateView(dbId, schema, view.id, { tableGroup: id }), onClose());
+  return (
+    <Popover anchor={anchor} onClose={onClose} width={240} align="right">
+      <div className="muted small" style={{ padding: "4px 8px" }}>{t("Group by")}</div>
+      <MenuBtn icon="∅" label={t("None")} right={!view.tableGroup ? "✓" : ""} onClick={() => set(null)} />
+      <div className="menu-sep" />
+      {options.map((p) => (
+        <MenuBtn key={p.id} icon={TYPES[p.type]?.icon} label={p.name} right={view.tableGroup === p.id ? "✓" : ""} onClick={() => set(p.id)} />
+      ))}
+      {!options.length && <div className="muted pad small">{t("Add a Select, Status, Date or Checkbox property to group by.")}</div>}
+    </Popover>
+  );
+}
+
 function PropsVisibility({ dbId, schema, view, anchor, onClose }) {
   const hidden = view.hidden || [];
   return (
@@ -270,15 +295,54 @@ function RowMenu({ row, anchor, onClose }) {
 /* ---------------- Table view ---------------- */
 let dragRowId = null;
 
+function CalcCell({ prop, rows, calc, onPick }) {
+  const [anchor, setAnchor] = useState(null);
+  const opts = calcsFor(prop.type);
+  return (
+    <>
+      <button className={`calc-btn ${calc ? "on" : ""}`} onClick={(e) => setAnchor(e.currentTarget)}>
+        {calc ? (
+          <>
+            <span className="muted">{opts[calc]}</span> <b>{calculate(rows, prop, calc)}</b>
+          </>
+        ) : (
+          <span className="calc-hint">{t("Calculate")} ▾</span>
+        )}
+      </button>
+      {anchor && (
+        <Popover anchor={anchor} onClose={() => setAnchor(null)} width={220}>
+          <MenuBtn icon="" label={t("None")} right={!calc ? "✓" : ""} onClick={() => (onPick(null), setAnchor(null))} />
+          <div className="menu-sep" />
+          {Object.entries(opts).map(([k, label]) => (
+            <MenuBtn key={k} icon="" label={label} right={calc === k ? "✓" : ""} onClick={() => (onPick(k), setAnchor(null))} />
+          ))}
+        </Popover>
+      )}
+    </>
+  );
+}
+
 function TableView({ dbId, schema, view, rows, visibleProps, manualOrder }) {
   const [propMenu, setPropMenu] = useState(null);
   const [addProp, setAddProp] = useState(null);
   const [rowMenu, setRowMenu] = useState(null);
   const [dropOn, setDropOn] = useState(null);
-  const [limit, setLimit] = useState(100); // render big databases progressively
-  const shown = rows.slice(0, limit);
+  const [limits, setLimits] = useState({}); // group key → rows rendered (big databases render progressively)
+  const [collapsed, setCollapsed] = useState(() => JSON.parse(localStorage.getItem(`collapsed:${view.id}`) || "{}"));
   const widths = view.widths || {};
+  const calcs = view.calcs || {};
   const w = (p) => widths[p.id] || (p.type === "title" ? 280 : p.type === "checkbox" ? 90 : 180);
+
+  const groupProp = view.tableGroup ? schema.properties.find((p) => p.id === view.tableGroup) : null;
+  const groups = useMemo(
+    () => (groupProp ? groupRows(rows, groupProp) : [{ key: "\u0000all", rows, prefill: undefined }]),
+    [rows, groupProp]
+  );
+  const toggleGroup = (key) => {
+    const next = { ...collapsed, [key]: !collapsed[key] };
+    setCollapsed(next);
+    localStorage.setItem(`collapsed:${view.id}`, JSON.stringify(next));
+  };
 
   const startResize = (e, p) => {
     e.preventDefault();
@@ -299,18 +363,21 @@ function TableView({ dbId, schema, view, rows, visibleProps, manualOrder }) {
     document.addEventListener("mouseup", up);
   };
 
-  const dropRow = async (target) => {
+  const dropRow = async (target, groupRowsList) => {
     const id = dragRowId;
     dragRowId = null;
     setDropOn(null);
     if (!id || id === target.id || !manualOrder) return;
-    const list = rows.filter((r) => r.id !== id);
+    const list = groupRowsList.filter((r) => r.id !== id);
     const idx = list.findIndex((r) => r.id === target.id);
     const prev = list[idx - 1];
     const position = prev ? (prev.position + target.position) / 2 : target.position - 1;
     store.patch(id, { position });
     await api.update(id, { position });
   };
+
+  const newRowIn = (g) => createRow(dbId, groupProp && g.prefill !== undefined ? { [groupProp.id]: g.prefill } : {});
+  const span = visibleProps.length + 2;
 
   return (
     <div className="db-table-wrap">
@@ -332,43 +399,86 @@ function TableView({ dbId, schema, view, rows, visibleProps, manualOrder }) {
             </th>
           </tr>
         </thead>
-        <tbody>
-          {shown.map((r) => (
-            <tr
-              key={r.id}
-              className={dropOn === r.id ? "drop-target" : ""}
-              onDragOver={(e) => manualOrder && dragRowId && (e.preventDefault(), setDropOn(r.id))}
-              onDragLeave={() => setDropOn(null)}
-              onDrop={() => dropRow(r)}
-            >
-              <td className="row-handle-col">
-                <button
-                  className="row-handle"
-                  draggable={manualOrder}
-                  title={manualOrder ? t("Drag to reorder · click for menu") : t("Click for menu")}
-                  onDragStart={() => (dragRowId = r.id)}
-                  onClick={(e) => setRowMenu({ row: r, anchor: e.currentTarget })}
-                >
-                  ⋮⋮
-                </button>
+        {groups.map((g) => {
+          const limit = limits[g.key] || (groupProp ? 50 : 100);
+          const isCollapsed = groupProp && collapsed[g.key];
+          return (
+            <tbody key={g.key} className={groupProp ? "db-group" : ""}>
+              {groupProp && (
+                <tr className="group-row">
+                  <td colSpan={span}>
+                    <button className="group-head" onClick={() => toggleGroup(g.key)}>
+                      <span className="group-chev" style={{ transform: isCollapsed ? "none" : "rotate(90deg)" }}>›</span>
+                      {isSelectType(groupProp.type) || groupProp.type === "checkbox" ? <Tag opt={{ name: g.label, color: g.color }} /> : <b>{g.label}</b>}
+                      <span className="muted small">{g.rows.length}</span>
+                    </button>
+                  </td>
+                </tr>
+              )}
+              {!isCollapsed &&
+                g.rows.slice(0, limit).map((r) => (
+                  <tr
+                    key={r.id}
+                    className={dropOn === r.id ? "drop-target" : ""}
+                    onDragOver={(e) => manualOrder && dragRowId && (e.preventDefault(), setDropOn(r.id))}
+                    onDragLeave={() => setDropOn(null)}
+                    onDrop={() => dropRow(r, g.rows)}
+                  >
+                    <td className="row-handle-col">
+                      <button
+                        className="row-handle"
+                        draggable={manualOrder}
+                        title={manualOrder ? t("Drag to reorder · click for menu") : t("Click for menu")}
+                        onDragStart={() => (dragRowId = r.id)}
+                        onClick={(e) => setRowMenu({ row: r, anchor: e.currentTarget })}
+                      >
+                        ⋮⋮
+                      </button>
+                    </td>
+                    {visibleProps.map((p) => (
+                      <td key={p.id} className={`td-${p.type}`}>
+                        <Cell dbId={dbId} schema={schema} prop={p} row={r} />
+                      </td>
+                    ))}
+                    <td />
+                  </tr>
+                ))}
+              {!isCollapsed && g.rows.length > limit && (
+                <tr>
+                  <td colSpan={span}>
+                    <button className="new-row load-more" onClick={() => setLimits((m) => ({ ...m, [g.key]: limit + 200 }))}>
+                      ↓ {t("Load {n} more", { n: Math.min(200, g.rows.length - limit) })} ({limit}/{g.rows.length})
+                    </button>
+                  </td>
+                </tr>
+              )}
+              {groupProp && !isCollapsed && (
+                <tr>
+                  <td colSpan={span}>
+                    <button className="new-row in-group" onClick={() => newRowIn(g)}>{t("+ New")}</button>
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          );
+        })}
+        <tfoot>
+          <tr className="calc-row">
+            <td className="row-handle-col" />
+            {visibleProps.map((p) => (
+              <td key={p.id}>
+                <CalcCell prop={p} rows={rows} calc={calcs[p.id]} onPick={(c) => updateView(dbId, schema, view.id, { calcs: { ...calcs, [p.id]: c || undefined } })} />
               </td>
-              {visibleProps.map((p) => (
-                <td key={p.id} className={`td-${p.type}`}>
-                  <Cell dbId={dbId} schema={schema} prop={p} row={r} />
-                </td>
-              ))}
-              <td />
-            </tr>
-          ))}
-        </tbody>
+            ))}
+            <td />
+          </tr>
+        </tfoot>
       </table>
-      {rows.length > limit && (
-        <button className="new-row load-more" onClick={() => setLimit((l) => l + 200)}>
-          ↓ {t("Load {n} more", { n: Math.min(200, rows.length - limit) })} ({limit}/{rows.length})
-        </button>
-      )}
-      <button className="new-row" onClick={() => createRow(dbId)}>{t("+ New")}</button>
-      <div className="db-count muted small">{t("{n} items", { n: rows.length })}</div>
+      {!groupProp && <button className="new-row" onClick={() => createRow(dbId)}>{t("+ New")}</button>}
+      <div className="db-count muted small">
+        {t("{n} items", { n: rows.length })}
+        {groupProp && ` · ${t("{n} groups", { n: groups.length })}`}
+      </div>
       {propMenu && <PropMenu dbId={dbId} schema={schema} view={view} prop={propMenu.prop} anchor={propMenu.anchor} onClose={() => setPropMenu(null)} />}
       {addProp && <AddPropMenu dbId={dbId} schema={schema} anchor={addProp} onClose={() => setAddProp(null)} />}
       {rowMenu && <RowMenu row={rowMenu.row} anchor={rowMenu.anchor} onClose={() => setRowMenu(null)} />}
@@ -548,6 +658,12 @@ export default function DatabaseView({ dbId, inline }) {
         </div>
         <div className="db-actions">
           <button className={`tool-btn ${nFilters ? "on" : ""}`} onClick={open("filter")}>{t("Filter")}{nFilters ? ` · ${nFilters}` : ""}</button>
+          {view.type === "table" && (
+            <button className={`tool-btn ${view.tableGroup ? "on" : ""}`} onClick={open("group")}>
+              {t("Group")}
+              {view.tableGroup ? `: ${schema.properties.find((p) => p.id === view.tableGroup)?.name || ""}` : ""}
+            </button>
+          )}
           <button className={`tool-btn ${nSorts ? "on" : ""}`} onClick={open("sort")}>{t("Sort")}{nSorts ? ` · ${nSorts}` : ""}</button>
           {searchOpen ? (
             <input className="input db-search" autoFocus placeholder={t("Search…")} value={search} onChange={(e) => setSearch(e.target.value)} onBlur={() => !search && setSearchOpen(false)} />
@@ -566,6 +682,7 @@ export default function DatabaseView({ dbId, inline }) {
       )}
 
       {pop?.kind === "filter" && <FilterEditor dbId={dbId} schema={schema} view={view} anchor={pop.anchor} onClose={close} />}
+      {pop?.kind === "group" && <GroupEditor dbId={dbId} schema={schema} view={view} anchor={pop.anchor} onClose={close} />}
       {pop?.kind === "sort" && <SortEditor dbId={dbId} schema={schema} view={view} anchor={pop.anchor} onClose={close} />}
       {pop?.kind === "props" && <PropsVisibility dbId={dbId} schema={schema} view={view} anchor={pop.anchor} onClose={close} />}
       {pop?.kind === "addView" && (

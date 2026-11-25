@@ -1,0 +1,76 @@
+{
+ "format": "frnt-template",
+ "version": 1,
+ "id": "nhat-ky-hang-ngay",
+ "title": "Nhật ký hằng ngày",
+ "description": "Ba việc quan trọng buổi sáng, điều biết ơn và bài học cuối ngày.",
+ "category": "Personal",
+ "lang": "vi",
+ "icon": "📔",
+ "author": "Frnt",
+ "updated": "2026-11-25",
+ "pages": [
+  {
+   "key": "46e66e82-8492-4fc9-821d-b93816ef24c3",
+   "parent": null,
+   "kind": "page",
+   "title": "Nhật ký hằng ngày",
+   "icon": "📔",
+   "cover": null,
+   "content": [
+    {
+     "type": "heading",
+     "props": {
+      "level": 2
+     },
+     "content": "🌅 Sáng nay"
+    },
+    {
+     "type": "paragraph",
+     "content": "Ba việc quan trọng nhất hôm nay:"
+    },
+    {
+     "type": "checkListItem",
+     "content": ""
+    },
+    {
+     "type": "checkListItem",
+     "content": ""
+    },
+    {
+     "type": "checkListItem",
+     "content": ""
+    },
+    {
+     "type": "heading",
+     "props": {
+      "level": 2
+     },
+     "content": "🌙 Cuối ngày"
+    },
+    {
+     "type": "paragraph",
+     "content": "Điều mình biết ơn:"
+    },
+    {
+     "type": "bulletListItem",
+     "content": ""
+    },
+    {
+     "type": "paragraph",
+     "content": "Điều học được:"
+    },
+    {
+     "type": "bulletListItem",
+     "content": ""
+    }
+   ],
+   "text": "Nhật ký hằng ngày",
+   "db_schema": null,
+   "props": null,
+   "position": 3,
+   "full_width": 0
+  }
+ ],
+ "assets": {}
+}

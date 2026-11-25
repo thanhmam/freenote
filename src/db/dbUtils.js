@@ -200,3 +200,104 @@ export async function createDatabase(parent_id, title = "") {
   store.setPages(await api.list());
   return p;
 }
+
+// ---- grouping (table view) ----
+export const GROUPABLE = ["select", "status", "multi_select", "checkbox", "date", "created_time", "updated_time", "text", "url", "number"];
+
+const monthKey = (v) => {
+  if (v == null || v === "") return null;
+  const d = typeof v === "number" ? new Date(v) : new Date(String(v).slice(0, 10) + "T00:00:00");
+  return isNaN(d) ? null : `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}`;
+};
+const monthLabel = (k) => {
+  const [y, m] = k.split("-").map(Number);
+  return new Date(y, m - 1, 1).toLocaleDateString(dateLocale, { month: "long", year: "numeric" });
+};
+
+/**
+ * Split rows into groups for a property. Each group: { key, label, color, rows, prefill }.
+ * prefill = the value a new row created inside the group should get (undefined = none).
+ */
+export function groupRows(rows, prop) {
+  const groups = new Map();
+  const add = (key, init, row) => {
+    if (!groups.has(key)) groups.set(key, { key, rows: [], ...init });
+    groups.get(key).rows.push(row);
+  };
+  const none = { label: t("No {name}", { name: prop.name }), color: "default", prefill: undefined, empty: true };
+  const opts = prop.options || [];
+
+  if (isSelectType(prop.type)) {
+    // keep option order, empty group first (like Notion)
+    add("\u0000none", none, null);
+    opts.forEach((o) => add(o.id, { label: o.name, color: o.color, prefill: prop.type === "multi_select" ? [o.id] : o.id }, null));
+    for (const g of groups.values()) g.rows = [];
+    for (const r of rows) {
+      const v = getVal(r, prop);
+      const ids = (Array.isArray(v) ? v : v ? [v] : []).filter((id) => opts.some((o) => o.id === id));
+      if (!ids.length) groups.get("\u0000none").rows.push(r);
+      else ids.forEach((id) => groups.get(id).rows.push(r)); // a multi-select row appears under each of its tags
+    }
+    return [...groups.values()].filter((g) => g.rows.length || !g.empty);
+  }
+  if (prop.type === "checkbox") {
+    for (const r of rows) {
+      const v = !!getVal(r, prop);
+      add(v ? "1" : "0", { label: v ? t("Checked") : t("Unchecked"), color: v ? "green" : "default", prefill: v }, r);
+    }
+    return [...groups.values()].sort((a, b) => b.key.localeCompare(a.key));
+  }
+  if (["date", "created_time", "updated_time"].includes(prop.type)) {
+    for (const r of rows) {
+      const k = monthKey(getVal(r, prop));
+      add(k ?? "\u0000none", k ? { label: monthLabel(k), color: "default" } : none, r);
+    }
+    return [...groups.values()].sort((a, b) => (a.empty ? -1 : b.empty ? 1 : b.key.localeCompare(a.key)));
+  }
+  for (const r of rows) {
+    const v = getVal(r, prop);
+    if (isEmpty(v)) add("\u0000none", none, r);
+    else add(String(v), { label: String(v), color: "default", prefill: v }, r);
+  }
+  return [...groups.values()].sort((a, b) =>
+    a.empty ? -1 : b.empty ? 1 : prop.type === "number" ? Number(a.key) - Number(b.key) : a.key.localeCompare(b.key, "vi", { numeric: true })
+  );
+}
+
+// ---- column calculations (table footer) ----
+export function calcsFor(type) {
+  const base = { count: t("Count all"), unique: t("Count unique values"), empty: t("Count empty"), filled: t("Count not empty"), pct_empty: t("Percent empty"), pct_filled: t("Percent not empty") };
+  if (type === "number") return { ...base, sum: t("Sum"), avg: t("Average"), median: t("Median"), min: t("Min"), max: t("Max"), range: t("Range") };
+  if (type === "checkbox") return { count: t("Count all"), checked: t("Checked"), unchecked: t("Unchecked"), pct_checked: t("Percent checked") };
+  if (["date", "created_time", "updated_time"].includes(type)) return { ...base, earliest: t("Earliest date"), latest: t("Latest date") };
+  return base;
+}
+
+export function calculate(rows, prop, calc) {
+  const vals = rows.map((r) => getVal(r, prop));
+  const filled = vals.filter((v) => !isEmpty(v));
+  const pct = (n) => (rows.length ? `${Math.round((n / rows.length) * 100)}%` : "0%");
+  const nums = filled.map(Number).filter((n) => !isNaN(n)).sort((a, b) => a - b);
+  const fmt = (n) => (Number.isInteger(n) ? n.toLocaleString(dateLocale) : n.toLocaleString(dateLocale, { maximumFractionDigits: 2 }));
+  const dates = filled.map((v) => (typeof v === "number" ? v : Date.parse(String(v).slice(0, 10)))).filter((n) => !isNaN(n)).sort((a, b) => a - b);
+  switch (calc) {
+    case "count": return String(rows.length);
+    case "unique": return String(new Set(filled.flatMap((v) => (Array.isArray(v) ? v : [JSON.stringify(v)]))).size);
+    case "empty": return String(rows.length - filled.length);
+    case "filled": return String(filled.length);
+    case "pct_empty": return pct(rows.length - filled.length);
+    case "pct_filled": return pct(filled.length);
+    case "checked": return String(vals.filter(Boolean).length);
+    case "unchecked": return String(vals.filter((v) => !v).length);
+    case "pct_checked": return pct(vals.filter(Boolean).length);
+    case "sum": return fmt(nums.reduce((a, b) => a + b, 0));
+    case "avg": return nums.length ? fmt(nums.reduce((a, b) => a + b, 0) / nums.length) : "—";
+    case "median": return nums.length ? fmt(nums.length % 2 ? nums[(nums.length - 1) / 2] : (nums[nums.length / 2 - 1] + nums[nums.length / 2]) / 2) : "—";
+    case "min": return nums.length ? fmt(nums[0]) : "—";
+    case "max": return nums.length ? fmt(nums.at(-1)) : "—";
+    case "range": return nums.length ? fmt(nums.at(-1) - nums[0]) : "—";
+    case "earliest": return dates.length ? formatDate(dates[0]) : "—";
+    case "latest": return dates.length ? formatDate(dates.at(-1)) : "—";
+    default: return "";
+  }
+}
