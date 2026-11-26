@@ -4,6 +4,19 @@ All notable changes to Frnt are listed here, newest first.
 The format follows [Keep a Changelog](https://keepachangelog.com) and versions follow [Semantic Versioning](https://semver.org).
 Each section is also used as the release notes on GitHub and in the app's update dialog.
 
+## [0.6.3] - 2026-11-26
+
+### Added
+- The current version is shown next to the app name in the sidebar; click it to check for updates.
+- `npm run library:links` checks that every Notion link shown in the app opens.
+
+### Changed
+- The sidebar's "Settings, backup & import" button is now simply **Settings**.
+
+### Fixed
+- The "Notion template gallery" link opened a page that no longer exists (404); it now opens notion.com/templates.
+- The Template library footer no longer wraps its buttons; a long source address is shortened.
+
 ## [0.6.2] - 2026-11-26
 
 ### Added
@@ -87,6 +100,7 @@ Each section is also used as the release notes on GitHub and in the app's update
 ### Added
 - First public release: block editor, nested pages, databases (table and board), version history, templates, backlinks, Notion and Markdown import, daily automatic backups, light and dark themes, and desktop apps for macOS, Windows and Linux.
 
+[0.6.3]: https://github.com/thanhmam/frnt-notes/compare/v0.6.2...v0.6.3
 [0.6.2]: https://github.com/thanhmam/frnt-notes/compare/v0.6.1...v0.6.2
 [0.6.1]: https://github.com/thanhmam/frnt-notes/compare/v0.6.0...v0.6.1
 [0.6.0]: https://github.com/thanhmam/frnt-notes/compare/v0.5.1...v0.6.0

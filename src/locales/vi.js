@@ -164,7 +164,6 @@ export default {
   "Search…": "Tìm…",
   "Select": "Chọn một",
   "Settings": "Cài đặt",
-  "Settings, backup & import": "Cài đặt, sao lưu & nhập",
   "Show sidebar": "Hiện sidebar",
   "Sort": "Sắp xếp",
   "Sort ascending": "Sắp xếp tăng dần",

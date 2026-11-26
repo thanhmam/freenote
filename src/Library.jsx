@@ -197,7 +197,7 @@ export default function Library({ onClose }) {
         )}
 
         <div className="lib-foot muted small">
-          <span>
+          <span className="lib-source" title={data?.source}>
             {t("Source")}: <code>{data?.source || "…"}</code>
           </span>
           <span className="row" style={{ marginTop: 0 }}>

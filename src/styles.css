@@ -510,3 +510,9 @@ body.resizing, body.resizing * { cursor: col-resize !important; user-select: non
 .lib-notion-note a { color: var(--accent); }
 .badge-notion { background: var(--text); color: var(--bg); font-size: 10px; font-weight: 700; padding: 1px 6px; border-radius: 999px; vertical-align: middle; }
 .badge-notion, .badge-new { white-space: nowrap; display: inline-block; }
+.ws-version { font-size: 11px; font-weight: 500; color: var(--muted); padding: 1px 6px; border-radius: 999px; border: 1px solid var(--border); margin-left: 2px; }
+.ws-version:hover { color: var(--text); background: var(--hover); }
+.lib-foot { flex-wrap: wrap; }
+.lib-foot .btn { white-space: nowrap; }
+.lib-source { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.lib-source code { word-break: normal; }

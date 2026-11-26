@@ -16,7 +16,7 @@ export function parseNotionLink(text) {
   return u.href;
 }
 
-export const NOTION_GALLERY = "https://www.notion.com/templates/category/free";
+export const NOTION_GALLERY = "https://www.notion.com/templates";
 export const openExternal = (url) => (window.frntDesktop?.openNotion ? window.frntDesktop.openNotion(url) : window.open(url, "_blank", "noopener"));
 
 /**

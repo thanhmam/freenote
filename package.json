@@ -1,7 +1,7 @@
 {
   "name": "frnt-notes",
   "productName": "Frnt",
-  "version": "0.6.2",
+  "version": "0.6.3",
   "description": "Frnt (Free Notes): a free, open-source, local-first Notion alternative. Block editor, nested pages, databases, version history, Notion import. English & Vietnamese UI.",
   "license": "MIT",
   "author": "Frnt contributors",
@@ -36,7 +36,8 @@
     "smoke": "vite build && FRNT_SMOKE=1 electron .",
     "i18n:check": "node scripts/i18n-check.mjs",
     "library:build": "node scripts/library-build.mjs",
-    "release-notes": "node scripts/release-notes.mjs"
+    "release-notes": "node scripts/release-notes.mjs",
+    "library:links": "node scripts/check-links.mjs"
   },
   "dependencies": {
     "express": "^5.3.0",

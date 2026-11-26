@@ -304,6 +304,10 @@ export default function Sidebar({ currentId, refresh, createPage, openSearch, th
   const [settings, setSettings] = useState(false);
   const [libraryOpen, setLibraryOpen] = useState(false);
   const [updateOpen, setUpdateOpen] = useState(false);
+  const [version, setVersion] = useState(null);
+  useEffect(() => {
+    api.version().then((v) => setVersion(v.version)).catch(() => {});
+  }, []);
   const [tplOpen, setTplOpen] = useState(() => localStorage.getItem("tplOpen") === "1");
 
   useEffect(() => localStorage.setItem("tplOpen", tplOpen ? "1" : "0"), [tplOpen]);
@@ -351,6 +355,11 @@ export default function Sidebar({ currentId, refresh, createPage, openSearch, th
         <div className="ws">
           <span className="ws-logo">F</span>
           <span>Frnt</span>
+          {version && (
+            <button className="ws-version" title={t("Check for updates")} onClick={() => setUpdateOpen(true)}>
+              v{version}
+            </button>
+          )}
         </div>
         <button className="icon-btn" title={t("Hide sidebar") + " (⌘\\)"} onClick={collapse}>«</button>
       </div>
@@ -419,7 +428,7 @@ export default function Sidebar({ currentId, refresh, createPage, openSearch, th
           <span className="menu-ico">🗑</span> {t("Trash")}
         </button>
         <button className="sb-link" onClick={() => setSettings(true)}>
-          <span className="menu-ico">⚙</span> {t("Settings, backup & import")}
+          <span className="menu-ico">⚙</span> {t("Settings")}
         </button>
         {desktop && (
           <button className="sb-link" title={t("Opens {url} in your browser. Works while Frnt is running.", { url: window.location.origin })} onClick={() => openInBrowser()}>
