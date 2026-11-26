@@ -98,6 +98,9 @@ export const api = {
   },
   importAttach: (sid, paths) => send("POST", `/api/import/${sid}/attach`, { paths }),
   importCleanup: (sid) => send("DELETE", `/api/import/${sid}`),
+  // repair (imported pages that are really databases)
+  repairSuggestions: () => get("/api/repair/suggestions"),
+  repairDismiss: (id) => send("POST", "/api/repair/dismiss", { id }),
   // updates
   updateCheck: ({ force = false, auto = false } = {}) => get(`/api/update?${force ? "force=1&" : ""}${auto ? "auto=1" : ""}`),
   updateSettings: (data) => send("POST", "/api/update/settings", data),

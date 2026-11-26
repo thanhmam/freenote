@@ -2,6 +2,8 @@ import { useRef, useState } from "react";
 import { api } from "./api.js";
 import { store, navigate } from "./store.js";
 import { importFiles } from "./importer.js";
+import RepairDialog from "./Repair.jsx";
+import { repairStore } from "./db/repair.js";
 import { t } from "./i18n.js";
 
 /** Accepts links to Notion pages and templates (notion.so, *.notion.site, notion.com/templates). */
@@ -31,6 +33,7 @@ export default function NotionLinkImport({ onClose, initialLink = "" }) {
   const [result, setResult] = useState(null);
   const [error, setError] = useState("");
   const [over, setOver] = useState(false);
+  const [repairOpen, setRepairOpen] = useState(false);
   const fileRef = useRef(null);
   const url = parseNotionLink(link);
 
@@ -53,7 +56,7 @@ export default function NotionLinkImport({ onClose, initialLink = "" }) {
         await api.update(r.rootId, { is_template: 1, title: kids[0]?.title || "Notion template" });
       }
       store.setPages(await api.list());
-      setResult({ ...r, openId, title: kids[0]?.title });
+      setResult({ ...r, openId, title: kids[0]?.title, repair: (await repairStore.refresh()).length });
     } catch (e) {
       setError(e.message);
     } finally {
@@ -156,6 +159,13 @@ export default function NotionLinkImport({ onClose, initialLink = "" }) {
             <button className="btn small" onClick={() => (navigate(result.openId), onClose())}>{t("Open")}</button>
           </div>
         )}
+        {result?.repair > 0 && (
+          <div className="set-msg warn">
+            🛠 {t("{n} pages look like Notion databases that were exported without their table.", { n: result.repair })}{" "}
+            <button className="btn small" onClick={() => setRepairOpen(true)}>{t("Review")}</button>
+          </div>
+        )}
+        {repairOpen && <RepairDialog onClose={() => setRepairOpen(false)} />}
         <div className="muted small" style={{ marginTop: 12 }}>
           {t("Freenote uses Notion's own Duplicate and Export features. It doesn't read Notion pages automatically, because Notion offers no official way to do that.")}
         </div>

@@ -4,6 +4,8 @@ import { store, navigate, timeAgo } from "./store.js";
 import { importFiles } from "./importer.js";
 import NotionLinkImport from "./NotionLinkImport.jsx";
 import UpdateDialog from "./Update.jsx";
+import RepairDialog from "./Repair.jsx";
+import { repairStore } from "./db/repair.js";
 import { t, lang, setLang, LOCALES } from "./i18n.js";
 
 export const REPO_URL = "https://github.com/thanhmam/freenote";
@@ -13,6 +15,7 @@ export default function Settings({ onClose, theme, toggleTheme }) {
   const [dir, setDir] = useState("");
   const [libSrc, setLibSrc] = useState("");
   const [notion, setNotion] = useState(false);
+  const [repairOpen, setRepairOpen] = useState(false);
   const [ver, setVer] = useState(null);
   const [updateOpen, setUpdateOpen] = useState(false);
   const [msg, setMsg] = useState("");
@@ -53,7 +56,7 @@ export default function Settings({ onClose, theme, toggleTheme }) {
         const r = await importFiles(files, (p) => setProgress(p));
         store.setPages(await api.list());
         setMsg("");
-        setResult(r);
+        setResult({ ...r, repair: (await repairStore.refresh()).length });
         navigate(r.rootId);
       } finally {
         setProgress(null);
@@ -266,6 +269,12 @@ export default function Settings({ onClose, theme, toggleTheme }) {
             <div>
               {t("{pages} pages, {databases} databases ({rows} rows), {files} images & files", result.stats)}
             </div>
+            {result.repair > 0 && (
+              <div style={{ marginTop: 6 }}>
+                🛠 {t("{n} pages look like Notion databases that were exported without their table.", { n: result.repair })}{" "}
+                <button className="btn small" onClick={() => setRepairOpen(true)}>{t("Review")}</button>
+              </div>
+            )}
             {result.warnings.length > 0 && (
               <>
                 <div style={{ marginTop: 6 }}>
@@ -292,6 +301,7 @@ export default function Settings({ onClose, theme, toggleTheme }) {
           </a>
         </div>
 
+        {repairOpen && <RepairDialog onClose={() => setRepairOpen(false)} />}
         {notion && <NotionLinkImport onClose={() => setNotion(false)} />}
         <input ref={zipRef} type="file" accept=".zip" multiple hidden onChange={(e) => e.target.files.length && doImport(e.target.files)} />
         <input ref={mdRef} type="file" accept=".md,.markdown,.txt" multiple hidden onChange={(e) => e.target.files.length && doImport(e.target.files)} />

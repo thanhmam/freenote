@@ -11,6 +11,7 @@ import { seedTemplates, seedWelcome, detectLang } from "./seed.js";
 import { mountImport } from "./importSession.js";
 import { mountTemplates, DEFAULT_LIBRARY } from "./templates.js";
 import { mountUpdates } from "./updates.js";
+import { mountRepair } from "./repair.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.join(__dirname, "..");
@@ -223,7 +224,7 @@ export async function startServer({ port = 3001, host = "127.0.0.1", dataDir = d
     res.json({ ok: true, count: list.length });
   });
 
-  const EDITABLE = ["title", "icon", "cover", "content", "text", "parent_id", "position", "is_favorite", "is_template", "full_width", "db_schema", "props"];
+  const EDITABLE = ["title", "icon", "cover", "content", "text", "parent_id", "position", "is_favorite", "is_template", "full_width", "db_schema", "props", "kind"];
   app.patch("/api/pages/:id", (req, res) => {
     const sets = [];
     const vals = [];
@@ -232,6 +233,7 @@ export async function startServer({ port = 3001, host = "127.0.0.1", dataDir = d
       let v = req.body[k];
       if (JSON_COLS.includes(k)) v = v == null ? null : JSON.stringify(v);
       if (typeof v === "boolean") v = v ? 1 : 0;
+      if (k === "kind" && v !== "page" && v !== "database") return res.status(400).json({ error: "kind must be page or database" });
       if (k === "parent_id" && v && descendants(req.params.id).includes(v)) {
         return res.status(400).json({ error: "cannot move page into itself" });
       }
@@ -392,6 +394,7 @@ export async function startServer({ port = 3001, host = "127.0.0.1", dataDir = d
   mountImport(app, { dataDir, uploadDir: UPLOAD_DIR });
   mountTemplates(app, { db, dataDir, uploadDir: UPLOAD_DIR, getPage, createPage, descendants, getSetting, setSetting });
   mountUpdates(app, { getSetting, setSetting });
+  mountRepair(app, { db, getSetting, setSetting });
 
   // ---- errors: always answer API calls with a readable JSON message ----
   app.use("/api", (err, req, res, _next) => {

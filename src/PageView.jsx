@@ -6,6 +6,8 @@ import { Menu, desktop, openInBrowser } from "./Sidebar.jsx";
 import DatabaseView, { RowProperties } from "./db/DatabaseView.jsx";
 import History from "./History.jsx";
 import ExportTemplate from "./ExportTemplate.jsx";
+import { RepairBanner, confirmAndConvert } from "./Repair.jsx";
+import { turnIntoPage } from "./db/repair.js";
 import { Popover } from "./db/Cells.jsx";
 import { t } from "./i18n.js";
 
@@ -184,6 +186,7 @@ export default function PageView({ id, theme, sidebarOpen, openSidebar }) {
   if (!meta) return null;
   const crumbs = breadcrumbs(id, byId);
   const isDb = meta.kind === "database";
+  const kidsCount = Object.values(byId).filter((p) => p.parent_id === id).length;
   const isRow = byId[meta.parent_id]?.kind === "database";
 
   return (
@@ -221,6 +224,18 @@ export default function PageView({ id, theme, sidebarOpen, openSidebar }) {
                     store.setPages(await api.list());
                     navigate(p.id);
                   },
+                },
+                !isDb && !meta.is_template && kidsCount >= 2 && {
+                  icon: "🗃️",
+                  label: t("Turn sub-pages into a database"),
+                  onClick: () => confirmAndConvert(id, pageTitle(meta)).catch((e) => alert(e.message)),
+                },
+                isDb && {
+                  icon: "📄",
+                  label: t("Turn into a page"),
+                  onClick: () =>
+                    confirm(t("Show “{title}” as a normal page? Its rows stay as sub-pages and keep their values.", { title: pageTitle(meta) })) &&
+                    turnIntoPage(id).catch((e) => alert(e.message)),
                 },
                 { icon: "📦", label: t("Export as library template…"), onClick: () => setExportTpl(true) },
                 { icon: "🖨", label: t("Print / Save as PDF"), onClick: () => window.print() },
@@ -267,6 +282,7 @@ export default function PageView({ id, theme, sidebarOpen, openSidebar }) {
         />
       )}
       <div className="scroll">
+        <RepairBanner pageId={id} />
         {!!meta.is_template && (
           <div className="tpl-banner">
             <span>📋 {t("This is a template. Edits here change the template itself.")}</span>

@@ -4,6 +4,7 @@ import { store, usePages, navigate } from "./store.js";
 import Sidebar from "./Sidebar.jsx";
 import PageView from "./PageView.jsx";
 import SearchModal from "./SearchModal.jsx";
+import { repairStore } from "./db/repair.js";
 import { t } from "./i18n.js";
 
 const routeId = () => (window.location.hash.match(/^#\/p\/([\w-]+)/) || [])[1] || null;
@@ -21,7 +22,7 @@ export default function App() {
   const refresh = useCallback(async () => store.setPages(await api.list()), []);
 
   useEffect(() => {
-    refresh().then(() => setLoaded(true));
+    refresh().then(() => (setLoaded(true), repairStore.refresh()));
     const onHash = () => setCurrentId(routeId());
     window.addEventListener("hashchange", onHash);
     return () => window.removeEventListener("hashchange", onHash);

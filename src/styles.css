@@ -516,3 +516,10 @@ body.resizing, body.resizing * { cursor: col-resize !important; user-select: non
 .lib-foot .btn { white-space: nowrap; }
 .lib-source { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .lib-source code { word-break: normal; }
+
+/* repair imported pages */
+.repair-banner { background: rgba(212, 167, 44, 0.15); }
+.repair-banner:hover { background: rgba(212, 167, 44, 0.25); }
+.repair-page-banner { background: rgba(212, 167, 44, 0.15); flex-wrap: wrap; }
+.repair-list { display: flex; flex-direction: column; gap: 8px; margin: 10px 0; max-height: 50vh; overflow-y: auto; }
+.repair-item { display: flex; gap: 12px; align-items: center; border: 1px solid var(--border); border-radius: 10px; padding: 10px 12px; }

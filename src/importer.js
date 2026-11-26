@@ -12,6 +12,7 @@ import { BlockNoteEditor } from "@blocknote/core";
 import { api } from "./api.js";
 import { extractText } from "./store.js";
 import { uid } from "./db/dbUtils.js";
+import { guessProperty, cellValue, parseHeader, hasHeader, buildSchemaFromRows } from "./db/propertyHeader.js";
 import { t, dateLocale } from "./i18n.js";
 
 let parser;
@@ -76,47 +77,6 @@ function parseCSV(text) {
   }
   if (cell || row.length) row.push(cell), rows.push(row);
   return rows.filter((r) => r.some((c) => c.trim()));
-}
-
-// Notion CSV dates: "November 5, 2021", "November 5, 2021 9:52 AM", ranges "A → B" (start is kept)
-const MONTHS = ["january", "february", "march", "april", "may", "june", "july", "august", "september", "october", "november", "december"];
-function notionDate(v) {
-  const m = String(v).split(" → ")[0].trim().match(/^([A-Za-z]+) (\d{1,2}), (\d{4})(?: \d{1,2}:\d{2}(?: ?[AP]M)?)?(?: \([^)]*\))?$/);
-  if (!m) return null;
-  const mo = MONTHS.indexOf(m[1].toLowerCase());
-  if (mo < 0) return null;
-  return `${m[3]}-${String(mo + 1).padStart(2, "0")}-${String(m[2]).padStart(2, "0")}`;
-}
-
-const COLORS = ["gray", "blue", "green", "orange", "purple", "pink", "yellow", "red", "brown"];
-function guessProperty(name, values) {
-  const filled = values.map((v) => v.trim()).filter(Boolean);
-  const id = uid();
-  if (filled.length && filled.every((v) => /^(yes|no)$/i.test(v))) return { id, name, type: "checkbox" };
-  if (filled.length && filled.every((v) => /^-?[\d,]*\.?\d+$/.test(v))) return { id, name, type: "number" };
-  if (filled.length && filled.every((v) => /^https?:\/\/\S+$/.test(v))) return { id, name, type: "url" };
-  if (filled.length && filled.every((v) => /^\d{4}-\d{2}-\d{2}$/.test(v) || notionDate(v))) return { id, name, type: "date" };
-  // multi-select: comma-separated short tags drawn from a small vocabulary
-  const tokens = filled.flatMap((v) => v.split(/,\s*/)).map((x) => x.trim()).filter(Boolean);
-  const vocab = [...new Set(tokens)];
-  if (filled.some((v) => v.includes(",")) && tokens.length >= 3 && vocab.length <= Math.max(5, tokens.length / 2) && vocab.length <= 50 && vocab.every((v) => v.length < 40 && !v.includes("("))) {
-    return { id, name, type: "multi_select", options: vocab.map((v, i) => ({ id: uid(), name: v, color: COLORS[i % COLORS.length] })) };
-  }
-  const distinct = [...new Set(filled)];
-  if (filled.length >= 2 && distinct.length <= Math.max(3, filled.length / 2) && distinct.length <= 20 && distinct.every((v) => v.length < 40 && !v.includes("("))) {
-    return { id, name, type: "select", options: distinct.map((v, i) => ({ id: uid(), name: v, color: COLORS[i % COLORS.length] })) };
-  }
-  return { id, name, type: "text" };
-}
-function cellValue(prop, raw) {
-  const v = (raw ?? "").trim();
-  if (!v) return null;
-  if (prop.type === "date") return notionDate(v) || v.slice(0, 10);
-  if (prop.type === "multi_select") return v.split(/,\s*/).map((x) => prop.options.find((o) => o.name === x.trim())?.id).filter(Boolean);
-  if (prop.type === "checkbox") return /^yes$/i.test(v);
-  if (prop.type === "number") return Number(v.replace(/,/g, ""));
-  if (prop.type === "select") return prop.options.find((o) => o.name === v)?.id ?? null;
-  return v;
 }
 
 /** Split "# Title" off the top of a Notion markdown file. */
@@ -241,12 +201,28 @@ async function importFromSource(source, rootTitle, onProgress) {
   for (const n of [...nodes.values()]) n.parentKey = linkParent.get(n.key) ?? folderNode(n.dir);
   for (const f of folderNodes.values()) nodes.set(f.key, f);
 
+  // d) A folder with no page and no CSV whose pages start with "Key: value" lines is a database whose table
+  //    Notion didn't export (e.g. the top-level "Projects" and "Tasks" databases): rebuild it from those lines.
+  for (const f of folderNodes.values()) {
+    const kids = [...nodes.values()].filter((n) => n.parentKey === f.key && n.mdPath && n.kind === "page");
+    if (kids.length < 2) continue;
+    const rows = kids.map((n) => {
+      const tx = texts.get(n.key);
+      return { node: n, title: n.title, props: tx ? parseHeader(splitTitle(tx).body.split("\n")).props : [] };
+    });
+    if (rows.filter((r) => hasHeader(r.props)).length / kids.length < 0.6) continue;
+    const { schema, values } = buildSchemaFromRows(rows);
+    Object.assign(f, { kind: "database", schema, fromHeaders: true });
+    rows.forEach((r, i) => Object.assign(r.node, { isRow: true, props: values[i], position: i + 1 }));
+  }
+
   // ---------- 4. databases ----------
   const dbs = [...nodes.values()].filter((n) => n.kind === "database");
   const extraRows = [];
   let dbDone = 0;
   for (const db of dbs) {
     step(t("Databases"), dbDone++, dbs.length);
+    if (db.fromHeaders) continue; // already rebuilt from the rows' property lines
     let table;
     try {
       table = parseCSV(await source.text(db.csvPath));
@@ -328,7 +304,7 @@ async function importFromSource(source, rootTitle, onProgress) {
     const tx = texts.get(n.key);
     if (tx == null) continue;
     let { body } = splitTitle(tx);
-    if (n.isRow) body = body.replace(/^(\s*\n)*([^\n:]{1,60}: [^\n]*\n)+/, ""); // drop "Prop: value" header lines
+    if (n.isRow) body = parseHeader(body.split("\n")).rest.join("\n"); // drop the "Prop: value" header lines
     for (const r of attachRefs.get(n.key) || []) {
       const url = attachUrl.get(r.path);
       if (url) body = body.split(`(${r.href})`).join(`(${url})`);

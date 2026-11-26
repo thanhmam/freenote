@@ -4,6 +4,16 @@ All notable changes to **Freenote** (formerly *Frnt*) are listed here, newest fi
 The format follows [Keep a Changelog](https://keepachangelog.com) and versions follow [Semantic Versioning](https://semver.org).
 Each section is also used as the release notes on GitHub and in the app's update dialog.
 
+## [0.7.2] - 2026-11-26
+
+### Added
+- **Rebuilds Notion databases that were exported without their table.** Notion sometimes exports a database only as its row pages (each starting with lines like `Status: Done`), e.g. the "Projects & Tasks" template. The importer now turns these back into databases with typed columns (status, select, date…), a grouped table and a board.
+- **Finds pages imported before this fix** and offers to repair them: a notice in the sidebar ("2 imported pages can be repaired"), a banner on the page itself, and a note in the import result. **Turn into a database** asks first, keeps the old text in Version history, and can be undone.
+- Page menu: **Turn sub-pages into a database** and, on databases, **Turn into a page**.
+
+### Fixed
+- Empty Notion properties (e.g. `Tags:`) were left in the text of imported database rows.
+
 ## [0.7.1] - 2026-11-26
 
 ### Fixed
@@ -121,6 +131,7 @@ Each section is also used as the release notes on GitHub and in the app's update
 ### Added
 - First public release: block editor, nested pages, databases (table and board), version history, templates, backlinks, Notion and Markdown import, daily automatic backups, light and dark themes, and desktop apps for macOS, Windows and Linux.
 
+[0.7.2]: https://github.com/thanhmam/freenote/compare/v0.7.1...v0.7.2
 [0.7.1]: https://github.com/thanhmam/freenote/compare/v0.7.0...v0.7.1
 [0.7.0]: https://github.com/thanhmam/freenote/compare/v0.6.4...v0.7.0
 [0.6.4]: https://github.com/thanhmam/freenote/compare/v0.6.3...v0.6.4

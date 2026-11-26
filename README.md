@@ -53,6 +53,7 @@
 **From a Notion template link:** in the Template library (or Settings → Import), choose **🔗 From a Notion link** and paste the link. Freenote opens it in Notion and walks you through *Duplicate → Export (Markdown & CSV)*; drop the .zip in, and it can be saved straight to your Templates. Freenote only uses Notion's own Duplicate and Export features, because Notion offers no official way to read pages automatically.
 
 What comes across: the page tree, text formatting, to-dos, toggles, code, quotes, images and attached files, links between pages, and databases (with property types detected: select, multi-select, date, number, URL, checkbox, text). Each database row keeps its page content.
+If Notion exported a database without its table (only the row pages), Freenote rebuilds it from the rows' properties, and points out pages imported by older versions so you can repair them in one click.
 Not yet: comments, formulas/rollups (imported as text), synced blocks and database views other than table.
 
 Tested with a real workspace: a 615 MB export with 5,500 pages, 195 databases and 735 images imported in about 30 seconds. If anything can't be imported, the rest still is, and an **⚠️ Import report** page lists each problem with the file it came from.
