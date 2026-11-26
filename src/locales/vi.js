@@ -319,4 +319,10 @@ export default {
   "Update now": "Cập nhật ngay",
   "Download from GitHub": "Tải từ GitHub",
   "Running from source? Update with: git pull && npm install": "Chạy từ mã nguồn? Cập nhật bằng: git pull && npm install",
+  "Frnt library": "Thư viện Frnt",
+  "Top Notion templates": "Top template Notion",
+  "Popular templates from Notion's public gallery. Import one in 3 steps: open it in Notion → Duplicate → Export (Markdown & CSV), then drop the .zip into Frnt. Templates by Notion are free; others may be paid.": "Các template phổ biến từ kho công khai của Notion. Nhập vào Frnt qua 3 bước: mở trong Notion → Duplicate → Export (Markdown & CSV), rồi thả file .zip vào Frnt. Template do Notion làm là miễn phí; của người tạo khác có thể có phí.",
+  "Browse the full gallery": "Xem toàn bộ kho",
+  "by Notion": "của Notion",
+  "Import…": "Nhập…",
 };

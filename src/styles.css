@@ -500,3 +500,13 @@ body.resizing, body.resizing * { cursor: col-resize !important; user-select: non
 .update-cta { color: var(--accent); font-weight: 600; white-space: nowrap; }
 .update-head { display: flex; align-items: baseline; gap: 10px; margin-bottom: 8px; }
 .release-notes { white-space: pre-wrap; font: 13px/1.5 var(--font); background: var(--hover); border-radius: 8px; padding: 10px 12px; max-height: 260px; overflow-y: auto; margin: 0 0 12px; }
+
+/* library tabs + Notion picks */
+.lib-tabs { display: flex; gap: 4px; border-bottom: 1px solid var(--border); margin-bottom: 12px; }
+.lib-tab { padding: 8px 12px; font-weight: 500; color: var(--muted); border-bottom: 2px solid transparent; margin-bottom: -1px; }
+.lib-tab:hover { color: var(--text); }
+.lib-tab.on { color: var(--text); border-bottom-color: var(--text); }
+.lib-notion-note { margin: 0 2px 8px; line-height: 1.5; }
+.lib-notion-note a { color: var(--accent); }
+.badge-notion { background: var(--text); color: var(--bg); font-size: 10px; font-weight: 700; padding: 1px 6px; border-radius: 999px; vertical-align: middle; }
+.badge-notion, .badge-new { white-space: nowrap; display: inline-block; }

@@ -41,6 +41,25 @@ for (const file of fs.readdirSync(DIR).filter((f) => f.endsWith(".json")).sort()
 }
 if (failed) process.exit(1);
 
+// Top Notion templates (hand-edited list of links to Notion's gallery)
+const picksFile = path.join(ROOT, "notion-picks.json");
+if (fs.existsSync(picksFile)) {
+  try {
+    const picks = JSON.parse(fs.readFileSync(picksFile, "utf8"));
+    const seen = new Set();
+    for (const t of picks.templates || []) {
+      if (!/^https:\/\/www\.notion\.com\/templates\/[\w-]+$/.test(t.url || "")) throw new Error(`${t.id}: url must be https://www.notion.com/templates/<slug>`);
+      if (seen.has(t.id)) throw new Error(`duplicate id ${t.id}`);
+      seen.add(t.id);
+      if (!t.title?.en || !t.description?.en) throw new Error(`${t.id}: needs title.en and description.en`);
+    }
+    console.log(`✓ notion-picks.json: ${seen.size} links`);
+  } catch (e) {
+    console.error(`✗ notion-picks.json: ${e.message}`);
+    process.exit(1);
+  }
+}
+
 entries.sort((a, b) => a.category.localeCompare(b.category) || a.title.localeCompare(b.title));
 const index = { name: "Frnt Template Library", format: 1, templates: entries };
 const out = JSON.stringify(index, null, 2) + "\n";

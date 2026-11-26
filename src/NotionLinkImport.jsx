@@ -23,8 +23,8 @@ export const openExternal = (url) => (window.frntDesktop?.openNotion ? window.fr
  * "Add from a Notion link": guides the user through Notion's own Duplicate → Export, then imports the .zip.
  * (Notion has no official API to read public pages, so Frnt doesn't scrape them.)
  */
-export default function NotionLinkImport({ onClose }) {
-  const [link, setLink] = useState("");
+export default function NotionLinkImport({ onClose, initialLink = "" }) {
+  const [link, setLink] = useState(initialLink);
   const [opened, setOpened] = useState(false);
   const [asTemplate, setAsTemplate] = useState(true);
   const [progress, setProgress] = useState(null);

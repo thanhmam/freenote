@@ -4,6 +4,14 @@ All notable changes to Frnt are listed here, newest first.
 The format follows [Keep a Changelog](https://keepachangelog.com) and versions follow [Semantic Versioning](https://semver.org).
 Each section is also used as the release notes on GitHub and in the app's update dialog.
 
+## [0.6.2] - 2026-11-26
+
+### Added
+- **Top Notion templates** tab in the Template library: 24 popular templates from Notion's public gallery (11 made by Notion), with search and categories. **Import…** opens the guided Notion-link import with the link filled in; **Open in Notion** opens the template. The list lives in `library/notion-picks.json`, so maintainers can update it without a new app release.
+
+### Fixed
+- Long badges in template cards no longer wrap.
+
 ## [0.6.1] - 2026-11-26
 
 ### Added
@@ -79,6 +87,7 @@ Each section is also used as the release notes on GitHub and in the app's update
 ### Added
 - First public release: block editor, nested pages, databases (table and board), version history, templates, backlinks, Notion and Markdown import, daily automatic backups, light and dark themes, and desktop apps for macOS, Windows and Linux.
 
+[0.6.2]: https://github.com/thanhmam/frnt-notes/compare/v0.6.1...v0.6.2
 [0.6.1]: https://github.com/thanhmam/frnt-notes/compare/v0.6.0...v0.6.1
 [0.6.0]: https://github.com/thanhmam/frnt-notes/compare/v0.5.1...v0.6.0
 [0.5.1]: https://github.com/thanhmam/frnt-notes/compare/v0.5.0...v0.5.1

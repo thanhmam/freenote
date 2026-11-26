@@ -1,0 +1,392 @@
+{
+  "name": "Top Notion templates",
+  "format": 1,
+  "gallery": "https://www.notion.com/templates",
+  "note": "Links to templates in Notion's public gallery, checked by the maintainers. Templates by Notion are free; others may be free or paid.",
+  "templates": [
+    {
+      "id": "notion-projects-tasks",
+      "url": "https://www.notion.com/templates/projects-tasks",
+      "icon": "✅",
+      "category": "Projects",
+      "official": true,
+      "creator": "Notion",
+      "title": {
+        "en": "Projects & Tasks",
+        "vi": "Dự án & Công việc"
+      },
+      "description": {
+        "en": "Track projects and their tasks with owners, status and timelines.",
+        "vi": "Theo dõi dự án và công việc kèm người phụ trách, trạng thái, mốc thời gian."
+      }
+    },
+    {
+      "id": "notion-personal-home",
+      "url": "https://www.notion.com/templates/personal-home",
+      "icon": "🏠",
+      "category": "Personal",
+      "official": true,
+      "creator": "Notion",
+      "title": {
+        "en": "Personal home",
+        "vi": "Trang chủ cá nhân"
+      },
+      "description": {
+        "en": "One home page for your tasks, notes and habits.",
+        "vi": "Một trang chủ gom công việc, ghi chú và thói quen của bạn."
+      }
+    },
+    {
+      "id": "notion-to-do-list",
+      "url": "https://www.notion.com/templates/to-do-list",
+      "icon": "☑️",
+      "category": "Personal",
+      "official": true,
+      "creator": "Notion",
+      "title": {
+        "en": "To-do list",
+        "vi": "Danh sách việc cần làm"
+      },
+      "description": {
+        "en": "A simple to-do list to plan your day.",
+        "vi": "Danh sách việc cần làm đơn giản để lên kế hoạch mỗi ngày."
+      }
+    },
+    {
+      "id": "notion-journal",
+      "url": "https://www.notion.com/templates/journal",
+      "icon": "📔",
+      "category": "Personal",
+      "official": true,
+      "creator": "Notion",
+      "title": {
+        "en": "Journal",
+        "vi": "Nhật ký"
+      },
+      "description": {
+        "en": "Daily journal entries in one place.",
+        "vi": "Nhật ký hằng ngày ở cùng một chỗ."
+      }
+    },
+    {
+      "id": "notion-class-notes",
+      "url": "https://www.notion.com/templates/class-notes",
+      "icon": "🎓",
+      "category": "Education",
+      "official": true,
+      "creator": "Notion",
+      "title": {
+        "en": "Class notes",
+        "vi": "Ghi chép lớp học"
+      },
+      "description": {
+        "en": "Organise notes by class and topic.",
+        "vi": "Sắp xếp ghi chép theo môn học và chủ đề."
+      }
+    },
+    {
+      "id": "notion-lesson-plans",
+      "url": "https://www.notion.com/templates/lesson-plans",
+      "icon": "🍎",
+      "category": "Education",
+      "official": true,
+      "creator": "Notion",
+      "title": {
+        "en": "Lesson plans",
+        "vi": "Giáo án"
+      },
+      "description": {
+        "en": "Plan lessons and keep teaching materials together.",
+        "vi": "Soạn giáo án và gom tài liệu giảng dạy."
+      }
+    },
+    {
+      "id": "notion-job-applications",
+      "url": "https://www.notion.com/templates/job-applications",
+      "icon": "💼",
+      "category": "Work",
+      "official": true,
+      "creator": "Notion",
+      "title": {
+        "en": "Job application tracker",
+        "vi": "Theo dõi ứng tuyển"
+      },
+      "description": {
+        "en": "Follow every job application from applied to offer.",
+        "vi": "Theo dõi từng hồ sơ ứng tuyển từ lúc nộp tới khi nhận offer."
+      }
+    },
+    {
+      "id": "notion-resume",
+      "url": "https://www.notion.com/templates/resume",
+      "icon": "📄",
+      "category": "Work",
+      "official": true,
+      "creator": "Notion",
+      "title": {
+        "en": "Resume",
+        "vi": "CV"
+      },
+      "description": {
+        "en": "A clean resume you can share as a page.",
+        "vi": "CV gọn gàng, chia sẻ được dưới dạng một trang."
+      }
+    },
+    {
+      "id": "notion-content-calendar",
+      "url": "https://www.notion.com/templates/content-calendar",
+      "icon": "🗓️",
+      "category": "Work",
+      "official": true,
+      "creator": "Notion",
+      "title": {
+        "en": "Content calendar",
+        "vi": "Lịch nội dung"
+      },
+      "description": {
+        "en": "Plan and schedule content across channels.",
+        "vi": "Lên kế hoạch và lịch đăng nội dung trên các kênh."
+      }
+    },
+    {
+      "id": "notion-team-wiki",
+      "url": "https://www.notion.com/templates/team-wiki",
+      "icon": "📚",
+      "category": "Work",
+      "official": true,
+      "creator": "Notion",
+      "title": {
+        "en": "Wiki",
+        "vi": "Wiki nhóm"
+      },
+      "description": {
+        "en": "A shared knowledge base for a team.",
+        "vi": "Kho kiến thức chung cho cả nhóm."
+      }
+    },
+    {
+      "id": "notion-bug-tracker",
+      "url": "https://www.notion.com/templates/bug-tracker",
+      "icon": "🐞",
+      "category": "Projects",
+      "official": true,
+      "creator": "Notion",
+      "title": {
+        "en": "Bug tracker",
+        "vi": "Theo dõi lỗi"
+      },
+      "description": {
+        "en": "Log bugs, set priority and follow fixes.",
+        "vi": "Ghi nhận lỗi, đặt mức ưu tiên và theo dõi việc sửa."
+      }
+    },
+    {
+      "id": "notion-weekly-planner",
+      "url": "https://www.notion.com/templates/weekly-planner",
+      "icon": "📅",
+      "category": "Personal",
+      "official": false,
+      "creator": "StructuraWave",
+      "title": {
+        "en": "Weekly planner",
+        "vi": "Kế hoạch tuần"
+      },
+      "description": {
+        "en": "Plan the week ahead day by day.",
+        "vi": "Lên kế hoạch cho tuần tới theo từng ngày."
+      }
+    },
+    {
+      "id": "notion-weekly-agenda",
+      "url": "https://www.notion.com/templates/weekly-agenda",
+      "icon": "🗒️",
+      "category": "Personal",
+      "official": false,
+      "creator": "alex lin",
+      "title": {
+        "en": "Weekly agenda",
+        "vi": "Lịch tuần"
+      },
+      "description": {
+        "en": "A weekly agenda for tasks and events.",
+        "vi": "Lịch tuần cho công việc và sự kiện."
+      }
+    },
+    {
+      "id": "notion-habit-tracker",
+      "url": "https://www.notion.com/templates/habit-tracker",
+      "icon": "🔁",
+      "category": "Personal",
+      "official": false,
+      "creator": "Alysha Marwaha",
+      "title": {
+        "en": "Habit tracker",
+        "vi": "Theo dõi thói quen"
+      },
+      "description": {
+        "en": "Tick off daily habits and see your streaks.",
+        "vi": "Đánh dấu thói quen mỗi ngày và xem chuỗi duy trì."
+      }
+    },
+    {
+      "id": "notion-goal-tracker",
+      "url": "https://www.notion.com/templates/goal-tracker",
+      "icon": "🎯",
+      "category": "Personal",
+      "official": false,
+      "creator": "Easlo",
+      "title": {
+        "en": "Goal tracker",
+        "vi": "Theo dõi mục tiêu"
+      },
+      "description": {
+        "en": "Set goals and track progress toward them.",
+        "vi": "Đặt mục tiêu và theo dõi tiến độ."
+      }
+    },
+    {
+      "id": "notion-reading-list",
+      "url": "https://www.notion.com/templates/reading-list",
+      "icon": "📖",
+      "category": "Personal",
+      "official": false,
+      "creator": "Irem Topcuoglu",
+      "title": {
+        "en": "Reading list",
+        "vi": "Danh sách đọc"
+      },
+      "description": {
+        "en": "Keep track of books you want to read and have read.",
+        "vi": "Theo dõi sách muốn đọc và đã đọc."
+      }
+    },
+    {
+      "id": "notion-travel-planner",
+      "url": "https://www.notion.com/templates/travel-planner",
+      "icon": "✈️",
+      "category": "Personal",
+      "official": false,
+      "creator": "NotesbyHugh",
+      "title": {
+        "en": "Travel planner",
+        "vi": "Lên kế hoạch du lịch"
+      },
+      "description": {
+        "en": "Itineraries, bookings and packing lists for a trip.",
+        "vi": "Lịch trình, đặt chỗ và danh sách đồ cho chuyến đi."
+      }
+    },
+    {
+      "id": "notion-recipes",
+      "url": "https://www.notion.com/templates/recipes",
+      "icon": "🍳",
+      "category": "Personal",
+      "official": false,
+      "creator": "DOS",
+      "title": {
+        "en": "Recipes",
+        "vi": "Công thức nấu ăn"
+      },
+      "description": {
+        "en": "Collect and organise your favourite recipes.",
+        "vi": "Sưu tầm và sắp xếp công thức nấu ăn yêu thích."
+      }
+    },
+    {
+      "id": "notion-simple-budget",
+      "url": "https://www.notion.com/templates/simple-budget",
+      "icon": "💰",
+      "category": "Personal",
+      "official": false,
+      "creator": "Eray Hamurlu",
+      "title": {
+        "en": "Simple budget",
+        "vi": "Ngân sách đơn giản"
+      },
+      "description": {
+        "en": "A simple monthly budget for income and spending.",
+        "vi": "Ngân sách tháng đơn giản cho thu nhập và chi tiêu."
+      }
+    },
+    {
+      "id": "notion-expense-tracker",
+      "url": "https://www.notion.com/templates/expense-tracker",
+      "icon": "🧾",
+      "category": "Personal",
+      "official": false,
+      "creator": "Easlo",
+      "title": {
+        "en": "Expense tracker",
+        "vi": "Theo dõi chi tiêu"
+      },
+      "description": {
+        "en": "Record expenses and see where your money goes.",
+        "vi": "Ghi lại chi tiêu và xem tiền đi đâu."
+      }
+    },
+    {
+      "id": "notion-meeting-notes",
+      "url": "https://www.notion.com/templates/meeting-notes",
+      "icon": "📝",
+      "category": "Work",
+      "official": false,
+      "creator": "NStation",
+      "title": {
+        "en": "Meeting notes",
+        "vi": "Biên bản họp"
+      },
+      "description": {
+        "en": "Agendas, notes and action items for meetings.",
+        "vi": "Chương trình, ghi chép và việc cần làm sau cuộc họp."
+      }
+    },
+    {
+      "id": "notion-okrs",
+      "url": "https://www.notion.com/templates/okrs",
+      "icon": "📈",
+      "category": "Work",
+      "official": false,
+      "creator": "Maresch Bär",
+      "title": {
+        "en": "OKRs",
+        "vi": "OKR"
+      },
+      "description": {
+        "en": "Set objectives and key results and review them.",
+        "vi": "Đặt mục tiêu, kết quả then chốt và đánh giá định kỳ."
+      }
+    },
+    {
+      "id": "notion-crm",
+      "url": "https://www.notion.com/templates/crm",
+      "icon": "🤝",
+      "category": "Work",
+      "official": false,
+      "creator": "Pathpages",
+      "title": {
+        "en": "CRM",
+        "vi": "CRM"
+      },
+      "description": {
+        "en": "Track contacts, leads and deals.",
+        "vi": "Quản lý liên hệ, khách hàng tiềm năng và giao dịch."
+      }
+    },
+    {
+      "id": "notion-product-roadmap",
+      "url": "https://www.notion.com/templates/product-roadmap",
+      "icon": "🗺️",
+      "category": "Projects",
+      "official": false,
+      "creator": "Dev Sharma",
+      "title": {
+        "en": "Product roadmap",
+        "vi": "Lộ trình sản phẩm"
+      },
+      "description": {
+        "en": "Plan features and releases on a roadmap.",
+        "vi": "Lên lộ trình tính năng và các bản phát hành."
+      }
+    }
+  ]
+}

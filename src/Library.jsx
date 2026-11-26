@@ -17,7 +17,8 @@ export default function Library({ onClose }) {
   const [busy, setBusy] = useState(null); // template id being installed
   const [done, setDone] = useState(null);
   const fileRef = useRef(null);
-  const [notion, setNotion] = useState(false);
+  const [notion, setNotion] = useState(false); // false | true | "<prefilled link>"
+  const [tab, setTab] = useState("frnt"); // "frnt" | "notion"
 
   const load = async (refresh) => {
     setLoading(true);
@@ -38,8 +39,13 @@ export default function Library({ onClose }) {
   }, []);
 
   const templates = data?.templates || [];
+  const picks = data?.notionPicks || [];
+  const L = (o) => (o && typeof o === "object" ? o[lang] || o.en || "" : o || "");
+  const shownPicks = picks.filter(
+    (x) => (cat === "all" || x.category === cat) && (!q.trim() || `${L(x.title)} ${L(x.description)} ${x.creator}`.toLowerCase().includes(q.trim().toLowerCase()))
+  );
   const langs = useMemo(() => [...new Set(templates.map((x) => x.lang))].sort(), [templates]);
-  const cats = useMemo(() => [...new Set(templates.map((x) => x.category))].sort((a, b) => (CATEGORIES.indexOf(a) + 99) % 99 - (CATEGORIES.indexOf(b) + 99) % 99), [templates]);
+  const cats = useMemo(() => [...new Set((tab === "notion" ? picks : templates).map((x) => x.category))].sort((a, b) => (CATEGORIES.indexOf(a) + 99) % 99 - (CATEGORIES.indexOf(b) + 99) % 99), [templates, picks, tab]);
   const shown = templates.filter(
     (x) =>
       (langFilter === "all" || x.lang === langFilter) &&
@@ -81,9 +87,17 @@ export default function Library({ onClose }) {
           <h2>📚 {t("Template library")}</h2>
           <button className="icon-btn" onClick={onClose}>✕</button>
         </div>
+        <div className="lib-tabs">
+          <button className={`lib-tab ${tab === "frnt" ? "on" : ""}`} onClick={() => (setTab("frnt"), setCat("all"))}>
+            📚 {t("Frnt library")} <span className="muted small">{templates.length || ""}</span>
+          </button>
+          <button className={`lib-tab ${tab === "notion" ? "on" : ""}`} onClick={() => (setTab("notion"), setCat("all"))}>
+            ⭐ {t("Top Notion templates")} <span className="muted small">{picks.length || ""}</span>
+          </button>
+        </div>
         <div className="lib-bar">
           <input className="input" placeholder={t("Search templates…")} value={q} onChange={(e) => setQ(e.target.value)} autoFocus />
-          <select className="lang-select" value={langFilter} onChange={(e) => setLangFilter(e.target.value)}>
+          <select className="lang-select" style={{ display: tab === "notion" ? "none" : undefined }} value={langFilter} onChange={(e) => setLangFilter(e.target.value)}>
             <option value="all">{t("All languages")}</option>
             {langs.map((l) => (
               <option key={l} value={l}>{l === "vi" ? "Tiếng Việt" : l === "en" ? "English" : l}</option>
@@ -102,8 +116,8 @@ export default function Library({ onClose }) {
           <span className="muted small lib-meta">
             {data && (
               <>
-                {t("{n} templates", { n: templates.length })}
-                {newCount > 0 && ` · ${t("{n} new", { n: newCount })}`} · {t("updated {time}", { time: timeAgo(data.fetched_at) })}
+                {t("{n} templates", { n: tab === "notion" ? picks.length : templates.length })}
+                {tab === "frnt" && newCount > 0 && ` · ${t("{n} new", { n: newCount })}`} · {t("updated {time}", { time: timeAgo(data.fetched_at) })}
               </>
             )}
           </span>
@@ -117,7 +131,15 @@ export default function Library({ onClose }) {
         )}
         {error && <div className="set-msg error-msg">⚠ {error}</div>}
 
-        <div className="lib-grid">
+        {tab === "notion" && (
+          <div className="muted small lib-notion-note">
+            {t("Popular templates from Notion's public gallery. Import one in 3 steps: open it in Notion → Duplicate → Export (Markdown & CSV), then drop the .zip into Frnt. Templates by Notion are free; others may be paid.")}{" "}
+            <a href={data?.notionGallery || NOTION_GALLERY} onClick={(e) => (e.preventDefault(), openExternal(data?.notionGallery || "https://www.notion.com/templates"))}>
+              {t("Browse the full gallery")} ↗
+            </a>
+          </div>
+        )}
+        <div className="lib-grid" style={{ display: tab === "notion" ? "none" : undefined }}>
           {!data && loading && <div className="muted pad">{t("Loading…")}</div>}
           {data && !shown.length && <div className="muted pad">{t("No templates match.")}</div>}
           {shown.map((x) => (
@@ -147,6 +169,33 @@ export default function Library({ onClose }) {
           ))}
         </div>
 
+        {tab === "notion" && (
+          <div className="lib-grid">
+            {!data && loading && <div className="muted pad">{t("Loading…")}</div>}
+            {data && !shownPicks.length && <div className="muted pad">{t("No templates match.")}</div>}
+            {shownPicks.map((x) => (
+              <div key={x.id} className="lib-card">
+                <div className="lib-card-head">
+                  <span className="lib-icon">{x.icon}</span>
+                  <div style={{ minWidth: 0 }}>
+                    <div className="lib-title">
+                      {L(x.title)} {x.official && <span className="badge-notion">{t("by Notion")}</span>}
+                    </div>
+                    <div className="muted small">
+                      {catLabel(x.category)} · {x.official ? "Notion" : x.creator}
+                    </div>
+                  </div>
+                </div>
+                <div className="lib-desc">{L(x.description)}</div>
+                <div className="lib-actions">
+                  <button className="btn small" onClick={() => setNotion(x.url)}>{t("Import…")}</button>
+                  <button className="btn ghost small" title={x.url} onClick={() => openExternal(x.url)}>{t("Open in Notion")} ↗</button>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+
         <div className="lib-foot muted small">
           <span>
             {t("Source")}: <code>{data?.source || "…"}</code>
@@ -158,7 +207,7 @@ export default function Library({ onClose }) {
           </span>
           <input ref={fileRef} type="file" accept=".json,application/json" hidden onChange={(e) => e.target.files[0] && installFile(e.target.files[0])} />
         </div>
-        {notion && <NotionLinkImport onClose={() => setNotion(false)} />}
+        {notion && <NotionLinkImport initialLink={typeof notion === "string" ? notion : ""} onClose={() => setNotion(false)} />}
       </div>
     </div>
   );

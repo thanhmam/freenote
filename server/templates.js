@@ -192,7 +192,22 @@ export function mountTemplates(app, { db, dataDir, uploadDir, getPage, createPag
     try {
       const index = await fetchLimited(`${src}/index.json`, MAX_INDEX);
       if (!Array.isArray(index?.templates)) throw httpError(502, "The library index is invalid (missing \"templates\").");
-      const out = { source: src, fetched_at: Date.now(), name: index.name || "", templates: index.templates };
+      // optional: curated links to Notion's public template gallery
+      let picks = { templates: [] };
+      try {
+        picks = await fetchLimited(`${src}/notion-picks.json`, MAX_INDEX);
+      } catch {}
+      const notionPicks = (Array.isArray(picks?.templates) ? picks.templates : []).filter(
+        (t) => typeof t?.url === "string" && /^https:\/\/www\.notion\.com\/templates\/[\w-]+$/.test(t.url)
+      );
+      const out = {
+        source: src,
+        fetched_at: Date.now(),
+        name: index.name || "",
+        templates: index.templates,
+        notionPicks,
+        notionGallery: typeof picks?.gallery === "string" && picks.gallery.startsWith("https://www.notion.com/") ? picks.gallery : "https://www.notion.com/templates",
+      };
       fs.writeFileSync(cacheFile, JSON.stringify(out));
       return out;
     } catch (e) {

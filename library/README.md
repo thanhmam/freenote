@@ -29,6 +29,12 @@ Categories: `Work`, `Projects`, `Personal`, `Education`, `Other`. Languages: `en
 4. Chạy `npm run library:build` để kiểm tra và tạo lại `library/index.json`.
 5. Commit và push lên `main`. Người dùng thấy mẫu mới khi mở thư viện hoặc bấm **Kiểm tra cập nhật**.
 
+## Top Notion templates (`notion-picks.json`)
+
+The **Top Notion templates** tab lists links to templates in Notion's public gallery. Edit `library/notion-picks.json` to add or remove one:
+`url` must be `https://www.notion.com/templates/<slug>` (check that it opens), `official: true` only for templates made by Notion,
+and give a short `title`/`description` in your own words (`en`, optionally `vi`). Run `npm run library:build` to validate, then push.
+
 ## Package format (`frnt-template` v1)
 
 ```jsonc
