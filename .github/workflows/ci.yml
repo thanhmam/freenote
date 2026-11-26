@@ -25,5 +25,5 @@ jobs:
       - name: Desktop smoke test
         run: |
           sudo apt-get update && sudo apt-get install -y xvfb
-          DATA_DIR=$RUNNER_TEMP/edata FRNT_SMOKE=1 xvfb-run -a npx electron . --no-sandbox 2>&1 | tee smoke.log
+          DATA_DIR=$RUNNER_TEMP/edata FREENOTE_SMOKE=1 xvfb-run -a npx electron . --no-sandbox 2>&1 | tee smoke.log
           grep -q "SMOKE OK" smoke.log

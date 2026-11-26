@@ -6,7 +6,7 @@ import NotionLinkImport from "./NotionLinkImport.jsx";
 import UpdateDialog from "./Update.jsx";
 import { t, lang, setLang, LOCALES } from "./i18n.js";
 
-export const REPO_URL = "https://github.com/thanhmam/frnt-notes";
+export const REPO_URL = "https://github.com/thanhmam/freenote";
 
 export default function Settings({ onClose, theme, toggleTheme }) {
   const [s, setS] = useState(null);
@@ -97,7 +97,7 @@ export default function Settings({ onClose, theme, toggleTheme }) {
           <h3>{t("Version & updates")}</h3>
           <div className="set-row">
             <span>
-              Frnt {ver?.version}
+              Freenote {ver?.version}
               <div className="muted small">{t("Checks GitHub for a new version once a day.")}</div>
             </span>
             <button className="btn ghost bordered" onClick={() => setUpdateOpen(true)}>{t("Check for updates")}</button>
@@ -192,7 +192,7 @@ export default function Settings({ onClose, theme, toggleTheme }) {
           {s && (
             <div className="set-col">
               <span>{t("Library address")}</span>
-              <div className="muted small">{t("Where the Template library is loaded from. Frnt only connects to it when you open the library.")}</div>
+              <div className="muted small">{t("Where the Template library is loaded from. Freenote only connects to it when you open the library.")}</div>
               <div className="row">
                 <input className="input" value={libSrc} onChange={(e) => setLibSrc(e.target.value)} placeholder={s.library_default} />
                 <button
@@ -286,7 +286,7 @@ export default function Settings({ onClose, theme, toggleTheme }) {
         {msg && !progress && <div className="set-msg error-msg">{msg}</div>}
 
         <div className="muted small about">
-          Frnt (Free Notes) — {t("open source (MIT)")} ·{" "}
+          Freenote — {t("open source (MIT)")} ·{" "}
           <a href={REPO_URL} target="_blank" rel="noreferrer">
             GitHub
           </a>

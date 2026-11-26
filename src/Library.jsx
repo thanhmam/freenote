@@ -89,7 +89,7 @@ export default function Library({ onClose }) {
         </div>
         <div className="lib-tabs">
           <button className={`lib-tab ${tab === "frnt" ? "on" : ""}`} onClick={() => (setTab("frnt"), setCat("all"))}>
-            📚 {t("Frnt library")} <span className="muted small">{templates.length || ""}</span>
+            📚 {t("Freenote library")} <span className="muted small">{templates.length || ""}</span>
           </button>
           <button className={`lib-tab ${tab === "notion" ? "on" : ""}`} onClick={() => (setTab("notion"), setCat("all"))}>
             ⭐ {t("Top Notion templates")} <span className="muted small">{picks.length || ""}</span>
@@ -133,7 +133,7 @@ export default function Library({ onClose }) {
 
         {tab === "notion" && (
           <div className="muted small lib-notion-note">
-            {t("Popular templates from Notion's public gallery. Import one in 3 steps: open it in Notion → Duplicate → Export (Markdown & CSV), then drop the .zip into Frnt. Templates by Notion are free; others may be paid.")}{" "}
+            {t("Popular templates from Notion's public gallery. Import one in 3 steps: open it in Notion → Duplicate → Export (Markdown & CSV), then drop the .zip into Freenote. Templates by Notion are free; others may be paid.")}{" "}
             <a href={data?.notionGallery || NOTION_GALLERY} onClick={(e) => (e.preventDefault(), openExternal(data?.notionGallery || "https://www.notion.com/templates"))}>
               {t("Browse the full gallery")} ↗
             </a>

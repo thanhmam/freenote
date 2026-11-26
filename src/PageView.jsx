@@ -147,7 +147,7 @@ export default function PageView({ id, theme, sidebarOpen, openSidebar }) {
   }, [id]);
 
   useEffect(() => {
-    document.title = `${meta?.icon ? meta.icon + " " : ""}${pageTitle(meta)} – Frnt`;
+    document.title = `${meta?.icon ? meta.icon + " " : ""}${pageTitle(meta)} – Freenote`;
   }, [meta?.icon, meta?.title]);
 
   useLayoutEffect(() => {

@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { api } from "./api.js";
 import { t } from "./i18n.js";
 
-const desktop = typeof window !== "undefined" ? window.frntDesktop : undefined;
+const desktop = typeof window !== "undefined" ? window.freenoteDesktop : undefined;
 const mb = (n) => (n / 1048576).toFixed(1);
 
 /** Small sidebar notice shown when a newer release exists (checked at most daily, can be turned off). */
@@ -15,7 +15,7 @@ export function UpdateBanner({ onOpen }) {
   if (!info) return null;
   return (
     <button className="update-banner" onClick={onOpen}>
-      <span>✨ {t("Frnt {v} is available", { v: info.latest })}</span>
+      <span>✨ {t("Freenote {v} is available", { v: info.latest })}</span>
       <span className="update-cta">{t("Update")}</span>
     </button>
   );
@@ -40,7 +40,7 @@ export default function UpdateDialog({ onClose }) {
       setError(r.error);
     } else if (r.action === "manual") {
       setState(null);
-      setError(t("The new version was downloaded to {file}. Quit Frnt and replace the app with it.", { file: r.file }));
+      setError(t("The new version was downloaded to {file}. Quit Freenote and replace the app with it.", { file: r.file }));
     } else setState({ done: r.action });
   };
 
@@ -59,7 +59,7 @@ export default function UpdateDialog({ onClose }) {
         {info?.available && (
           <>
             <div className="update-head">
-              <b>Frnt {info.latest}</b>
+              <b>Freenote {info.latest}</b>
               <span className="muted small">
                 {t("You have {v}", { v: info.current })} · {new Date(info.published_at).toLocaleDateString()}
               </span>
@@ -67,7 +67,7 @@ export default function UpdateDialog({ onClose }) {
             <pre className="release-notes">{info.notes || t("No release notes.")}</pre>
             {state?.done ? (
               <div className="set-msg ok">
-                ✓ {state.done === "restarting" ? t("Installing… Frnt will restart in a moment.") : t("The installer has been opened. Follow its steps to finish.")}
+                ✓ {state.done === "restarting" ? t("Installing… Freenote will restart in a moment.") : t("The installer has been opened. Follow its steps to finish.")}
               </div>
             ) : state ? (
               <div className="set-msg">

@@ -1,8 +1,19 @@
 # Changelog
 
-All notable changes to Frnt are listed here, newest first.
+All notable changes to **Freenote** (formerly *Frnt*) are listed here, newest first.
 The format follows [Keep a Changelog](https://keepachangelog.com) and versions follow [Semantic Versioning](https://semver.org).
 Each section is also used as the release notes on GitHub and in the app's update dialog.
+
+## [0.7.0] - 2026-11-26
+
+### Changed
+- **Frnt is now Freenote.** The new name says what it is: free notes. The repository moved to [github.com/thanhmam/freenote](https://github.com/thanhmam/freenote) (old links redirect).
+- Your notes, settings and preferences stay exactly where they were; nothing to migrate.
+- On macOS the app renames itself from *Frnt.app* to *Freenote.app* the first time you quit it after updating. If you pinned it to the Dock, pin it again.
+- Installers are now named `Freenote-<version>-…`.
+
+### Notes
+- Apps on 0.6.4 update to Freenote automatically. Apps on 0.6.3 or older can't update across the rename: download Freenote once from the [Releases page](https://github.com/thanhmam/freenote/releases/latest).
 
 ## [0.6.4] - 2026-11-26
 
@@ -105,16 +116,17 @@ Each section is also used as the release notes on GitHub and in the app's update
 ### Added
 - First public release: block editor, nested pages, databases (table and board), version history, templates, backlinks, Notion and Markdown import, daily automatic backups, light and dark themes, and desktop apps for macOS, Windows and Linux.
 
-[0.6.4]: https://github.com/thanhmam/frnt-notes/compare/v0.6.3...v0.6.4
-[0.6.3]: https://github.com/thanhmam/frnt-notes/compare/v0.6.2...v0.6.3
-[0.6.2]: https://github.com/thanhmam/frnt-notes/compare/v0.6.1...v0.6.2
-[0.6.1]: https://github.com/thanhmam/frnt-notes/compare/v0.6.0...v0.6.1
-[0.6.0]: https://github.com/thanhmam/frnt-notes/compare/v0.5.1...v0.6.0
-[0.5.1]: https://github.com/thanhmam/frnt-notes/compare/v0.5.0...v0.5.1
-[0.5.0]: https://github.com/thanhmam/frnt-notes/compare/v0.4.1...v0.5.0
-[0.4.1]: https://github.com/thanhmam/frnt-notes/compare/v0.4.0...v0.4.1
-[0.4.0]: https://github.com/thanhmam/frnt-notes/compare/v0.3.0...v0.4.0
-[0.3.0]: https://github.com/thanhmam/frnt-notes/compare/v0.2.1...v0.3.0
-[0.2.1]: https://github.com/thanhmam/frnt-notes/compare/v0.2.0...v0.2.1
-[0.2.0]: https://github.com/thanhmam/frnt-notes/compare/v0.1.0...v0.2.0
-[0.1.0]: https://github.com/thanhmam/frnt-notes/releases/tag/v0.1.0
+[0.7.0]: https://github.com/thanhmam/freenote/compare/v0.6.4...v0.7.0
+[0.6.4]: https://github.com/thanhmam/freenote/compare/v0.6.3...v0.6.4
+[0.6.3]: https://github.com/thanhmam/freenote/compare/v0.6.2...v0.6.3
+[0.6.2]: https://github.com/thanhmam/freenote/compare/v0.6.1...v0.6.2
+[0.6.1]: https://github.com/thanhmam/freenote/compare/v0.6.0...v0.6.1
+[0.6.0]: https://github.com/thanhmam/freenote/compare/v0.5.1...v0.6.0
+[0.5.1]: https://github.com/thanhmam/freenote/compare/v0.5.0...v0.5.1
+[0.5.0]: https://github.com/thanhmam/freenote/compare/v0.4.1...v0.5.0
+[0.4.1]: https://github.com/thanhmam/freenote/compare/v0.4.0...v0.4.1
+[0.4.0]: https://github.com/thanhmam/freenote/compare/v0.3.0...v0.4.0
+[0.3.0]: https://github.com/thanhmam/freenote/compare/v0.2.1...v0.3.0
+[0.2.1]: https://github.com/thanhmam/freenote/compare/v0.2.0...v0.2.1
+[0.2.0]: https://github.com/thanhmam/freenote/compare/v0.1.0...v0.2.0
+[0.1.0]: https://github.com/thanhmam/freenote/releases/tag/v0.1.0

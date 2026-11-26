@@ -1,4 +1,4 @@
-// Desktop shell: runs the Frnt server in-process and shows it in a native window.
+// Desktop shell: runs the Freenote server in-process and shows it in a native window.
 import { app, BrowserWindow, Menu, shell, dialog, ipcMain } from "electron";
 import path from "node:path";
 import os from "node:os";
@@ -11,14 +11,19 @@ import { startServer, defaultDataDir } from "../server/app.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const PREFERRED_PORT = 37291; // fixed so browser storage (theme, expanded tree…) persists between launches
-const SMOKE = process.env.FRNT_SMOKE === "1"; // CI/self-test: load once, print, quit
+const SMOKE = process.env.FREENOTE_SMOKE === "1" || process.env.FRNT_SMOKE === "1"; // CI/self-test: load once, print, quit
 
 let server;
 let win;
 
 // Self-test runs in its own profile so it works even while the real app is open
-if (SMOKE) app.setPath("userData", path.join(os.tmpdir(), `frnt-smoke-${process.pid}`));
-// A custom DATA_DIR gets its own browser profile, so a second, separate Frnt can run next to the main one
+// The app used to be called "Frnt": keep using its profile folder so preferences survive the rename
+const legacyProfile = path.join(app.getPath("appData"), "Frnt");
+if (!SMOKE && !process.env.DATA_DIR && fs.existsSync(legacyProfile) && !fs.existsSync(app.getPath("userData"))) {
+  app.setPath("userData", legacyProfile);
+}
+if (SMOKE) app.setPath("userData", path.join(os.tmpdir(), `freenote-smoke-${process.pid}`));
+// A custom DATA_DIR gets its own browser profile, so a second, separate Freenote can run next to the main one
 else if (process.env.DATA_DIR) app.setPath("userData", path.join(process.env.DATA_DIR, "electron-profile"));
 if (!SMOKE && !app.requestSingleInstanceLock()) app.quit();
 app.on("second-instance", () => {
@@ -41,7 +46,7 @@ function createWindow() {
     height: 900,
     minWidth: 720,
     minHeight: 480,
-    title: "Frnt",
+    title: "Freenote",
     show: !SMOKE,
     backgroundColor: "#ffffff",
     webPreferences: { contextIsolation: true, sandbox: true, preload: path.join(__dirname, "preload.cjs") },
@@ -67,16 +72,16 @@ function createWindow() {
         Promise.race([win.webContents.executeJavaScript(code), new Promise((_, rej) => setTimeout(() => rej(new Error("timeout: " + code)), 5000))]);
       const parts = [
         await js("document.querySelector('.ws')?.textContent + ' | pages: ' + document.querySelectorAll('.tree-row').length"),
-        "bridge: " + (await js("window.frntDesktop?.isDesktop === true")),
+        "bridge: " + (await js("window.freenoteDesktop?.isDesktop === true")),
         "button: " + (await js("[...document.querySelectorAll('.sb-link')].some((b) => /browser|trình duyệt/i.test(b.textContent))")),
-        "open(own page): " + (await js("window.frntDesktop.openInBrowser(location.origin + '/#/p/x')")),
-        "open(evil): " + (await js("window.frntDesktop.openInBrowser('https://evil.example/')")),
-        "notion(ok): " + (await js("window.frntDesktop.openNotion('https://www.notion.so/templates/x')")),
-        "notion(evil): " + (await js("window.frntDesktop.openNotion('https://notion.so.evil.example/x')")),
-        "update plan: " + JSON.stringify(await js("window.frntDesktop.installUpdate()")),
+        "open(own page): " + (await js("window.freenoteDesktop.openInBrowser(location.origin + '/#/p/x')")),
+        "open(evil): " + (await js("window.freenoteDesktop.openInBrowser('https://evil.example/')")),
+        "notion(ok): " + (await js("window.freenoteDesktop.openNotion('https://www.notion.so/templates/x')")),
+        "notion(evil): " + (await js("window.freenoteDesktop.openNotion('https://notion.so.evil.example/x')")),
+        "update plan: " + JSON.stringify(await js("window.freenoteDesktop.installUpdate()")),
         "assets: " + JSON.stringify(["darwin/arm64", "darwin/x64", "win32/x64", "linux/x64"].map((pa) => {
           const [pl, ar] = pa.split("/");
-          const names = ["Frnt-9.9.9-mac-arm64.zip", "Frnt-9.9.9-mac-x64.zip", "Frnt-9.9.9-mac-arm64.dmg", "Frnt-9.9.9-win-x64.exe", "Frnt-9.9.9-linux-x86_64.AppImage", "Frnt-9.9.9-linux-amd64.deb"].map((name) => ({ name }));
+          const names = ["Freenote-9.9.9-mac-arm64.zip", "Freenote-9.9.9-mac-x64.zip", "Freenote-9.9.9-mac-arm64.dmg", "Freenote-9.9.9-win-x64.exe", "Freenote-9.9.9-linux-x86_64.AppImage", "Freenote-9.9.9-linux-amd64.deb"].map((name) => ({ name }));
           return pa + "→" + pickAsset(names, pl, ar, pl === "linux" ? "/x.AppImage" : undefined)?.name;
         })),
       ];
@@ -123,15 +128,15 @@ async function installUpdate() {
   const body = Readable.fromWeb(res.body);
   body.on("data", (c) => {
     received += c.length;
-    win?.webContents.send("frnt:update-progress", { phase: "download", received, total });
+    win?.webContents.send("freenote:update-progress", { phase: "download", received, total });
   });
   await pipeline(body, fs.createWriteStream(file));
-  win?.webContents.send("frnt:update-progress", { phase: "install", received: total, total });
+  win?.webContents.send("freenote:update-progress", { phase: "install", received: total, total });
 
   // 2) install
   if (process.platform === "darwin") {
     const bundle = path.resolve(app.getPath("exe"), "..", "..", "..");
-    const tmp = fs.mkdtempSync(path.join(os.tmpdir(), "frnt-update-"));
+    const tmp = fs.mkdtempSync(path.join(os.tmpdir(), "freenote-update-"));
     execFileSync("/usr/bin/ditto", ["-x", "-k", file, tmp]);
     const newApp = fs.readdirSync(tmp).map((f) => path.join(tmp, f)).find((f) => f.endsWith(".app"));
     if (!newApp) throw new Error("The downloaded update does not contain an app");
@@ -146,16 +151,16 @@ async function installUpdate() {
       shell.showItemInFolder(file);
       return { action: "manual", file };
     }
-    // replace the bundle after this process exits, then reopen it
+    // replace the bundle after this process exits, then reopen it.
+    // Installs under the new app's name (Freenote.app), removing an old Frnt.app.
+    const target = path.join(path.dirname(bundle), path.basename(newApp));
     const script = path.join(tmp, "install.sh");
     fs.writeFileSync(
       script,
-      `#!/bin/sh
-while kill -0 ${process.pid} 2>/dev/null; do sleep 0.3; done
-` +
-        `rm -rf "${bundle}" && /usr/bin/ditto "${newApp}" "${bundle}" && open "${bundle}"
-`
+      `#!/bin/sh\nwhile kill -0 ${process.pid} 2>/dev/null; do sleep 0.3; done\n` +
+        `rm -rf "${bundle}" "${target}" && /usr/bin/ditto "${newApp}" "${target}" && open "${target}"\n`
     );
+    renamingOnQuit = true;
     spawn("/bin/sh", [script], { detached: true, stdio: "ignore" }).unref();
     setTimeout(() => app.quit(), 600);
     return { action: "restarting", version: info.latest };
@@ -191,10 +196,10 @@ function buildMenu() {
       {
         role: "help",
         submenu: [
-          { label: app.getLocale().startsWith("vi") ? "Kiểm tra cập nhật…" : "Check for updates…", click: () => win?.webContents.send("frnt:show-update") },
+          { label: app.getLocale().startsWith("vi") ? "Kiểm tra cập nhật…" : "Check for updates…", click: () => win?.webContents.send("freenote:show-update") },
           { label: app.getLocale().startsWith("vi") ? "Mở trong trình duyệt" : "Open in browser", click: () => shell.openExternal(server.url) },
           { label: app.getLocale().startsWith("vi") ? "Mở thư mục dữ liệu" : "Open data folder", click: () => shell.openPath(server.dataDir) },
-          { label: "GitHub", click: () => shell.openExternal("https://github.com/thanhmam/frnt-notes") },
+          { label: "GitHub", click: () => shell.openExternal("https://github.com/thanhmam/freenote") },
         ],
       },
     ])
@@ -205,17 +210,17 @@ app.whenReady().then(async () => {
   try {
     await boot();
   } catch (e) {
-    dialog.showErrorBox("Frnt could not start", String(e?.stack || e));
+    dialog.showErrorBox("Freenote could not start", String(e?.stack || e));
     app.quit();
     return;
   }
   // "Open in browser": only URLs served by this app's own local server are allowed
-  ipcMain.handle("frnt:open-in-browser", (_e, url) => {
+  ipcMain.handle("freenote:open-in-browser", (_e, url) => {
     const target = url && url.startsWith(server.url + "/") ? url : server.url;
     if (!SMOKE) shell.openExternal(target);
     return target;
   });
-  ipcMain.handle("frnt:open-notion", (_e, url) => {
+  ipcMain.handle("freenote:open-notion", (_e, url) => {
     let u;
     try {
       u = new URL(url);
@@ -226,7 +231,7 @@ app.whenReady().then(async () => {
     if (ok && !SMOKE) shell.openExternal(u.href);
     return ok;
   });
-  ipcMain.handle("frnt:install-update", async () => {
+  ipcMain.handle("freenote:install-update", async () => {
     try {
       return await installUpdate();
     } catch (e) {
@@ -241,4 +246,19 @@ app.whenReady().then(async () => {
 app.on("window-all-closed", () => {
   if (process.platform !== "darwin" || SMOKE) app.quit();
 });
+let renamingOnQuit = false; // set when the updater already installs under the new name
 app.on("before-quit", () => server?.close());
+
+// The app used to be called "Frnt": an app bundle still named Frnt.app renames itself to Freenote.app after quitting
+app.on("will-quit", () => {
+  if (process.platform !== "darwin" || !app.isPackaged || SMOKE || renamingOnQuit) return;
+  const bundle = path.resolve(app.getPath("exe"), "..", "..", "..");
+  const target = path.join(path.dirname(bundle), "Freenote.app");
+  if (path.basename(bundle) !== "Frnt.app" || fs.existsSync(target)) return;
+  try {
+    fs.accessSync(path.dirname(bundle), fs.constants.W_OK);
+    const script = path.join(os.tmpdir(), `freenote-rename-${process.pid}.sh`);
+    fs.writeFileSync(script, `#!/bin/sh\nwhile kill -0 ${process.pid} 2>/dev/null; do sleep 0.3; done\nmv "${bundle}" "${target}"\nrm -f "$0"\n`);
+    spawn("/bin/sh", [script], { detached: true, stdio: "ignore" }).unref();
+  } catch {}
+});

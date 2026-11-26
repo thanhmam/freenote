@@ -7,7 +7,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { randomUUID } from "node:crypto";
 
-export const DEFAULT_LIBRARY = "https://raw.githubusercontent.com/thanhmam/frnt-notes/main/library";
+export const DEFAULT_LIBRARY = "https://raw.githubusercontent.com/thanhmam/freenote/main/library";
 const INDEX_TTL = 60 * 60 * 1000; // re-check the library at most hourly unless the user asks
 const MAX_INDEX = 2 * 1024 * 1024;
 const MAX_TEMPLATE = 40 * 1024 * 1024;
@@ -59,8 +59,8 @@ function sanitizeContent(node) {
 }
 
 export function validatePackage(pkg) {
-  if (!pkg || pkg.format !== "frnt-template") throw httpError(400, "Not a Frnt template file (format must be \"frnt-template\").");
-  if (pkg.version !== 1) throw httpError(400, `Unsupported template version ${pkg.version}. Please update Frnt.`);
+  if (!pkg || pkg.format !== "frnt-template") throw httpError(400, "Not a Freenote template file (format must be \"frnt-template\").");
+  if (pkg.version !== 1) throw httpError(400, `Unsupported template version ${pkg.version}. Please update Freenote.`);
   if (!Array.isArray(pkg.pages) || !pkg.pages.length) throw httpError(400, "The template contains no pages.");
   const keys = new Set(pkg.pages.map((p) => p.key));
   if (keys.size !== pkg.pages.length || [...keys].some((k) => typeof k !== "string" || !k)) throw httpError(400, "The template has invalid page keys.");

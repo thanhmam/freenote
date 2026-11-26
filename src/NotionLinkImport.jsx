@@ -17,11 +17,11 @@ export function parseNotionLink(text) {
 }
 
 export const NOTION_GALLERY = "https://www.notion.com/templates";
-export const openExternal = (url) => (window.frntDesktop?.openNotion ? window.frntDesktop.openNotion(url) : window.open(url, "_blank", "noopener"));
+export const openExternal = (url) => (window.freenoteDesktop?.openNotion ? window.freenoteDesktop.openNotion(url) : window.open(url, "_blank", "noopener"));
 
 /**
  * "Add from a Notion link": guides the user through Notion's own Duplicate → Export, then imports the .zip.
- * (Notion has no official API to read public pages, so Frnt doesn't scrape them.)
+ * (Notion has no official API to read public pages, so Freenote doesn't scrape them.)
  */
 export default function NotionLinkImport({ onClose, initialLink = "" }) {
   const [link, setLink] = useState(initialLink);
@@ -157,7 +157,7 @@ export default function NotionLinkImport({ onClose, initialLink = "" }) {
           </div>
         )}
         <div className="muted small" style={{ marginTop: 12 }}>
-          {t("Frnt uses Notion's own Duplicate and Export features. It doesn't read Notion pages automatically, because Notion offers no official way to do that.")}
+          {t("Freenote uses Notion's own Duplicate and Export features. It doesn't read Notion pages automatically, because Notion offers no official way to do that.")}
         </div>
       </div>
     </div>

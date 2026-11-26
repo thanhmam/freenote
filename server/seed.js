@@ -4,13 +4,13 @@ const h = (level, text) => ({ type: "heading", props: { level }, content: text }
 const todo = (text) => ({ type: "checkListItem", content: text });
 const bullet = (text) => ({ type: "bulletListItem", content: text });
 
-/** Pick the seed language from FRNT_LANG, or the OS / Electron locale. */
+/** Pick the seed language from FREENOTE_LANG (or the older FRNT_LANG), or the OS / Electron locale. */
 export function detectLang(hint) {
-  const l = (process.env.FRNT_LANG || hint || Intl.DateTimeFormat().resolvedOptions().locale || "en").slice(0, 2).toLowerCase();
+  const l = (process.env.FREENOTE_LANG || process.env.FRNT_LANG || hint || Intl.DateTimeFormat().resolvedOptions().locale || "en").slice(0, 2).toLowerCase();
   return l === "vi" ? "vi" : "en";
 }
 
-const REPO = "https://github.com/thanhmam/frnt-notes";
+const REPO = "https://github.com/thanhmam/freenote";
 /** "Plain **bold** text" → BlockNote inline content with bold runs. */
 const rich = (str) =>
   str.split("**").map((text, i) => ({ type: "text", text, styles: i % 2 ? { bold: true } : {} })).filter((r) => r.text);
@@ -30,19 +30,19 @@ const table = (rows) => ({
 
 const WELCOME = {
   en: {
-    title: "Welcome to Frnt 👋",
+    title: "Welcome to Freenote 👋",
     content: [
-      P("**Frnt (Free Notes)** is a free, open-source alternative to Notion. Your notes live on your own computer, and there are no paid plans, ever."),
+      P("**Freenote** is a free, open-source alternative to Notion. Your notes live on your own computer, and there are no paid plans, ever."),
       quote("No account. No limits. No subscription. Your notes are one file on your own disk."),
-      h(2, "Why Frnt?"),
+      h(2, "Why Freenote?"),
       B("💸 **100% free.** No paid tiers, no ads, no trial. Open source under the MIT license."),
       B("🔒 **Your data stays yours.** Stored on your computer, no sign-up, works completely offline."),
       B("♾️ **No limits.** Unlimited pages, blocks and file uploads."),
       B("🕘 **Nothing gets lost.** Version history for every page, plus automatic daily backups."),
       B("📥 **Easy move from Notion.** Import your whole workspace from Notion's export .zip."),
-      h(2, "Frnt vs Notion Free"),
+      h(2, "Freenote vs Notion Free"),
       table([
-        ["", "**Frnt**", "**Notion Free**"],
+        ["", "**Freenote**", "**Notion Free**"],
         ["Price", "Free forever", "Free with limits, paid plans"],
         ["Your data", "On your computer", "On Notion's servers"],
         ["Account", "Not needed", "Required"],
@@ -51,8 +51,8 @@ const WELCOME = {
         ["Offline", "Always", "Partly"],
         ["Open source", "✅", "❌"],
       ]),
-      toggle("What Notion has that Frnt doesn't (yet)", [
-        B("Real-time collaboration, comments and sharing (Frnt is single-user)"),
+      toggle("What Notion has that Freenote doesn't (yet)", [
+        B("Real-time collaboration, comments and sharing (Freenote is single-user)"),
         B("Mobile apps and automatic sync between devices"),
         B("Calendar, gallery and timeline views; formulas and relations"),
         B("AI features and third-party integrations"),
@@ -72,28 +72,28 @@ const WELCOME = {
       h(2, "Moving from Notion"),
       N("In Notion: **Settings → General → Export all workspace content**"),
       N("Choose **Markdown & CSV** and **Include subpages**, then download the .zip (no need to unzip)"),
-      N("In Frnt: **Settings → Import → From Notion (.zip)**"),
+      N("In Freenote: **Settings → Import → From Notion (.zip)**"),
       h(2, "Your data"),
       B("Everything is stored in a single SQLite file on your computer"),
       B("Automatic daily backups (30 kept). Point the backup folder to iCloud or Google Drive in **Settings**"),
       B("Desktop app: **🌐 Open in browser** (sidebar) opens the same notes in your web browser"),
-      link("Frnt is a community project. Ideas, bug reports and contributions are welcome on ", "GitHub", REPO, "."),
+      link("Freenote is a community project. Ideas, bug reports and contributions are welcome on ", "GitHub", REPO, "."),
     ],
   },
   vi: {
-    title: "Chào mừng đến Frnt 👋",
+    title: "Chào mừng đến Freenote 👋",
     content: [
-      P("**Frnt (Free Notes)** là ứng dụng ghi chú thay thế Notion: **miễn phí mãi mãi**, mã nguồn mở, và dữ liệu nằm trên chính máy của bạn."),
+      P("**Freenote** là ứng dụng ghi chú thay thế Notion: **miễn phí mãi mãi**, mã nguồn mở, và dữ liệu nằm trên chính máy của bạn."),
       quote("Không tài khoản. Không giới hạn. Không trả phí. Ghi chú của bạn là một file nằm trên ổ đĩa của bạn."),
-      h(2, "Vì sao chọn Frnt?"),
+      h(2, "Vì sao chọn Freenote?"),
       B("💸 **Miễn phí 100%.** Không có gói trả phí, không quảng cáo, không dùng thử. Mã nguồn mở theo giấy phép MIT."),
       B("🔒 **Dữ liệu là của bạn.** Lưu trên máy của bạn, không cần đăng ký, dùng offline hoàn toàn."),
       B("♾️ **Không giới hạn.** Không giới hạn số trang, số block hay dung lượng file đính kèm."),
       B("🕘 **Không lo mất dữ liệu.** Mỗi trang có lịch sử phiên bản, kèm sao lưu tự động mỗi ngày."),
       B("📥 **Chuyển từ Notion dễ dàng.** Nhập cả workspace từ file .zip export của Notion."),
-      h(2, "Frnt và Notion bản Free"),
+      h(2, "Freenote và Notion bản Free"),
       table([
-        ["", "**Frnt**", "**Notion Free**"],
+        ["", "**Freenote**", "**Notion Free**"],
         ["Giá", "Miễn phí mãi mãi", "Miễn phí có giới hạn, có gói trả phí"],
         ["Dữ liệu", "Trên máy của bạn", "Trên máy chủ của Notion"],
         ["Tài khoản", "Không cần", "Bắt buộc"],
@@ -102,8 +102,8 @@ const WELCOME = {
         ["Offline", "Luôn luôn", "Một phần"],
         ["Mã nguồn mở", "✅", "❌"],
       ]),
-      toggle("Những gì Notion có mà Frnt chưa có", [
-        B("Cộng tác thời gian thực, bình luận, chia sẻ (Frnt dành cho một người dùng)"),
+      toggle("Những gì Notion có mà Freenote chưa có", [
+        B("Cộng tác thời gian thực, bình luận, chia sẻ (Freenote dành cho một người dùng)"),
         B("App điện thoại và tự đồng bộ giữa nhiều thiết bị"),
         B("View lịch, gallery, timeline; công thức và relation"),
         B("Tính năng AI và tích hợp với dịch vụ khác"),
@@ -123,12 +123,12 @@ const WELCOME = {
       h(2, "Chuyển từ Notion sang"),
       N("Trong Notion: **Settings → General → Export all workspace content**"),
       N("Chọn **Markdown & CSV** và bật **Include subpages**, rồi tải file .zip về (không cần giải nén)"),
-      N("Trong Frnt: **Cài đặt → Nhập dữ liệu → Từ Notion (.zip)**"),
+      N("Trong Freenote: **Cài đặt → Nhập dữ liệu → Từ Notion (.zip)**"),
       h(2, "Dữ liệu của bạn"),
       B("Mọi thứ được lưu trong một file SQLite trên máy của bạn"),
       B("Sao lưu tự động mỗi ngày (giữ 30 bản). Có thể trỏ thư mục sao lưu vào iCloud hoặc Google Drive trong **Cài đặt**"),
       B("Bản desktop: nút **🌐 Mở trong trình duyệt** (ở sidebar) mở cùng dữ liệu này trên trình duyệt web"),
-      link("Frnt là dự án cộng đồng. Mọi góp ý, báo lỗi hay đóng góp code đều được chào đón trên ", "GitHub", REPO, "."),
+      link("Freenote là dự án cộng đồng. Mọi góp ý, báo lỗi hay đóng góp code đều được chào đón trên ", "GitHub", REPO, "."),
     ],
   },
 };

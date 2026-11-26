@@ -1,12 +1,12 @@
-# Contributing to Frnt
+# Contributing to Freenote
 
 Thanks for helping! Issues and pull requests in English or Vietnamese are both welcome.
 
 ## Getting started
 
 ```bash
-git clone https://github.com/<you>/frnt-notes.git
-cd frnt-notes
+git clone https://github.com/<you>/freenote.git
+cd freenote
 npm install
 npm run dev            # http://localhost:3001, hot reload (server restarts on server/ changes)
 ```
@@ -14,7 +14,7 @@ npm run dev            # http://localhost:3001, hot reload (server restarts on s
 Use a throw-away data folder while developing so you don't touch your real notes:
 
 ```bash
-DATA_DIR=/tmp/frnt-dev npm run dev
+DATA_DIR=/tmp/freenote-dev npm run dev
 ```
 
 Before opening a PR:

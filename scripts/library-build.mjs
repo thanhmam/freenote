@@ -61,7 +61,7 @@ if (fs.existsSync(picksFile)) {
 }
 
 entries.sort((a, b) => a.category.localeCompare(b.category) || a.title.localeCompare(b.title));
-const index = { name: "Frnt Template Library", format: 1, templates: entries };
+const index = { name: "Freenote Template Library", format: 1, templates: entries };
 const out = JSON.stringify(index, null, 2) + "\n";
 const target = path.join(ROOT, "index.json");
 if (check) {

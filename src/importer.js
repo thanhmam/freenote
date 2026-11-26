@@ -1,4 +1,4 @@
-// Import a Notion export ("Markdown & CSV" .zip) or plain Markdown files into Frnt.
+// Import a Notion export ("Markdown & CSV" .zip) or plain Markdown files into Freenote.
 //
 // Notion export layout (2024+):
 //   Export-<uuid>/Page <32hex>.md            a page

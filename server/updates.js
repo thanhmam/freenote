@@ -3,7 +3,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
-export const REPO = "thanhmam/frnt-notes";
+export const REPO = "thanhmam/freenote";
 const CHECK_TTL = 24 * 60 * 60 * 1000; // automatic checks hit GitHub at most once a day
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -30,7 +30,7 @@ export function mountUpdates(app, { getSetting, setSetting }) {
     let res;
     try {
       res = await fetch(`https://api.github.com/repos/${REPO}/releases/latest`, {
-        headers: { Accept: "application/vnd.github+json", "User-Agent": "Frnt-update-check" },
+        headers: { Accept: "application/vnd.github+json", "User-Agent": "Freenote-update-check" },
         signal: AbortSignal.timeout(20000),
       });
     } catch (e) {

@@ -25,7 +25,7 @@ export default function ExportTemplate({ id, onClose }) {
           <button className="icon-btn" onClick={onClose}>✕</button>
         </div>
         <p className="muted small">
-          {t("Creates a .json package with this page, its sub-pages, databases and images. Put it in the repository's library/templates folder, run “npm run library:build” and push: every Frnt app will see it in the Template library.")}
+          {t("Creates a .json package with this page, its sub-pages, databases and images. Put it in the repository's library/templates folder, run “npm run library:build” and push: every Freenote app will see it in the Template library.")}
         </p>
         <div className="form-grid">
           <label>{t("Title")}</label>

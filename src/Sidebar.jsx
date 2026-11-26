@@ -271,7 +271,7 @@ const sbMax = () => Math.max(SB_MAX_FIXED, Math.round(window.innerWidth * 0.7));
 const SB_DEFAULT = 260;
 
 /** Desktop app bridge (electron/preload.cjs); undefined in a normal browser. */
-export const desktop = typeof window !== "undefined" ? window.frntDesktop : undefined;
+export const desktop = typeof window !== "undefined" ? window.freenoteDesktop : undefined;
 export const openInBrowser = (url = window.location.href) => desktop?.openInBrowser(url);
 
 export default function Sidebar({ currentId, refresh, createPage, openSearch, theme, toggleTheme, collapse }) {
@@ -354,7 +354,7 @@ export default function Sidebar({ currentId, refresh, createPage, openSearch, th
       <div className="sb-head">
         <div className="ws">
           <span className="ws-logo">F</span>
-          <span>Frnt</span>
+          <span>Freenote</span>
           {version && (
             <button className="ws-version" title={t("Check for updates")} onClick={() => setUpdateOpen(true)}>
               v{version}
@@ -431,7 +431,7 @@ export default function Sidebar({ currentId, refresh, createPage, openSearch, th
           <span className="menu-ico">⚙</span> {t("Settings")}
         </button>
         {desktop && (
-          <button className="sb-link" title={t("Opens {url} in your browser. Works while Frnt is running.", { url: window.location.origin })} onClick={() => openInBrowser()}>
+          <button className="sb-link" title={t("Opens {url} in your browser. Works while Freenote is running.", { url: window.location.origin })} onClick={() => openInBrowser()}>
             <span className="menu-ico">🌐</span> {t("Open in browser")}
             <span className="sb-url">{window.location.host}</span>
           </button>

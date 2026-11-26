@@ -1,5 +1,5 @@
 {
-  "name": "Frnt Template Library",
+  "name": "Freenote Template Library",
   "format": 1,
   "templates": [
     {
@@ -10,11 +10,11 @@
       "category": "Education",
       "lang": "en",
       "icon": "📚",
-      "author": "Frnt",
+      "author": "Freenote",
       "updated": "2026-11-25",
       "pages": 1,
       "databases": 0,
-      "size": 1189
+      "size": 1193
     },
     {
       "id": "ghi-chu-doc-sach",
@@ -24,11 +24,11 @@
       "category": "Education",
       "lang": "vi",
       "icon": "📚",
-      "author": "Frnt",
+      "author": "Freenote",
       "updated": "2026-11-25",
       "pages": 1,
       "databases": 0,
-      "size": 1272
+      "size": 1276
     },
     {
       "id": "daily-journal",
@@ -38,11 +38,11 @@
       "category": "Personal",
       "lang": "en",
       "icon": "📔",
-      "author": "Frnt",
+      "author": "Freenote",
       "updated": "2026-11-25",
       "pages": 1,
       "databases": 0,
-      "size": 1375
+      "size": 1379
     },
     {
       "id": "danh-sach-doc",
@@ -52,11 +52,11 @@
       "category": "Personal",
       "lang": "vi",
       "icon": "📚",
-      "author": "Frnt",
+      "author": "Freenote",
       "updated": "2026-11-25",
       "pages": 3,
       "databases": 1,
-      "size": 3321
+      "size": 3325
     },
     {
       "id": "nhat-ky-hang-ngay",
@@ -66,11 +66,11 @@
       "category": "Personal",
       "lang": "vi",
       "icon": "📔",
-      "author": "Frnt",
+      "author": "Freenote",
       "updated": "2026-11-25",
       "pages": 1,
       "databases": 0,
-      "size": 1454
+      "size": 1458
     },
     {
       "id": "reading-list",
@@ -80,11 +80,11 @@
       "category": "Personal",
       "lang": "en",
       "icon": "📚",
-      "author": "Frnt",
+      "author": "Freenote",
       "updated": "2026-11-25",
       "pages": 3,
       "databases": 1,
-      "size": 3263
+      "size": 3267
     },
     {
       "id": "ke-hoach-du-an",
@@ -94,11 +94,11 @@
       "category": "Projects",
       "lang": "vi",
       "icon": "🚀",
-      "author": "Frnt",
+      "author": "Freenote",
       "updated": "2026-11-25",
       "pages": 1,
       "databases": 0,
-      "size": 1576
+      "size": 1580
     },
     {
       "id": "project-plan",
@@ -108,11 +108,11 @@
       "category": "Projects",
       "lang": "en",
       "icon": "🚀",
-      "author": "Frnt",
+      "author": "Freenote",
       "updated": "2026-11-25",
       "pages": 1,
       "databases": 0,
-      "size": 1480
+      "size": 1484
     },
     {
       "id": "quan-ly-cong-viec",
@@ -122,11 +122,11 @@
       "category": "Projects",
       "lang": "vi",
       "icon": "✅",
-      "author": "Frnt",
+      "author": "Freenote",
       "updated": "2026-11-25",
       "pages": 3,
       "databases": 1,
-      "size": 3675
+      "size": 3679
     },
     {
       "id": "task-tracker",
@@ -136,11 +136,11 @@
       "category": "Projects",
       "lang": "en",
       "icon": "✅",
-      "author": "Frnt",
+      "author": "Freenote",
       "updated": "2026-11-25",
       "pages": 3,
       "databases": 1,
-      "size": 3546
+      "size": 3550
     },
     {
       "id": "bien-ban-hop",
@@ -150,11 +150,11 @@
       "category": "Work",
       "lang": "vi",
       "icon": "🗓️",
-      "author": "Frnt",
+      "author": "Freenote",
       "updated": "2026-11-25",
       "pages": 1,
       "databases": 0,
-      "size": 1491
+      "size": 1495
     },
     {
       "id": "meeting-notes",
@@ -164,11 +164,11 @@
       "category": "Work",
       "lang": "en",
       "icon": "🗓️",
-      "author": "Frnt",
+      "author": "Freenote",
       "updated": "2026-11-25",
       "pages": 1,
       "databases": 0,
-      "size": 1397
+      "size": 1401
     }
   ]
 }

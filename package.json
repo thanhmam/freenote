@@ -1,14 +1,14 @@
 {
-  "name": "frnt-notes",
-  "productName": "Frnt",
-  "version": "0.6.4",
-  "description": "Frnt (Free Notes): a free, open-source, local-first Notion alternative. Block editor, nested pages, databases, version history, Notion import. English & Vietnamese UI.",
+  "name": "freenote",
+  "productName": "Freenote",
+  "version": "0.7.0",
+  "description": "Freenote: a free, open-source, local-first Notion alternative. Block editor, nested pages, databases, version history, Notion import, template library. English & Vietnamese UI.",
   "license": "MIT",
-  "author": "Frnt contributors",
-  "homepage": "https://github.com/thanhmam/frnt-notes",
+  "author": "Freenote contributors",
+  "homepage": "https://github.com/thanhmam/freenote",
   "repository": {
     "type": "git",
-    "url": "https://github.com/thanhmam/frnt-notes.git"
+    "url": "https://github.com/thanhmam/freenote.git"
   },
   "keywords": [
     "notion",
@@ -33,7 +33,7 @@
     "dist:mac": "vite build && electron-builder --mac",
     "dist:win": "vite build && electron-builder --win",
     "dist:linux": "vite build && electron-builder --linux",
-    "smoke": "vite build && FRNT_SMOKE=1 electron .",
+    "smoke": "vite build && FREENOTE_SMOKE=1 electron .",
     "i18n:check": "node scripts/i18n-check.mjs",
     "library:build": "node scripts/library-build.mjs",
     "release-notes": "node scripts/release-notes.mjs",
@@ -58,8 +58,8 @@
   },
   "build": {
     "appId": "io.github.frntnotes.app",
-    "productName": "Frnt",
-    "artifactName": "Frnt-${version}-${os}-${arch}.${ext}",
+    "productName": "Freenote",
+    "artifactName": "Freenote-${version}-${os}-${arch}.${ext}",
     "directories": {
       "output": "release",
       "buildResources": "build"
@@ -114,13 +114,13 @@
       ],
       "category": "Office",
       "icon": "build/icon.png",
-      "maintainer": "Frnt contributors",
-      "executableName": "frnt"
+      "maintainer": "Freenote contributors",
+      "executableName": "freenote"
     },
     "publish": {
       "provider": "github",
       "owner": "thanhmam",
-      "repo": "frnt-notes",
+      "repo": "freenote",
       "releaseType": "release"
     }
   }

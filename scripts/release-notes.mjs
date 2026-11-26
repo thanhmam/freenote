@@ -19,4 +19,4 @@ if (!body) {
   console.error(`✗ CHANGELOG.md section for ${version} is empty.`);
   process.exit(1);
 }
-console.log(body + `\n\n**Full changelog:** https://github.com/thanhmam/frnt-notes/blob/main/CHANGELOG.md`);
+console.log(body + `\n\n**Full changelog:** https://github.com/thanhmam/freenote/blob/main/CHANGELOG.md`);

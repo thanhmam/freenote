@@ -1,4 +1,4 @@
-// HTTP client for the local Frnt server. Errors always say which call failed and why.
+// HTTP client for the local Freenote server. Errors always say which call failed and why.
 const KEEPALIVE_MAX = 60 * 1024; // browsers reject keepalive requests with bodies > 64 KB ("Failed to fetch")
 
 async function request(method, url, { body, json = true, headers = {}, keepalive = false } = {}) {
@@ -16,7 +16,7 @@ async function request(method, url, { body, json = true, headers = {}, keepalive
   try {
     res = await fetch(url, init);
   } catch (e) {
-    throw new Error(`Cannot reach the Frnt server (${method} ${url.split("?")[0]}): ${e.message}. Is the app still running?`);
+    throw new Error(`Cannot reach the Freenote server (${method} ${url.split("?")[0]}): ${e.message}. Is the app still running?`);
   }
   if (!res.ok) {
     let msg = "";
@@ -51,7 +51,7 @@ function uploadWithProgress(url, file, onProgress) {
       if (xhr.status >= 200 && xhr.status < 300) resolve(data);
       else reject(new Error(`Upload failed (HTTP ${xhr.status}): ${data?.error || xhr.responseText.slice(0, 300) || xhr.statusText}`));
     };
-    xhr.onerror = () => reject(new Error("Cannot reach the Frnt server while uploading. Is the app still running?"));
+    xhr.onerror = () => reject(new Error("Cannot reach the Freenote server while uploading. Is the app still running?"));
     xhr.send(file);
   });
 }
@@ -91,7 +91,7 @@ export const api = {
     try {
       res = await fetch(url);
     } catch (e) {
-      throw new Error(`Cannot reach the Frnt server while reading "${path}": ${e.message}`);
+      throw new Error(`Cannot reach the Freenote server while reading "${path}": ${e.message}`);
     }
     if (!res.ok) throw new Error(`Reading "${path}" failed (HTTP ${res.status}): ${(await res.json().catch(() => ({}))).error || res.statusText}`);
     return res.text();

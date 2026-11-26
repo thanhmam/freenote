@@ -1,4 +1,4 @@
-// Frnt server: Express + SQLite (node:sqlite, built into Node ≥ 22.13).
+// Freenote server: Express + SQLite (node:sqlite, built into Node ≥ 22.13).
 // Used by both the CLI (server/index.js) and the desktop app (electron/main.mjs).
 import express from "express";
 import { DatabaseSync } from "node:sqlite";
@@ -372,7 +372,7 @@ export async function startServer({ port = 3001, host = "127.0.0.1", dataDir = d
   // ---- full JSON export / import ----
   app.get("/api/export", (_req, res) => {
     const pages = db.prepare(`SELECT * FROM pages`).all();
-    res.setHeader("Content-Disposition", `attachment; filename="frnt-backup-${new Date().toISOString().slice(0, 10)}.json"`);
+    res.setHeader("Content-Disposition", `attachment; filename="freenote-backup-${new Date().toISOString().slice(0, 10)}.json"`);
     res.json({ version: 2, exported_at: now(), pages });
   });
   app.post("/api/import", (req, res) => {
