@@ -42,6 +42,8 @@
 3. Notion sẽ gửi link tải qua email. Tải file `.zip` về, **không cần giải nén**.
 4. Trong Frnt, mở **Cài đặt → Nhập dữ liệu → Từ Notion (.zip)** rồi chọn file. Nếu Notion chia export thành nhiều phần, chọn tất cả các phần cùng lúc.
 
+**Từ link template Notion:** trong Thư viện mẫu (hoặc Cài đặt → Nhập dữ liệu), chọn **🔗 Từ link Notion** rồi dán link. Frnt mở link trong Notion và hướng dẫn từng bước *Duplicate → Export (Markdown & CSV)*; thả file .zip vào là xong, và có thể lưu thẳng vào mục Mẫu. Frnt chỉ dùng chính tính năng Duplicate và Export của Notion, vì Notion không có cách chính thức để tự đọc trang.
+
 **Được chuyển sang:** cây trang, định dạng chữ, todo, toggle, code, quote, ảnh và file đính kèm, liên kết giữa các trang, và database (tự nhận dạng kiểu cột: chọn một, chọn nhiều, ngày, số, URL, checkbox, văn bản). Mỗi hàng database giữ nguyên nội dung trang của nó.
 
 **Chưa hỗ trợ:** bình luận, công thức/rollup (được nhập dưới dạng văn bản), synced block, và các view database ngoài dạng bảng.

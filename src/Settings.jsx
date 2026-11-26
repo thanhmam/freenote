@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { api } from "./api.js";
 import { store, navigate, timeAgo } from "./store.js";
 import { importFiles } from "./importer.js";
+import NotionLinkImport from "./NotionLinkImport.jsx";
 import { t, lang, setLang, LOCALES } from "./i18n.js";
 
 export const REPO_URL = "https://github.com/thanhmam/frnt-notes";
@@ -10,6 +11,7 @@ export default function Settings({ onClose, theme, toggleTheme }) {
   const [s, setS] = useState(null);
   const [dir, setDir] = useState("");
   const [libSrc, setLibSrc] = useState("");
+  const [notion, setNotion] = useState(false);
   const [msg, setMsg] = useState("");
   const [busy, setBusy] = useState(false);
   const [progress, setProgress] = useState(null); // { phase, done, total }
@@ -197,6 +199,9 @@ export default function Settings({ onClose, theme, toggleTheme }) {
             <button className="btn ghost bordered" disabled={busy} onClick={() => mdRef.current.click()}>
               📝 {t("Markdown files (.md)")}
             </button>
+            <button className="btn ghost bordered" disabled={busy} onClick={() => setNotion(true)}>
+              🔗 {t("From a Notion link")}
+            </button>
           </div>
           <div className="muted small" style={{ marginTop: 6 }}>
             {t("In Notion: Settings → Export all workspace content → format “Markdown & CSV”, include subpages. Sub-pages, images and databases (CSV) are all imported.")}
@@ -259,6 +264,7 @@ export default function Settings({ onClose, theme, toggleTheme }) {
           </a>
         </div>
 
+        {notion && <NotionLinkImport onClose={() => setNotion(false)} />}
         <input ref={zipRef} type="file" accept=".zip" multiple hidden onChange={(e) => e.target.files.length && doImport(e.target.files)} />
         <input ref={mdRef} type="file" accept=".md,.markdown,.txt" multiple hidden onChange={(e) => e.target.files.length && doImport(e.target.files)} />
         <input ref={jsonRef} type="file" accept="application/json" hidden onChange={(e) => e.target.files[0] && restoreJson(e.target.files[0])} />

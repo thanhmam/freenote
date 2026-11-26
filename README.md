@@ -48,6 +48,8 @@
 3. Notion emails you a download link. Save the `.zip` file. There's no need to unzip it.
 4. In Frnt, open **Settings → Import → From Notion (.zip)** and pick the file. If Notion split the export into several parts, select all of them at once.
 
+**From a Notion template link:** in the Template library (or Settings → Import), choose **🔗 From a Notion link** and paste the link. Frnt opens it in Notion and walks you through *Duplicate → Export (Markdown & CSV)*; drop the .zip in, and it can be saved straight to your Templates. Frnt only uses Notion's own Duplicate and Export features, because Notion offers no official way to read pages automatically.
+
 What comes across: the page tree, text formatting, to-dos, toggles, code, quotes, images and attached files, links between pages, and databases (with property types detected: select, multi-select, date, number, URL, checkbox, text). Each database row keeps its page content.
 Not yet: comments, formulas/rollups (imported as text), synced blocks and database views other than table.
 

@@ -65,6 +65,8 @@ function createWindow() {
         "button: " + (await js("[...document.querySelectorAll('.sb-link')].some((b) => /browser|trình duyệt/i.test(b.textContent))")),
         "open(own page): " + (await js("window.frntDesktop.openInBrowser(location.origin + '/#/p/x')")),
         "open(evil): " + (await js("window.frntDesktop.openInBrowser('https://evil.example/')")),
+        "notion(ok): " + (await js("window.frntDesktop.openNotion('https://www.notion.so/templates/x')")),
+        "notion(evil): " + (await js("window.frntDesktop.openNotion('https://notion.so.evil.example/x')")),
       ];
       const title = parts.join(" | ");
       console.log("SMOKE OK:", title, "| data:", server.dataDir);
@@ -115,6 +117,17 @@ app.whenReady().then(async () => {
     const target = url && url.startsWith(server.url + "/") ? url : server.url;
     if (!SMOKE) shell.openExternal(target);
     return target;
+  });
+  ipcMain.handle("frnt:open-notion", (_e, url) => {
+    let u;
+    try {
+      u = new URL(url);
+    } catch {
+      return false;
+    }
+    const ok = u.protocol === "https:" && /(^|\.)(notion\.so|notion\.site|notion\.com)$/i.test(u.hostname);
+    if (ok && !SMOKE) shell.openExternal(u.href);
+    return ok;
   });
   buildMenu();
   createWindow();

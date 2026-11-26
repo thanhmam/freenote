@@ -2,6 +2,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { api } from "./api.js";
 import { store, navigate, timeAgo } from "./store.js";
 import { t, lang } from "./i18n.js";
+import NotionLinkImport from "./NotionLinkImport.jsx";
 
 export const CATEGORIES = ["Work", "Projects", "Personal", "Education", "Other"];
 export const catLabel = (c) => ({ Work: t("Work"), Projects: t("Projects"), Personal: t("Personal"), Education: t("Education"), Other: t("Other") })[c] || c;
@@ -16,6 +17,7 @@ export default function Library({ onClose }) {
   const [busy, setBusy] = useState(null); // template id being installed
   const [done, setDone] = useState(null);
   const fileRef = useRef(null);
+  const [notion, setNotion] = useState(false);
 
   const load = async (refresh) => {
     setLoading(true);
@@ -149,9 +151,13 @@ export default function Library({ onClose }) {
           <span>
             {t("Source")}: <code>{data?.source || "…"}</code>
           </span>
-          <button className="btn ghost small" onClick={() => fileRef.current.click()}>⬆ {t("Install from file (.json)")}</button>
+          <span className="row" style={{ marginTop: 0 }}>
+            <button className="btn ghost small bordered" onClick={() => setNotion(true)}>🔗 {t("From a Notion link")}</button>
+            <button className="btn ghost small" onClick={() => fileRef.current.click()}>⬆ {t("Install from file (.json)")}</button>
+          </span>
           <input ref={fileRef} type="file" accept=".json,application/json" hidden onChange={(e) => e.target.files[0] && installFile(e.target.files[0])} />
         </div>
+        {notion && <NotionLinkImport onClose={() => setNotion(false)} />}
       </div>
     </div>
   );
