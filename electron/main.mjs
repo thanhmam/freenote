@@ -17,11 +17,11 @@ let server;
 let win;
 
 // Self-test runs in its own profile so it works even while the real app is open
-// The app used to be called "Frnt": keep using its profile folder so preferences survive the rename
+// The app used to be called "Frnt": whenever its profile folder exists, keep using it so preferences
+// (language, theme, sidebar width, open folders…) survive the rename. Electron creates the new
+// "Freenote" folder before this code runs, so its existence can't be used to decide.
 const legacyProfile = path.join(app.getPath("appData"), "Frnt");
-if (!SMOKE && !process.env.DATA_DIR && fs.existsSync(legacyProfile) && !fs.existsSync(app.getPath("userData"))) {
-  app.setPath("userData", legacyProfile);
-}
+if (!SMOKE && !process.env.DATA_DIR && fs.existsSync(legacyProfile)) app.setPath("userData", legacyProfile);
 if (SMOKE) app.setPath("userData", path.join(os.tmpdir(), `freenote-smoke-${process.pid}`));
 // A custom DATA_DIR gets its own browser profile, so a second, separate Freenote can run next to the main one
 else if (process.env.DATA_DIR) app.setPath("userData", path.join(process.env.DATA_DIR, "electron-profile"));

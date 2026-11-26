@@ -4,6 +4,11 @@ All notable changes to **Freenote** (formerly *Frnt*) are listed here, newest fi
 The format follows [Keep a Changelog](https://keepachangelog.com) and versions follow [Semantic Versioning](https://semver.org).
 Each section is also used as the release notes on GitHub and in the app's update dialog.
 
+## [0.7.1] - 2026-11-26
+
+### Fixed
+- After the rename, the desktop app started with a fresh browser profile, so preferences (language, theme, sidebar width, open folders, database views) were reset. It now keeps using the profile from *Frnt*, and your earlier preferences come back. Notes were never affected.
+
 ## [0.7.0] - 2026-11-26
 
 ### Changed
@@ -116,6 +121,7 @@ Each section is also used as the release notes on GitHub and in the app's update
 ### Added
 - First public release: block editor, nested pages, databases (table and board), version history, templates, backlinks, Notion and Markdown import, daily automatic backups, light and dark themes, and desktop apps for macOS, Windows and Linux.
 
+[0.7.1]: https://github.com/thanhmam/freenote/compare/v0.7.0...v0.7.1
 [0.7.0]: https://github.com/thanhmam/freenote/compare/v0.6.4...v0.7.0
 [0.6.4]: https://github.com/thanhmam/freenote/compare/v0.6.3...v0.6.4
 [0.6.3]: https://github.com/thanhmam/freenote/compare/v0.6.2...v0.6.3
