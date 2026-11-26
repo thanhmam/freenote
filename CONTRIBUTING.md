@@ -68,6 +68,7 @@ To add a template to the shared library, see [library/README.md](library/README.
 
 ## Releasing (maintainers)
 
-1. Bump `version` in `package.json`.
-2. `git tag vX.Y.Z && git push --tags`.
-3. GitHub Actions builds the macOS, Windows and Linux installers and attaches them to the release.
+1. Add a `## [X.Y.Z] - YYYY-MM-DD` section at the top of `CHANGELOG.md` (Added / Changed / Fixed), plus its compare link at the bottom. Preview the notes with `npm run release-notes`.
+2. Bump `version` in `package.json`.
+3. `git tag vX.Y.Z && git push --tags`.
+4. GitHub Actions checks the changelog section, builds the macOS, Windows and Linux installers, and uses that section as the release notes. Apps show the notes in their update dialog.

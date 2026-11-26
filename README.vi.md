@@ -12,6 +12,7 @@
 <p align="center">
   <a href="../../releases/latest"><b>⬇ Tải về</b></a> ·
   <a href="#so-sánh-frnt-và-notion">So sánh với Notion</a> ·
+  <a href="CHANGELOG.md">Nhật ký thay đổi</a> ·
   <a href="README.md">English</a>
 </p>
 

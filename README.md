@@ -14,6 +14,7 @@
   <a href="../../releases/latest"><b>⬇ Download</b></a> ·
   <a href="#run-from-source">Run from source</a> ·
   <a href="#frnt-vs-notion">Frnt vs Notion</a> ·
+  <a href="CHANGELOG.md">Changelog</a> ·
   <a href="README.vi.md">Tiếng Việt</a>
 </p>
 

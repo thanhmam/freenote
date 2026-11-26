@@ -8,7 +8,15 @@ permissions:
   contents: write
 
 jobs:
+  notes-check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - name: CHANGELOG has a section for this version
+        run: node scripts/release-notes.mjs "${GITHUB_REF_NAME#v}"
+
   build:
+    needs: notes-check
     strategy:
       fail-fast: false
       matrix:
@@ -24,5 +32,17 @@ jobs:
       - run: npm run build
       - name: Build & publish installers
         run: npx electron-builder --publish always
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  release-notes:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - name: Use the CHANGELOG section as the release notes
+        run: |
+          node scripts/release-notes.mjs "${GITHUB_REF_NAME#v}" > notes.md
+          gh release edit "$GITHUB_REF_NAME" --notes-file notes.md --title "Frnt ${GITHUB_REF_NAME#v}"
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
