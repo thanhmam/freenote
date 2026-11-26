@@ -4,6 +4,11 @@ All notable changes to Frnt are listed here, newest first.
 The format follows [Keep a Changelog](https://keepachangelog.com) and versions follow [Semantic Versioning](https://semver.org).
 Each section is also used as the release notes on GitHub and in the app's update dialog.
 
+## [0.6.4] - 2026-11-26
+
+### Changed
+- Preparing for the new name **Freenote**: in-app updates are also accepted from the renamed repository (github.com/thanhmam/freenote), so installed apps keep updating after the rename.
+
 ## [0.6.3] - 2026-11-26
 
 ### Added
@@ -100,6 +105,7 @@ Each section is also used as the release notes on GitHub and in the app's update
 ### Added
 - First public release: block editor, nested pages, databases (table and board), version history, templates, backlinks, Notion and Markdown import, daily automatic backups, light and dark themes, and desktop apps for macOS, Windows and Linux.
 
+[0.6.4]: https://github.com/thanhmam/frnt-notes/compare/v0.6.3...v0.6.4
 [0.6.3]: https://github.com/thanhmam/frnt-notes/compare/v0.6.2...v0.6.3
 [0.6.2]: https://github.com/thanhmam/frnt-notes/compare/v0.6.1...v0.6.2
 [0.6.1]: https://github.com/thanhmam/frnt-notes/compare/v0.6.0...v0.6.1

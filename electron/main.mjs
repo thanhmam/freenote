@@ -93,7 +93,8 @@ function createWindow() {
 }
 
 // ---------------- self-update (GitHub Releases) ----------------
-const RELEASES = "https://github.com/thanhmam/frnt-notes/releases/download/";
+// Updates may only come from this project's GitHub releases (old and new repository names)
+const RELEASES = ["https://github.com/thanhmam/frnt-notes/releases/download/", "https://github.com/thanhmam/freenote/releases/download/"];
 
 /** Pick the release file for this OS/arch. */
 function pickAsset(assets, platform = process.platform, arch = process.arch, appImage = process.env.APPIMAGE) {
@@ -110,7 +111,7 @@ async function installUpdate() {
   if (!info.available) return { action: "up-to-date", version: info.current };
   const asset = pickAsset(info.assets || []);
   if (!asset) throw new Error(`No installer for ${process.platform}/${process.arch} in release ${info.latest}`);
-  if (!asset.url.startsWith(RELEASES)) throw new Error("Refusing to download an update from an unexpected address");
+  if (!RELEASES.some((p) => asset.url.startsWith(p))) throw new Error("Refusing to download an update from an unexpected address");
   if (SMOKE) return { action: "plan", asset: asset.name };
 
   // 1) download to ~/Downloads with progress
