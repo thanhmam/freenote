@@ -32,7 +32,7 @@
 | ✍️ **Block editor** | Type `/` for headings, to-dos, toggles, quotes, code, tables, images/video/files, dividers. Drag blocks to reorder, use Markdown shortcuts, format with the toolbar. |
 | 📄 **Pages** | Unlimited nesting, emoji icons, covers, breadcrumbs, favourites, full-width mode, drag & drop in the sidebar. |
 | 🔗 **Links** | Create sub-pages inline, `@`-link any page (titles stay in sync), and see **backlinks** on every page. |
-| 🗃️ **Databases** | Table and Kanban board views. 10 property types (text, number, select, multi-select, status, date, checkbox, URL, created/edited time). **Group by**, column **calculations** (count, sum, average, min/max, % checked…), filters, multi-level sorts, column resizing, several saved views per database, inline or full page. Every row is a full page. |
+| 🗃️ **Databases** | Table and Kanban board views. 10 property types (text, number, select, multi-select, status, date, checkbox, URL, created/edited time). **Relations** between databases (two-way) and **rollups**, **group by**, column **calculations** (count, sum, average, min/max, % checked…), filters, multi-level sorts, column resizing, several saved views per database, inline or full page. Every row is a full page. |
 | 📚 **Template library** | Browse and copy ready-made templates (documents and databases) maintained in this repo. Updated templates show up as **New**, with no app update needed. [How to add one](library/README.md). |
 | 🔍 **Search** | `⌘K` / `Ctrl+K` across titles and content, accent-insensitive. |
 | 🕘 **Version history** | Automatic snapshots per page, with one-click restore. |
@@ -73,7 +73,8 @@ Tested with a real workspace: a 615 MB export with 5,500 pages, 195 databases an
 | Block editor, nested pages, `/` menu, `@` links | ✅ | ✅ |
 | Databases: table & board | ✅ | ✅ |
 | Databases: calendar, gallery, timeline, list | ❌ (roadmap) | ✅ |
-| Relations, rollups, formulas | ❌ (roadmap) | ✅ |
+| Relations & rollups | ✅ | ✅ |
+| Formulas | ❌ (roadmap) | ✅ |
 | Templates | ✅ | ✅ |
 | Import from Notion | ✅ | — |
 | Real-time collaboration, comments, sharing | ❌ (single user) | ✅ |

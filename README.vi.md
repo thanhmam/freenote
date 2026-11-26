@@ -26,7 +26,7 @@
 | ✍️ **Editor dạng block** | Gõ `/` để chèn heading, todo, toggle, quote, code, bảng, ảnh/video/file. Kéo thả block, dùng phím tắt Markdown, định dạng bằng toolbar. |
 | 📄 **Trang** | Lồng nhau không giới hạn, icon, ảnh bìa, breadcrumb, mục yêu thích, chế độ toàn chiều rộng, kéo thả trong sidebar. |
 | 🔗 **Liên kết** | Tạo trang con ngay trong nội dung, gõ `@` để liên kết tới trang khác, mỗi trang hiện **backlinks** (các trang liên kết tới nó). |
-| 🗃️ **Database** | View Bảng và Board (Kanban). 10 kiểu thuộc tính, **nhóm (group by)**, **dòng tính toán** (đếm, tổng, trung bình, nhỏ nhất/lớn nhất, % đã tick…), lọc, sắp xếp nhiều cấp, nhiều view cho mỗi database, nhúng trong trang hoặc mở toàn trang. Mỗi hàng là một trang đầy đủ. |
+| 🗃️ **Database** | View Bảng và Board (Kanban). 10 kiểu thuộc tính, **liên kết giữa các database (relation, hai chiều)** và **rollup**, **nhóm (group by)**, **dòng tính toán** (đếm, tổng, trung bình, nhỏ nhất/lớn nhất, % đã tick…), lọc, sắp xếp nhiều cấp, nhiều view cho mỗi database, nhúng trong trang hoặc mở toàn trang. Mỗi hàng là một trang đầy đủ. |
 | 📚 **Thư viện mẫu** | Duyệt và chép các mẫu có sẵn (tài liệu và database) được duy trì trong repo này. Mẫu mới hoặc vừa cập nhật có nhãn **Mới**, không cần cập nhật app. [Cách thêm mẫu](library/README.md). |
 | 🔍 **Tìm kiếm** | `⌘K` / `Ctrl+K`, không phân biệt dấu (gõ "chao" vẫn ra "Chào"). |
 | 🕘 **Lịch sử phiên bản** | Tự lưu phiên bản cho từng trang, khôi phục bằng một click. |
@@ -67,7 +67,8 @@
 | Editor dạng block, trang lồng nhau, menu `/`, liên kết `@` | ✅ | ✅ |
 | Database: bảng & board | ✅ | ✅ |
 | Database: lịch, gallery, timeline, list | ❌ (có trong roadmap) | ✅ |
-| Relation, rollup, công thức | ❌ (có trong roadmap) | ✅ |
+| Relation (liên kết) & rollup | ✅ | ✅ |
+| Công thức | ❌ (có trong roadmap) | ✅ |
 | Template | ✅ | ✅ |
 | Import từ Notion | ✅ | — |
 | Cộng tác thời gian thực, bình luận, chia sẻ | ❌ (một người dùng) | ✅ |

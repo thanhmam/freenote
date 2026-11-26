@@ -523,3 +523,14 @@ body.resizing, body.resizing * { cursor: col-resize !important; user-select: non
 .repair-page-banner { background: rgba(212, 167, 44, 0.15); flex-wrap: wrap; }
 .repair-list { display: flex; flex-direction: column; gap: 8px; margin: 10px 0; max-height: 50vh; overflow-y: auto; }
 .repair-item { display: flex; gap: 12px; align-items: center; border: 1px solid var(--border); border-radius: 10px; padding: 10px 12px; }
+
+/* relation & rollup cells */
+.rel-chip { display: inline-flex; align-items: center; gap: 4px; max-width: 100%; padding: 1px 4px; border-radius: 4px; font-size: 13px; }
+.rel-chip:hover { background: var(--hover); }
+.rel-title { text-decoration: underline; text-decoration-color: var(--border); text-underline-offset: 3px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.rollup-cell { display: flex; align-items: center; height: 33px; }
+.rollup-pct { display: inline-flex; align-items: center; gap: 8px; width: 100%; }
+.rollup-num { color: var(--text); font-variant-numeric: tabular-nums; }
+.rollup-bar { flex: 1; height: 4px; margin: 0; max-width: 80px; }
+.rollup-bar > span { display: block; height: 100%; background: #2ea043; }
+.group-page { cursor: pointer; } .group-page:hover { text-decoration: underline; }

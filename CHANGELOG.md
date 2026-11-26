@@ -4,6 +4,22 @@ All notable changes to **Freenote** (formerly *Frnt*) are listed here, newest fi
 The format follows [Keep a Changelog](https://keepachangelog.com) and versions follow [Semantic Versioning](https://semver.org).
 Each section is also used as the release notes on GitHub and in the app's update dialog.
 
+## [0.8.0] - 2026-11-26
+
+### Added
+- **Relation** columns link rows to pages of another database (or the same one), e.g. Tasks → Project.
+  - **Two-way:** optionally adds the reverse column in the other database (Projects → Tasks) and keeps both sides in sync.
+  - Linked pages show as clickable chips; a searchable picker adds or removes links.
+  - **Group by** a relation (e.g. Tasks "By project"; "+ New" in a group links the new row), **filter** (contains / does not contain a page, empty / not empty), **sort** and search by linked titles.
+  - An existing text or select column can be **converted to a relation**, matching values to page titles.
+- **Rollup** columns calculate from linked pages: count, count values, sum, average, min, max, % checked, % with a given status/option (with a progress bar, e.g. Completion = % of tasks Done), or show the values. Rollups can be filtered, sorted and used in column calculations.
+
+### Fixed
+- The "Filter" badge no longer counts filters that have no value yet.
+
+### Notes
+- Notion's Markdown & CSV export doesn't include relation columns, so links have to be recreated after an import (or a text column converted to a relation).
+
 ## [0.7.2] - 2026-11-26
 
 ### Added
@@ -131,6 +147,7 @@ Each section is also used as the release notes on GitHub and in the app's update
 ### Added
 - First public release: block editor, nested pages, databases (table and board), version history, templates, backlinks, Notion and Markdown import, daily automatic backups, light and dark themes, and desktop apps for macOS, Windows and Linux.
 
+[0.8.0]: https://github.com/thanhmam/freenote/compare/v0.7.2...v0.8.0
 [0.7.2]: https://github.com/thanhmam/freenote/compare/v0.7.1...v0.7.2
 [0.7.1]: https://github.com/thanhmam/freenote/compare/v0.7.0...v0.7.1
 [0.7.0]: https://github.com/thanhmam/freenote/compare/v0.6.4...v0.7.0

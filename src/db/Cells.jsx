@@ -1,7 +1,7 @@
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
-import { COLORS, COLOR_NAMES, formatDate, isSelectType, randomColor, saveSchema, setRowValue, uid } from "./dbUtils.js";
-import { navigate } from "../store.js";
+import { COLORS, COLOR_NAMES, formatDate, isSelectType, randomColor, saveSchema, setRowValue, uid, relatedIds, computeRollup, rollupIsPercent } from "./dbUtils.js";
+import { navigate, usePages, pageTitle } from "../store.js";
 import { t } from "../i18n.js";
 
 // Fixed-position popover rendered in <body>, anchored to an element. Escapes overflow clipping.
@@ -201,6 +201,61 @@ function TextInput({ value, onCommit, type = "text", placeholder, className = ""
 }
 
 // One cell. `compact` = read-mostly rendering for board cards.
+/** Pick related pages from the target database (search, toggle). */
+export function RelationEditor({ prop, row, anchor, onClose }) {
+  const { pages, byId } = usePages();
+  const [q, setQ] = useState("");
+  const selected = relatedIds(row, prop);
+  const target = byId[prop.relation?.dbId];
+  const options = pages
+    .filter((p) => p.parent_id === prop.relation?.dbId && p.id !== row.id)
+    .sort((a, b) => a.position - b.position)
+    .filter((p) => !q.trim() || pageTitle(p).toLowerCase().includes(q.trim().toLowerCase()));
+  const toggle = (id) => setRowValue(row, prop, selected.includes(id) ? selected.filter((x) => x !== id) : [...selected, id]);
+  return (
+    <Popover anchor={anchor} onClose={onClose} width={300}>
+      <div className="muted small" style={{ padding: "2px 6px 6px" }}>
+        {t("Link to pages in")} {target ? `${target.icon || "🗃️"} ${pageTitle(target)}` : "?"}
+      </div>
+      <input autoFocus className="input" placeholder={t("Search pages…")} value={q} onChange={(e) => setQ(e.target.value)} />
+      <div className="pop-list">
+        {options.map((p) => (
+          <div key={p.id} className="pop-row" onClick={() => toggle(p.id)}>
+            <span>{p.icon || "📄"}</span>
+            <span className="tree-title">{pageTitle(p)}</span>
+            {selected.includes(p.id) && <span className="muted">✓</span>}
+          </div>
+        ))}
+        {!options.length && <div className="muted pad small">{target ? t("No pages") : t("The linked database was deleted.")}</div>}
+      </div>
+    </Popover>
+  );
+}
+
+const RelChips = ({ ids }) => {
+  const { byId } = usePages();
+  return ids.map((id) => (
+    <button key={id} className="rel-chip" title={t("Open page")} onClick={(e) => (e.stopPropagation(), navigate(id))}>
+      <span>{byId[id]?.icon || "📄"}</span>
+      <span className="rel-title">{pageTitle(byId[id])}</span>
+    </button>
+  ));
+};
+
+export function RollupValue({ row, prop }) {
+  usePages(); // recompute when related pages change
+  const v = computeRollup(row, prop);
+  if (v == null || v === "") return null;
+  if (rollupIsPercent(prop))
+    return (
+      <span className="rollup-pct">
+        <span className="rollup-num">{v.toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 1 })}%</span>
+        <span className="progress rollup-bar"><span style={{ width: `${Math.min(100, v)}%` }} /></span>
+      </span>
+    );
+  return <span className="rollup-num">{typeof v === "number" ? v.toLocaleString() : v}</span>;
+}
+
 export function Cell({ dbId, schema, prop, row, compact }) {
   const [anchor, setAnchor] = useState(null);
   const v = prop.type === "title" ? row.title : prop.type === "created_time" ? row.created_at : prop.type === "updated_time" ? row.updated_at : row.props?.[prop.id];
@@ -241,6 +296,24 @@ export function Cell({ dbId, schema, prop, row, compact }) {
     case "date":
       if (compact) return v ? <span className="card-prop">{formatDate(v)}</span> : null;
       return <input className="cell-input" type="date" value={v || ""} onChange={(e) => set(e.target.value || null)} />;
+    case "relation": {
+      const ids = relatedIds(row, prop);
+      if (compact) return ids.length ? <span className="card-tags"><RelChips ids={ids} /></span> : null;
+      return (
+        <>
+          <div className="sel-cell rel-cell" onClick={(e) => setAnchor(e.currentTarget)}>
+            <RelChips ids={ids} />
+          </div>
+          {anchor && <RelationEditor prop={prop} row={row} anchor={anchor} onClose={() => setAnchor(null)} />}
+        </>
+      );
+    }
+    case "rollup":
+      return compact ? (
+        <span className="card-prop"><RollupValue row={row} prop={prop} /></span>
+      ) : (
+        <div className="cell-ro rollup-cell"><RollupValue row={row} prop={prop} /></div>
+      );
     case "created_time":
     case "updated_time":
       return <span className={compact ? "card-prop" : "cell-ro"}>{formatDate(v)}</span>;

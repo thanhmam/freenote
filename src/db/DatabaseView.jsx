@@ -4,8 +4,9 @@ import { usePages, store, navigate, pageTitle } from "../store.js";
 import {
   TYPES, ADDABLE_TYPES, allProps, applyView, opsFor, opNeedsValue, isSelectType, getVal,
   saveSchema, updateView, updateProp, setRowValue, createRow, uid, randomColor,
-  groupRows, GROUPABLE, calcsFor, calculate,
+  groupRows, GROUPABLE, calcsFor, calculate, rollupFns, getVal as cellVal,
 } from "./dbUtils.js";
+import { breadcrumbs } from "../store.js";
 import { Popover, Cell, Tag } from "./Cells.jsx";
 import { t } from "../i18n.js";
 
@@ -20,6 +21,7 @@ const MenuBtn = ({ icon, label, onClick, danger, right }) => (
 /* ---------------- Property header menu ---------------- */
 function PropMenu({ dbId, schema, view, prop, anchor, onClose }) {
   const [typeOpen, setTypeOpen] = useState(null);
+  const [setup, setSetup] = useState(null); // { kind: "relation" | "rollup", anchor }
   const sortBy = (dir) => {
     updateView(dbId, schema, view.id, { sorts: [{ prop: prop.id, dir }, ...(view.sorts || []).filter((s) => s.prop !== prop.id)] });
     onClose();
@@ -100,6 +102,15 @@ function PropMenu({ dbId, schema, view, prop, anchor, onClose }) {
                   tableGroup: v.tableGroup === prop.id ? null : v.tableGroup,
                 })),
               });
+              // two-way relation: the column in the other database keeps its values but is no longer linked back
+              const back = prop.type === "relation" && prop.relation?.backProp;
+              const other = back && store.get().byId[prop.relation.dbId];
+              if (other?.db_schema && other.id !== dbId) {
+                saveSchema(other.id, {
+                  ...other.db_schema,
+                  properties: other.db_schema.properties.map((p) => (p.id === back ? { ...p, relation: { ...p.relation, backProp: null } } : p)),
+                });
+              }
               onClose();
             }}
           />
@@ -107,10 +118,153 @@ function PropMenu({ dbId, schema, view, prop, anchor, onClose }) {
       )}
       {typeOpen && (
         <Popover anchor={typeOpen} onClose={() => setTypeOpen(null)} width={200}>
-          {ADDABLE_TYPES.map((t) => (
+          {ADDABLE_TYPES.filter((x) => x !== "rollup" && x !== "relation" && prop.type !== "relation" && prop.type !== "rollup").map((t) => (
             <MenuBtn key={t} icon={TYPES[t].icon} label={TYPES[t].label} right={prop.type === t ? "✓" : ""} onClick={() => changeType(t)} />
           ))}
+          {["text", "select", "multi_select", "status"].includes(prop.type) && (
+            <MenuBtn icon={TYPES.relation.icon} label={t("Relation") + "…"} onClick={(e) => setSetup({ kind: "relation", anchor: e.currentTarget })} />
+          )}
+          {(prop.type === "relation" || prop.type === "rollup") && <div className="muted pad small">{t("This column type can't be changed.")}</div>}
         </Popover>
+      )}
+      {prop.type === "rollup" && (
+        <MenuBtn icon="Σ" label={t("Edit rollup…")} onClick={(e) => setSetup({ kind: "rollup", anchor: e.currentTarget })} />
+      )}
+      {setup?.kind === "relation" && <RelationSetup dbId={dbId} schema={schema} anchor={setup.anchor} convertProp={prop} onClose={() => (setSetup(null), onClose())} />}
+      {setup?.kind === "rollup" && <RollupSetup dbId={dbId} schema={schema} anchor={setup.anchor} existing={prop} onClose={() => (setSetup(null), onClose())} />}
+    </Popover>
+  );
+}
+
+/** Create a relation property (or convert an existing text/select column into one, matching values by page title). */
+function RelationSetup({ dbId, schema, anchor, onClose, name = "", convertProp = null }) {
+  const { pages, byId } = usePages();
+  const dbs = pages.filter((p) => p.kind === "database").sort((a, b) => (a.id === dbId ? -1 : b.id === dbId ? 1 : pageTitle(a).localeCompare(pageTitle(b))));
+  const [target, setTarget] = useState("");
+  const [q, setQ] = useState("");
+  const [twoWay, setTwoWay] = useState(true);
+  const [backName, setBackName] = useState(pageTitle(byId[dbId]));
+  const [busy, setBusy] = useState(false);
+  const shown = dbs.filter((d) => !q.trim() || pageTitle(d).toLowerCase().includes(q.trim().toLowerCase())).slice(0, 60);
+  const self = target === dbId;
+
+  const create = async () => {
+    setBusy(true);
+    const propId = convertProp ? convertProp.id : uid();
+    const backId = twoWay ? uid() : null;
+    const prop = { id: propId, name: convertProp ? convertProp.name : name.trim() || pageTitle(byId[target]), type: "relation", relation: { dbId: target, backProp: backId } };
+    const back = backId ? { id: backId, name: backName.trim() || pageTitle(byId[dbId]), type: "relation", relation: { dbId, backProp: propId } } : null;
+    const withProp = convertProp ? schema.properties.map((p) => (p.id === propId ? prop : p)) : [...schema.properties, prop];
+    await saveSchema(dbId, { ...schema, properties: self && back ? [...withProp, back] : withProp });
+    if (back && !self) {
+      const ts = byId[target].db_schema;
+      await saveSchema(target, { ...ts, properties: [...(ts.properties || []), back] });
+    }
+    if (convertProp) {
+      // old values (text / select names) → pages of the target database with the same title
+      const targets = store.get().pages.filter((p) => p.parent_id === target);
+      const find = (name) => targets.find((p) => pageTitle(p).trim().toLowerCase() === name.trim().toLowerCase())?.id;
+      const fresh = store.get().byId[dbId].db_schema.properties.find((p) => p.id === propId);
+      for (const r of store.get().pages.filter((p) => p.parent_id === dbId)) {
+        const v = r.props?.[propId];
+        if (v == null || v === "") continue;
+        const names = isSelectType(convertProp.type)
+          ? (Array.isArray(v) ? v : [v]).map((id) => convertProp.options?.find((o) => o.id === id)?.name).filter(Boolean)
+          : String(v).split(/,\s*/);
+        const ids = [...new Set(names.map(find).filter(Boolean))];
+        await setRowValue({ ...r, props: { ...r.props, [propId]: [] } }, fresh, ids);
+      }
+    }
+    setBusy(false);
+    onClose();
+  };
+
+  return (
+    <Popover anchor={anchor} onClose={onClose} width={340}>
+      <div className="muted small" style={{ padding: "2px 6px 6px" }}>
+        {convertProp ? t("Turn “{name}” into links to pages of:", { name: convertProp.name }) : t("Link to pages of the database:")}
+      </div>
+      <input className="input" autoFocus placeholder={t("Search databases…")} value={q} onChange={(e) => setQ(e.target.value)} />
+      <div className="pop-list" style={{ maxHeight: 220, overflowY: "auto" }}>
+        {shown.map((d) => (
+          <div key={d.id} className={`pop-row ${target === d.id ? "sel" : ""}`} onClick={() => setTarget(d.id)}>
+            <span>{d.icon || "🗃️"}</span>
+            <span style={{ minWidth: 0, flex: 1 }}>
+              <div className="tree-title">{pageTitle(d)} {d.id === dbId && <span className="muted small">({t("this database")})</span>}</div>
+              <div className="muted small tree-title">{breadcrumbs(d.id, byId).slice(0, -1).map(pageTitle).join(" / ")}</div>
+            </span>
+            {target === d.id && <span>✓</span>}
+          </div>
+        ))}
+      </div>
+      {target && (
+        <>
+          <label className="nl-check" style={{ padding: "8px 6px 4px" }}>
+            <input type="checkbox" checked={twoWay} onChange={(e) => setTwoWay(e.target.checked)} />
+            {self ? t("Also add the reverse column in this database") : t("Also show this link in “{db}”", { db: pageTitle(byId[target]) })}
+          </label>
+          {twoWay && <input className="input" value={backName} onChange={(e) => setBackName(e.target.value)} placeholder={t("Name of the reverse column")} />}
+          <div className="row" style={{ justifyContent: "flex-end" }}>
+            <button className="btn small" disabled={busy} onClick={create}>{busy ? t("Saving") + "…" : convertProp ? t("Convert") : t("Create relation")}</button>
+          </div>
+        </>
+      )}
+    </Popover>
+  );
+}
+
+/** Create or edit a rollup: a value calculated from the pages linked through a relation. */
+function RollupSetup({ dbId, schema, anchor, onClose, name = "", existing = null }) {
+  const { byId } = usePages();
+  const relations = schema.properties.filter((p) => p.type === "relation");
+  const [via, setVia] = useState(existing?.rollup?.via || relations[0]?.id || "");
+  const viaProp = relations.find((p) => p.id === via);
+  const tSchema = viaProp ? byId[viaProp.relation?.dbId]?.db_schema : null;
+  const tProps = tSchema ? allProps(tSchema).filter((p) => !["relation", "rollup"].includes(p.type)) : [];
+  const [target, setTarget] = useState(existing?.rollup?.target || "title");
+  const tProp = tProps.find((p) => p.id === target) || tProps[0];
+  const fns = rollupFns(tProp?.type);
+  const [fn, setFn] = useState(existing?.rollup?.fn || "count");
+  const [match, setMatch] = useState(existing?.rollup?.match || "");
+  const fnOk = fns[fn] ? fn : "count";
+  const save = () => {
+    const prop = { id: existing?.id || uid(), name: existing?.name || name.trim() || t("Rollup"), type: "rollup", rollup: { via, target: tProp?.id || "title", fn: fnOk, match: fnOk === "percent_option" ? match : undefined } };
+    saveSchema(dbId, { ...schema, properties: existing ? schema.properties.map((p) => (p.id === prop.id ? prop : p)) : [...schema.properties, prop] });
+    onClose();
+  };
+  return (
+    <Popover anchor={anchor} onClose={onClose} width={320}>
+      {!relations.length ? (
+        <div className="muted pad small">{t("Add a Relation column first: a rollup calculates values from the linked pages.")}</div>
+      ) : (
+        <div className="form-grid" style={{ gridTemplateColumns: "100px 1fr", margin: 4 }}>
+          <label>{t("Relation")}</label>
+          <select className="lang-select" value={via} onChange={(e) => setVia(e.target.value)}>
+            {relations.map((r) => <option key={r.id} value={r.id}>{r.name}</option>)}
+          </select>
+          <label>{t("Property")}</label>
+          <select className="lang-select" value={tProp?.id || ""} onChange={(e) => setTarget(e.target.value)}>
+            {tProps.map((p) => <option key={p.id} value={p.id}>{p.name}</option>)}
+          </select>
+          <label>{t("Calculate")}</label>
+          <select className="lang-select" value={fnOk} onChange={(e) => setFn(e.target.value)}>
+            {Object.entries(fns).map(([k, l]) => <option key={k} value={k}>{l}</option>)}
+          </select>
+          {fnOk === "percent_option" && (
+            <>
+              <label>{t("Value")}</label>
+              <select className="lang-select" value={match} onChange={(e) => setMatch(e.target.value)}>
+                <option value="">— {t("select")} —</option>
+                {(tProp?.options || []).map((o) => <option key={o.id} value={o.id}>{o.name}</option>)}
+              </select>
+            </>
+          )}
+        </div>
+      )}
+      {relations.length > 0 && (
+        <div className="row" style={{ justifyContent: "flex-end" }}>
+          <button className="btn small" disabled={fnOk === "percent_option" && !match} onClick={save}>{existing ? t("Save") : t("Create rollup")}</button>
+        </div>
       )}
     </Popover>
   );
@@ -118,7 +272,9 @@ function PropMenu({ dbId, schema, view, prop, anchor, onClose }) {
 
 function AddPropMenu({ dbId, schema, anchor, onClose }) {
   const [name, setName] = useState("");
+  const [setup, setSetup] = useState(null); // "relation" | "rollup"
   const add = (type) => {
+    if (type === "relation" || type === "rollup") return setSetup(type);
     const p = { id: uid(), name: name.trim() || TYPES[type].label, type };
     if (isSelectType(type)) p.options = type === "status"
       ? [{ id: uid(), name: t("Not started"), color: "gray" }, { id: uid(), name: t("In progress"), color: "blue" }, { id: uid(), name: t("Done"), color: "green" }]
@@ -133,6 +289,8 @@ function AddPropMenu({ dbId, schema, anchor, onClose }) {
       {ADDABLE_TYPES.map((t) => (
         <MenuBtn key={t} icon={TYPES[t].icon} label={TYPES[t].label} onClick={() => add(t)} />
       ))}
+      {setup === "relation" && <RelationSetup dbId={dbId} schema={schema} anchor={anchor} name={name} onClose={onClose} />}
+      {setup === "rollup" && <RollupSetup dbId={dbId} schema={schema} anchor={anchor} name={name} onClose={onClose} />}
     </Popover>
   );
 }
@@ -166,6 +324,13 @@ function FilterEditor({ dbId, schema, view, anchor, onClose }) {
                 <select value={f.value} onChange={(e) => patch(f.id, { value: e.target.value })}>
                   <option value="">{t("— select —")}</option>
                   {(prop.options || []).map((o) => <option key={o.id} value={o.id}>{o.name}</option>)}
+                </select>
+              ) : prop.type === "relation" ? (
+                <select value={f.value} onChange={(e) => patch(f.id, { value: e.target.value })}>
+                  <option value="">{t("— select —")}</option>
+                  {store.get().pages.filter((x) => x.parent_id === prop.relation?.dbId).sort((a, b) => a.position - b.position).map((x) => (
+                    <option key={x.id} value={x.id}>{(x.icon || "📄") + " " + pageTitle(x)}</option>
+                  ))}
                 </select>
               ) : (
                 <input
@@ -297,7 +462,7 @@ let dragRowId = null;
 
 function CalcCell({ prop, rows, calc, onPick }) {
   const [anchor, setAnchor] = useState(null);
-  const opts = calcsFor(prop.type);
+  const opts = calcsFor(prop.type, prop);
   return (
     <>
       <button className={`calc-btn ${calc ? "on" : ""}`} onClick={(e) => setAnchor(e.currentTarget)}>
@@ -409,7 +574,9 @@ function TableView({ dbId, schema, view, rows, visibleProps, manualOrder }) {
                   <td colSpan={span}>
                     <button className="group-head" onClick={() => toggleGroup(g.key)}>
                       <span className="group-chev" style={{ transform: isCollapsed ? "none" : "rotate(90deg)" }}>›</span>
-                      {isSelectType(groupProp.type) || groupProp.type === "checkbox" ? <Tag opt={{ name: g.label, color: g.color }} /> : <b>{g.label}</b>}
+                      {groupProp.type === "relation" && g.pageId ? (
+                        <b className="group-page" onClick={(e) => (e.stopPropagation(), navigate(g.pageId))} title={t("Open page")}>{g.icon} {g.label}</b>
+                      ) : isSelectType(groupProp.type) || groupProp.type === "checkbox" ? <Tag opt={{ name: g.label, color: g.color }} /> : <b>{g.label}</b>}
                       <span className="muted small">{g.rows.length}</span>
                     </button>
                   </td>
@@ -623,7 +790,7 @@ export default function DatabaseView({ dbId, inline }) {
   };
   const open = (kind) => (e) => setPop({ kind, anchor: e.currentTarget });
   const close = () => setPop(null);
-  const nFilters = (view.filters || []).length;
+  const nFilters = (view.filters || []).filter((f) => !opNeedsValue(f.op) || (f.value != null && f.value !== "")).length; // incomplete filters do nothing, so they are not counted
   const nSorts = (view.sorts || []).length;
 
   return (
