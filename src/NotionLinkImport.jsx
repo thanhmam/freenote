@@ -16,7 +16,8 @@ export function parseNotionLink(text) {
   return u.href;
 }
 
-const openExternal = (url) => (window.frntDesktop?.openNotion ? window.frntDesktop.openNotion(url) : window.open(url, "_blank", "noopener"));
+export const NOTION_GALLERY = "https://www.notion.com/templates/category/free";
+export const openExternal = (url) => (window.frntDesktop?.openNotion ? window.frntDesktop.openNotion(url) : window.open(url, "_blank", "noopener"));
 
 /**
  * "Add from a Notion link": guides the user through Notion's own Duplicate → Export, then imports the .zip.
@@ -72,6 +73,12 @@ export default function NotionLinkImport({ onClose }) {
           <span className="nl-num">1</span>
           <div className="nl-body">
             <b>{t("Paste the Notion link")}</b>
+            <div className="muted small">
+              {t("Looking for ideas?")}{" "}
+              <a href={NOTION_GALLERY} onClick={(e) => (e.preventDefault(), openExternal(NOTION_GALLERY))}>
+                {t("Browse Notion's free template gallery")} ↗
+              </a>
+            </div>
             <div className="row">
               <input
                 className="input"

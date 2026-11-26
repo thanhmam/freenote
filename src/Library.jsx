@@ -2,7 +2,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { api } from "./api.js";
 import { store, navigate, timeAgo } from "./store.js";
 import { t, lang } from "./i18n.js";
-import NotionLinkImport from "./NotionLinkImport.jsx";
+import NotionLinkImport, { NOTION_GALLERY, openExternal } from "./NotionLinkImport.jsx";
 
 export const CATEGORIES = ["Work", "Projects", "Personal", "Education", "Other"];
 export const catLabel = (c) => ({ Work: t("Work"), Projects: t("Projects"), Personal: t("Personal"), Education: t("Education"), Other: t("Other") })[c] || c;
@@ -152,6 +152,7 @@ export default function Library({ onClose }) {
             {t("Source")}: <code>{data?.source || "…"}</code>
           </span>
           <span className="row" style={{ marginTop: 0 }}>
+            <button className="btn ghost small" title={NOTION_GALLERY} onClick={() => openExternal(NOTION_GALLERY)}>{t("Notion template gallery")} ↗</button>
             <button className="btn ghost small bordered" onClick={() => setNotion(true)}>🔗 {t("From a Notion link")}</button>
             <button className="btn ghost small" onClick={() => fileRef.current.click()}>⬆ {t("Install from file (.json)")}</button>
           </span>

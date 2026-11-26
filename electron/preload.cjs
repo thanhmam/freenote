@@ -8,4 +8,17 @@ contextBridge.exposeInMainWorld("frntDesktop", {
   openInBrowser: (url) => ipcRenderer.invoke("frnt:open-in-browser", String(url || "")),
   /** Open a Notion page (notion.so / notion.site / notion.com only) in the default browser. */
   openNotion: (url) => ipcRenderer.invoke("frnt:open-notion", String(url || "")),
+  /** Download the latest release for this OS, install it and restart. Progress via onUpdateProgress. */
+  installUpdate: () => ipcRenderer.invoke("frnt:install-update"),
+  onUpdateProgress: (cb) => {
+    const h = (_e, p) => cb(p);
+    ipcRenderer.on("frnt:update-progress", h);
+    return () => ipcRenderer.removeListener("frnt:update-progress", h);
+  },
+  /** Help → "Check for updates…" asks the page to show the update dialog. */
+  onShowUpdate: (cb) => {
+    const h = () => cb();
+    ipcRenderer.on("frnt:show-update", h);
+    return () => ipcRenderer.removeListener("frnt:show-update", h);
+  },
 });

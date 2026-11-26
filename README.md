@@ -151,7 +151,9 @@ npm run dist       # build an installer for your current OS → ./release
 It contains `notes.db` (SQLite), `uploads/` (images and files) and `backups/`. The browser and desktop versions share the same data.
 Override it with `DATA_DIR=/path`, the port with `PORT=4000`, and the language of the first-run content with `FRNT_LANG=en|vi`.
 
-> **Network use:** Frnt works fully offline. The only time it connects to the internet is when you open the **Template library**, to download its list from GitHub (the address can be changed in Settings).
+> **Network use:** Frnt works fully offline. It connects to the internet only to check GitHub for a new version once a day (can be turned off in Settings → Version & updates) and when you open the **Template library**.
+
+**Updates:** when a new version is out, a notice appears in the sidebar. Click **Update now**: Frnt downloads the right file for your system, replaces itself and restarts. On Windows it runs the installer; on Linux it updates the AppImage.
 
 > The server listens on `127.0.0.1` only and has **no authentication**. Don't expose it to a network (`HOST=0.0.0.0`) unless it sits behind your own authenticating reverse proxy or VPN.
 

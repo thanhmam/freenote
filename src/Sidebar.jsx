@@ -4,6 +4,7 @@ import { usePages, navigate, pageTitle, store, timeAgo } from "./store.js";
 import { createDatabase } from "./db/dbUtils.js";
 import Settings from "./Settings.jsx";
 import Library from "./Library.jsx";
+import UpdateDialog, { UpdateBanner } from "./Update.jsx";
 import { lang, setLang, LOCALES } from "./i18n.js";
 import { t } from "./i18n.js";
 
@@ -302,6 +303,7 @@ export default function Sidebar({ currentId, refresh, createPage, openSearch, th
   const [trashOpen, setTrashOpen] = useState(false);
   const [settings, setSettings] = useState(false);
   const [libraryOpen, setLibraryOpen] = useState(false);
+  const [updateOpen, setUpdateOpen] = useState(false);
   const [tplOpen, setTplOpen] = useState(() => localStorage.getItem("tplOpen") === "1");
 
   useEffect(() => localStorage.setItem("tplOpen", tplOpen ? "1" : "0"), [tplOpen]);
@@ -353,6 +355,7 @@ export default function Sidebar({ currentId, refresh, createPage, openSearch, th
         <button className="icon-btn" title={t("Hide sidebar") + " (⌘\\)"} onClick={collapse}>«</button>
       </div>
 
+      <UpdateBanner onOpen={() => setUpdateOpen(true)} />
       <div className="sb-nav">
         <button className="sb-link" onClick={openSearch}>
           <span className="menu-ico">🔍</span> {t("Search")} <kbd>⌘K</kbd>
@@ -433,6 +436,7 @@ export default function Sidebar({ currentId, refresh, createPage, openSearch, th
           ))}
         </div>
         {trashOpen && <TrashPanel onClose={() => setTrashOpen(false)} refresh={refresh} />}
+        {updateOpen && <UpdateDialog onClose={() => setUpdateOpen(false)} />}
         {libraryOpen && <Library onClose={() => setLibraryOpen(false)} />}
         {settings && <Settings onClose={() => setSettings(false)} theme={theme} toggleTheme={toggleTheme} />}
       </div>

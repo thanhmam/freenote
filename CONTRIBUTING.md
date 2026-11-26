@@ -62,7 +62,7 @@ To add a template to the shared library, see [library/README.md](library/README.
 
 ## Guidelines
 
-- Keep it **local-first**: no telemetry, no required accounts, no network calls to third parties. The one exception is the Template library, which is fetched only when the user opens it.
+- Keep it **local-first**: no telemetry, no required accounts, no network calls to third parties. The exceptions are the daily update check (GitHub Releases, can be turned off) and the Template library, which is fetched only when the user opens it.
 - Schema changes go through the migration block at the top of `startServer()` (add columns, never drop).
 - Keep dependencies small. The packaged app only ships `express` as its runtime dependency. Frontend libs are bundled by Vite.
 

@@ -493,3 +493,10 @@ body.resizing, body.resizing * { cursor: col-resize !important; user-select: non
 .dropzone { border: 2px dashed var(--border); border-radius: 10px; padding: 22px; text-align: center; color: var(--muted); cursor: pointer; display: flex; justify-content: center; }
 .dropzone:hover, .dropzone.over { border-color: var(--accent); background: rgba(35, 131, 226, 0.06); color: var(--text); }
 .notion-link .nl-step .btn { white-space: nowrap; }
+
+/* updates */
+.update-banner { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin: 2px 8px 6px; padding: 7px 10px; border-radius: 8px; background: rgba(35, 131, 226, 0.1); font-size: 13px; text-align: left; }
+.update-banner:hover { background: rgba(35, 131, 226, 0.18); }
+.update-cta { color: var(--accent); font-weight: 600; white-space: nowrap; }
+.update-head { display: flex; align-items: baseline; gap: 10px; margin-bottom: 8px; }
+.release-notes { white-space: pre-wrap; font: 13px/1.5 var(--font); background: var(--hover); border-radius: 8px; padding: 10px 12px; max-height: 260px; overflow-y: auto; margin: 0 0 12px; }

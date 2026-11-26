@@ -83,6 +83,9 @@
 
 ## Tải về & cài đặt
 
+**Cập nhật:** khi có phiên bản mới, sidebar hiện thông báo. Bấm **Cập nhật ngay**: Frnt tự tải đúng bản cho máy bạn, tự thay bản cũ và khởi động lại. App kiểm tra bản mới trên GitHub mỗi ngày một lần; có thể tắt trong Cài đặt → Phiên bản & cập nhật.
+
+
 Vào **[Releases](../../releases/latest)** và tải bản phù hợp:
 
 | Hệ điều hành | File |

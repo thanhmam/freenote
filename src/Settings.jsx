@@ -3,6 +3,7 @@ import { api } from "./api.js";
 import { store, navigate, timeAgo } from "./store.js";
 import { importFiles } from "./importer.js";
 import NotionLinkImport from "./NotionLinkImport.jsx";
+import UpdateDialog from "./Update.jsx";
 import { t, lang, setLang, LOCALES } from "./i18n.js";
 
 export const REPO_URL = "https://github.com/thanhmam/frnt-notes";
@@ -12,6 +13,8 @@ export default function Settings({ onClose, theme, toggleTheme }) {
   const [dir, setDir] = useState("");
   const [libSrc, setLibSrc] = useState("");
   const [notion, setNotion] = useState(false);
+  const [ver, setVer] = useState(null);
+  const [updateOpen, setUpdateOpen] = useState(false);
   const [msg, setMsg] = useState("");
   const [busy, setBusy] = useState(false);
   const [progress, setProgress] = useState(null); // { phase, done, total }
@@ -28,6 +31,7 @@ export default function Settings({ onClose, theme, toggleTheme }) {
     });
   useEffect(() => {
     load();
+    api.version().then(setVer).catch(() => {});
   }, []);
 
   const run = async (label, fn) => {
@@ -87,6 +91,30 @@ export default function Settings({ onClose, theme, toggleTheme }) {
             <span>{t("Dark mode")}</span>
             <input type="checkbox" className="switch" checked={theme === "dark"} onChange={toggleTheme} />
           </div>
+        </section>
+
+        <section>
+          <h3>{t("Version & updates")}</h3>
+          <div className="set-row">
+            <span>
+              Frnt {ver?.version}
+              <div className="muted small">{t("Checks GitHub for a new version once a day.")}</div>
+            </span>
+            <button className="btn ghost bordered" onClick={() => setUpdateOpen(true)}>{t("Check for updates")}</button>
+          </div>
+          <div className="set-row">
+            <span>{t("Check for updates automatically")}</span>
+            <input
+              type="checkbox"
+              className="switch"
+              checked={ver?.auto ?? true}
+              onChange={async (e) => {
+                await api.updateSettings({ auto: e.target.checked });
+                setVer({ ...ver, auto: e.target.checked });
+              }}
+            />
+          </div>
+          {updateOpen && <UpdateDialog onClose={() => setUpdateOpen(false)} />}
         </section>
 
         <section>

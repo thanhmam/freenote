@@ -10,6 +10,7 @@ import { fileURLToPath } from "node:url";
 import { seedTemplates, seedWelcome, detectLang } from "./seed.js";
 import { mountImport } from "./importSession.js";
 import { mountTemplates, DEFAULT_LIBRARY } from "./templates.js";
+import { mountUpdates } from "./updates.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.join(__dirname, "..");
@@ -390,6 +391,7 @@ export async function startServer({ port = 3001, host = "127.0.0.1", dataDir = d
 
   mountImport(app, { dataDir, uploadDir: UPLOAD_DIR });
   mountTemplates(app, { db, dataDir, uploadDir: UPLOAD_DIR, getPage, createPage, descendants, getSetting, setSetting });
+  mountUpdates(app, { getSetting, setSetting });
 
   // ---- errors: always answer API calls with a readable JSON message ----
   app.use("/api", (err, req, res, _next) => {
