@@ -136,7 +136,7 @@ function setLang(l) {
   $(".js-stamp").textContent = META[lang].stamp;
   $(".stamp-c").textContent = META[lang].stampC;
   $(".js-ticker").textContent = META[lang].ticker.repeat(4);
-  $$(".js-shot").forEach((img) => (img.src = `/img/${img.dataset.shot}-${lang}.webp`));
+  $$(".js-shot").forEach((img) => (img.src = `img/${img.dataset.shot}-${lang}.webp`));
   renderRelease();
   setCaption();
 }
@@ -222,7 +222,7 @@ function showShot(li) {
   img.classList.add("swap");
   setTimeout(() => {
     img.dataset.shot = shot;
-    img.src = `/img/${shot}-${lang}.webp`;
+    img.src = `img/${shot}-${lang}.webp`;
     img.onload = () => img.classList.remove("swap");
     setCaption();
   }, 180);

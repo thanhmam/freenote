@@ -13,6 +13,7 @@
 
 <p align="center">
   <a href="../../releases/latest"><b>⬇ Download</b></a> ·
+  <a href="https://thanhmam.github.io/freenote/">Website</a> ·
   <a href="#run-from-source">Run from source</a> ·
   <a href="#freenote-vs-notion">Freenote vs Notion</a> ·
   <a href="CHANGELOG.md">Changelog</a> ·
