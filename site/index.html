@@ -1,0 +1,233 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Freenote — free notes that live on your computer</title>
+  <meta name="description" content="Freenote is a free, open-source alternative to Notion that runs entirely on your computer. Pages, databases, relations, Notion import. No account, no cloud, no limits." />
+  <meta property="og:title" content="Freenote — free notes that live on your computer" />
+  <meta property="og:description" content="A free, open-source, local-first alternative to Notion. No account, no cloud, no limits." />
+  <meta property="og:image" content="/og.png" />
+  <meta property="og:type" content="website" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="theme-color" content="#f2ede3" />
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  <link rel="preload" href="/fonts/Fraunces-normal-300-800-latin.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="stylesheet" href="/fonts/fonts.css" />
+  <link rel="stylesheet" href="/styles.css" />
+</head>
+<body>
+  <a class="skip" href="#main">Skip to content</a>
+
+  <header class="bar">
+    <a class="mark" href="#top" aria-label="Freenote">
+      <span class="mark-f">F</span><span class="mark-name">Freenote</span>
+    </a>
+    <nav class="nav">
+      <a href="#inside" data-i18n="nav.inside">What's inside</a>
+      <a href="#bill" data-i18n="nav.compare">vs Notion</a>
+      <a href="#move" data-i18n="nav.move">Moving from Notion</a>
+      <a href="https://github.com/thanhmam/freenote" class="nav-gh">GitHub ↗</a>
+    </nav>
+    <div class="lang" role="group" aria-label="Language">
+      <button data-lang="en" aria-pressed="true">EN</button><button data-lang="vi" aria-pressed="false">VI</button>
+    </div>
+  </header>
+
+  <main id="main">
+    <!-- ───────────── hero ───────────── -->
+    <section class="hero" id="top">
+      <div class="hero-copy">
+        <p class="kicker mono" data-i18n="hero.kicker">Open source · local-first · v<span class="js-ver">0.8</span></p>
+        <h1 class="display" data-i18n="hero.title">Your notes.<br />Your disk.<br /><em>No strings.</em></h1>
+        <p class="lede" data-i18n="hero.lede">Freenote is a free alternative to Notion that runs entirely on your computer. Pages, databases, relations, Notion import, and no account, no cloud, no page limits.</p>
+
+        <div class="cta">
+          <a class="btn-ink js-primary" href="https://github.com/thanhmam/freenote/releases/latest">
+            <span class="btn-main"><span data-i18n="cta.download">Download for</span> <span class="js-os">your computer</span></span>
+            <span class="btn-meta mono js-primary-meta">GitHub Releases</span>
+          </a>
+          <a class="link-under" href="#download" data-i18n="cta.other">Other platforms ↓</a>
+        </div>
+        <p class="margin-note"><span class="arrow" aria-hidden="true">↳</span> <span data-i18n="hero.note">Everything is saved in <b>one SQLite file</b> on your disk. Copy it, back it up, keep it forever.</span></p>
+      </div>
+
+      <div class="stamp" aria-hidden="true">
+        <svg viewBox="0 0 200 200">
+          <defs><path id="circ" d="M100,100 m-74,0 a74,74 0 1,1 148,0 a74,74 0 1,1 -148,0" /></defs>
+          <circle cx="100" cy="100" r="96" />
+          <circle cx="100" cy="100" r="54" />
+          <text textLength="460" lengthAdjust="spacing"><textPath href="#circ" textLength="460" lengthAdjust="spacing" class="js-stamp">FREE FOREVER ✦ MIT LICENSE ✦ WORKS OFFLINE ✦</textPath></text>
+        </svg>
+        <span class="stamp-c">$0</span>
+      </div>
+
+      <figure class="collage">
+        <img class="sheet sheet-back js-shot" data-shot="tasks" src="/img/tasks-en.webp" width="1600" height="1029" alt="Freenote tasks database grouped by project" />
+        <img class="sheet sheet-front js-shot" data-shot="editor" src="/img/editor-en.webp" width="1600" height="1029" alt="Freenote block editor with a launch plan page" />
+        <span class="tape tape-1" aria-hidden="true"></span><span class="tape tape-2" aria-hidden="true"></span>
+      </figure>
+    </section>
+
+    <!-- ───────────── ticker ───────────── -->
+    <div class="ticker" aria-hidden="true">
+      <div class="ticker-track mono js-ticker">NO ACCOUNT ✕ NO CLOUD ✕ NO TRACKING ✕ NO AI UPSELL ✕ NO PAGE LIMITS ✕ NO 5 MB UPLOAD CAP ✕ NO 7-DAY HISTORY ✕</div>
+    </div>
+
+    <!-- ───────────── inside ───────────── -->
+    <section class="inside" id="inside">
+      <header class="sec-head">
+        <span class="sec-no mono">§01</span>
+        <h2 class="display-2" data-i18n="inside.title">What's inside</h2>
+        <p class="sec-sub" data-i18n="inside.sub">The parts of Notion you use every day, minus the parts that live on someone else's server.</p>
+      </header>
+
+      <div class="ledger-wrap">
+        <ol class="ledger">
+          <li data-shot="editor">
+            <span class="l-no mono">01</span>
+            <div><h3 data-i18n="f1.t">A block editor that stays out of the way</h3>
+            <p data-i18n="f1.d">Type <kbd>/</kbd> for headings, to-dos, toggles, quotes, code, tables, images and files. Drag blocks around, nest pages without limit, link any page with <kbd>@</kbd> and see backlinks.</p></div>
+          </li>
+          <li data-shot="tasks">
+            <span class="l-no mono">02</span>
+            <div><h3 data-i18n="f2.t">Databases, with group by</h3>
+            <p data-i18n="f2.d">Tables and boards, 10 property types, filters, multi-level sorts, column calculations (sum, average, % done) and several saved views. Every row is a full page.</p></div>
+          </li>
+          <li data-shot="projects">
+            <span class="l-no mono">03</span>
+            <div><h3 data-i18n="f3.t">Relations &amp; rollups</h3>
+            <p data-i18n="f3.d">Link Tasks to Projects in both directions, then roll them up: count, sum, or “% of tasks Done” with a progress bar. Group and filter by the linked page.</p></div>
+          </li>
+          <li data-shot="board">
+            <span class="l-no mono">04</span>
+            <div><h3 data-i18n="f4.t">Light, dark, and yours</h3>
+            <p data-i18n="f4.d">Native apps for macOS, Windows and Linux. English and Vietnamese interface. Open the same notes in your browser at <code>localhost</code> while the app runs.</p></div>
+          </li>
+          <li data-shot="editor">
+            <span class="l-no mono">05</span>
+            <div><h3 data-i18n="f5.t">Nothing gets lost</h3>
+            <p data-i18n="f5.d">Autosave, 100 versions per page with one-click restore, a trash, and a daily automatic backup to any folder, including iCloud Drive, Google Drive or Dropbox.</p></div>
+          </li>
+          <li data-shot="tasks">
+            <span class="l-no mono">06</span>
+            <div><h3 data-i18n="f6.t">A shared template library</h3>
+            <p data-i18n="f6.d">Ready-made templates maintained in the open on GitHub, synced into the app without an update. Plus a curated list of top Notion templates you can bring over.</p></div>
+          </li>
+        </ol>
+        <div class="ledger-view">
+          <div class="pin"><div class="pin-frame">
+            <img class="js-shot js-ledger-img" data-shot="editor" src="/img/editor-en.webp" width="1600" height="1029" alt="" loading="lazy" />
+          </div>
+          <p class="caption mono js-ledger-cap">fig. 01</p></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ───────────── bill ───────────── -->
+    <section class="bill" id="bill">
+      <header class="sec-head">
+        <span class="sec-no mono">§02</span>
+        <h2 class="display-2" data-i18n="bill.title">The bill, honestly</h2>
+        <p class="sec-sub" data-i18n="bill.sub">Freenote isn't Notion. Here's what you get, and what you give up.</p>
+      </header>
+
+      <div class="bill-grid">
+        <div class="receipt mono" aria-label="Receipt">
+          <p class="r-head">FREENOTE<br /><span data-i18n="r.sub">one person · forever</span></p>
+          <p class="r-rule">- - - - - - - - - - - - - - - - - -</p>
+          <dl>
+            <div><dt data-i18n="r.pages">Pages &amp; blocks</dt><dd>∞</dd></div>
+            <div><dt data-i18n="r.upload">File uploads</dt><dd data-i18n="r.upload.v">your disk</dd></div>
+            <div><dt data-i18n="r.history">Page history</dt><dd data-i18n="r.history.v">100 ver.</dd></div>
+            <div><dt data-i18n="r.backup">Backups</dt><dd data-i18n="r.backup.v">daily, auto</dd></div>
+            <div><dt data-i18n="r.offline">Works offline</dt><dd data-i18n="r.offline.v">always</dd></div>
+            <div><dt data-i18n="r.account">Account</dt><dd data-i18n="r.account.v">none</dd></div>
+            <div><dt data-i18n="r.source">Source code</dt><dd>MIT</dd></div>
+          </dl>
+          <p class="r-rule">- - - - - - - - - - - - - - - - - -</p>
+          <div class="r-total"><span data-i18n="r.totalLbl">TOTAL</span><span data-i18n="r.total">$0.00</span></div>
+          <p class="r-foot" data-i18n="r.foot">THANK YOU · KEEP YOUR RECEIPT<br />(it's also your data)</p>
+        </div>
+
+        <div class="compare-wrap">
+          <table class="compare">
+            <thead><tr><th></th><th>Freenote</th><th>Notion Free¹</th></tr></thead>
+            <tbody>
+              <tr><th data-i18n="c.data">Where your data lives</th><td data-i18n="c.data.f">Your computer</td><td data-i18n="c.data.n">Notion's cloud</td></tr>
+              <tr><th data-i18n="c.account">Account required</th><td data-i18n="c.no">No</td><td data-i18n="c.yes">Yes</td></tr>
+              <tr><th data-i18n="c.offline">Works offline</th><td data-i18n="c.offline.f">Completely</td><td data-i18n="c.offline.n">Partly</td></tr>
+              <tr><th data-i18n="c.upload">File uploads</th><td data-i18n="c.upload.f">No limit</td><td data-i18n="c.upload.n">5 MB per file</td></tr>
+              <tr><th data-i18n="c.history">Page history</th><td data-i18n="c.history.f">100 versions</td><td data-i18n="c.history.n">7 days</td></tr>
+              <tr><th data-i18n="c.db">Tables, boards, relations, rollups</th><td>✓</td><td>✓</td></tr>
+              <tr><th data-i18n="c.import">Import from Notion</th><td>✓</td><td>—</td></tr>
+              <tr><th data-i18n="c.oss">Open source</th><td>✓</td><td>✕</td></tr>
+              <tr class="concede"><th data-i18n="c.collab">Real-time collaboration, comments</th><td>✕</td><td>✓</td></tr>
+              <tr class="concede"><th data-i18n="c.mobile">Mobile apps, automatic sync</th><td data-i18n="c.roadmap">roadmap</td><td>✓</td></tr>
+              <tr class="concede"><th data-i18n="c.views">Calendar, timeline, formulas</th><td data-i18n="c.roadmap">roadmap</td><td>✓</td></tr>
+              <tr class="concede"><th data-i18n="c.integr">Integrations, API, AI</th><td>✕</td><td>✓</td></tr>
+            </tbody>
+          </table>
+          <p class="fine" data-i18n="c.fine">¹ Based on Notion's public pricing page, November 2026. Plans change. <b>In short:</b> choose Freenote for a private, unlimited notebook you fully own; choose Notion if you need a team, mobile apps or integrations.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ───────────── move ───────────── -->
+    <section class="move" id="move">
+      <header class="sec-head">
+        <span class="sec-no mono">§03</span>
+        <h2 class="display-2" data-i18n="move.title">Leaving Notion takes four steps</h2>
+        <p class="sec-sub" data-i18n="move.sub">Freenote reads Notion's own export, so nothing needs a password, an API key or a browser extension.</p>
+      </header>
+      <ol class="steps">
+        <li><span class="s-no">1</span><p data-i18n="s1">In Notion, open <span class="path mono">Settings → General → Export all workspace content</span>.</p></li>
+        <li><span class="s-no">2</span><p data-i18n="s2">Choose <span class="path mono">Markdown &amp; CSV</span> and <span class="path mono">Include subpages</span>.</p></li>
+        <li><span class="s-no">3</span><p data-i18n="s3">Save the <span class="path mono">.zip</span> Notion emails you. No need to unzip it.</p></li>
+        <li><span class="s-no">4</span><p data-i18n="s4">In Freenote: <span class="path mono">Settings → Import → From Notion</span>. Done.</p></li>
+      </ol>
+      <div class="proof">
+        <div><span class="num">615<small>MB</small></span><span class="lbl mono" data-i18n="p.export">export</span></div>
+        <div><span class="num">5,500</span><span class="lbl mono" data-i18n="p.pages">pages</span></div>
+        <div><span class="num">195</span><span class="lbl mono" data-i18n="p.dbs">databases</span></div>
+        <div><span class="num">~30<small>s</small></span><span class="lbl mono" data-i18n="p.time">to import</span></div>
+      </div>
+      <p class="fine" data-i18n="move.fine">Tested on a real workspace. Databases exported without their table are rebuilt from their rows, and anything that can't come across is listed in an import report, never silently dropped.</p>
+    </section>
+
+    <!-- ───────────── download ───────────── -->
+    <section class="download" id="download">
+      <div class="dl-head">
+        <h2 class="display-2" data-i18n="dl.title">Get Freenote</h2>
+        <p class="mono dl-ver"><span data-i18n="dl.latest">Latest</span> <b class="js-ver-full">v0.8.0</b> · <span class="js-date"></span> · <a href="https://github.com/thanhmam/freenote/blob/main/CHANGELOG.md" data-i18n="dl.changes">what's new ↗</a></p>
+      </div>
+      <ul class="dl-list js-dl">
+        <li data-os="mac-arm64"><span class="os">macOS</span><span class="arch" data-i18n="dl.arm">Apple Silicon (M1–M4)</span><a class="mono" href="https://github.com/thanhmam/freenote/releases/latest">.dmg</a></li>
+        <li data-os="mac-x64"><span class="os">macOS</span><span class="arch">Intel</span><a class="mono" href="https://github.com/thanhmam/freenote/releases/latest">.dmg</a></li>
+        <li data-os="win-x64"><span class="os">Windows</span><span class="arch" data-i18n="dl.win">10 / 11, 64-bit</span><a class="mono" href="https://github.com/thanhmam/freenote/releases/latest">.exe</a></li>
+        <li data-os="linux-AppImage"><span class="os">Linux</span><span class="arch">AppImage</span><a class="mono" href="https://github.com/thanhmam/freenote/releases/latest">.AppImage</a></li>
+        <li data-os="linux-deb"><span class="os">Linux</span><span class="arch">Debian / Ubuntu</span><a class="mono" href="https://github.com/thanhmam/freenote/releases/latest">.deb</a></li>
+      </ul>
+      <div class="dl-notes">
+        <p data-i18n="dl.n1"><b>Nothing else to install.</b> The app bundles its own runtime and database. About 300 MB on disk, 200–300 MB of memory.</p>
+        <p data-i18n="dl.n2"><b>First launch:</b> builds aren't code-signed yet. On macOS, right-click the app → <i>Open</i>. On Windows, <i>More info → Run anyway</i>. After that, Freenote updates itself.</p>
+        <p data-i18n="dl.n3"><b>Developer?</b> <code>git clone</code>, <code>npm install</code>, <code>npm start</code>. Node 22.13+ is all you need.</p>
+      </div>
+    </section>
+  </main>
+
+  <footer class="foot">
+    <p class="foot-big display" data-i18n="foot.big">Write it down.<br /><em>Keep it.</em></p>
+    <div class="foot-row mono">
+      <span>Freenote · MIT</span>
+      <a href="https://github.com/thanhmam/freenote">GitHub</a>
+      <a href="https://github.com/thanhmam/freenote/blob/main/CHANGELOG.md">Changelog</a>
+      <a href="https://github.com/thanhmam/freenote/blob/main/CONTRIBUTING.md" data-i18n="foot.contrib">Contribute</a>
+      <a href="https://github.com/thanhmam/freenote/issues" data-i18n="foot.issue">Report a bug</a>
+    </div>
+    <p class="fine foot-fine" data-i18n="foot.fine">Notion is a trademark of Notion Labs, Inc. Freenote is an independent project and is not affiliated with Notion.</p>
+  </footer>
+
+  <script src="/app.js" defer></script>
+</body>
+</html>
